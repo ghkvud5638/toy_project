@@ -1,0 +1,399 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="show.dao.face.AttractionDao">
+
+	<resultMap type="show.dto.TB_SHOW" id="Show">
+		<id property="show_id" column="show_id" />       
+		<result property="show_division" column="show_division" />
+		<result property="show_genre" column="show_genre" />
+		<result property="show_place" column="show_place" />
+		<result property="show_name" column="show_name" />
+		<result property="show_start" column="show_start" />
+		<result property="show_end" column="show_end" />
+		<result property="show_rprice" column="show_rprice" />
+		<result property="show_sprice" column="show_sprice" />
+		<result property="show_time" column="show_time" />
+		<result property="show_lat" column="show_lat" />
+		<result property="show_len" column="show_len" />
+		<result property="show_call" column="show_call" />
+		<result property="show_image" column="show_image" />
+		<result property="show_cast" column="show_cast" />
+		<result property="show_age" column="show_age" />
+		<result property="show_host" column="show_host" />
+		<result property="show_sub" column="show_sub" />
+		<result property="show_addr" column="show_addr" />
+	</resultMap>                                              
+
+	<resultMap type="show.dto.TB_SUBWAY" id="Subway">
+		<id property="subway_no" column="subway_no" />       
+		<result property="subway_name" column="subway_name" />
+		<result property="subway_line" column="subway_line" />
+		<result property="subway_addr1" column="subway_addr1" />
+		<result property="subway_addr2" column="subway_addr2" />
+		<result property="subway_addrdetail" column="subway_addrdetail" />
+		<result property="subway_tel" column="subway_tel" />
+		<result property="subway_latitude" column="subway_latitude" />
+		<result property="subway_longitude" column="subway_longitude" />
+	</resultMap>
+
+
+	<resultMap type="show.dto.TB_ATTRACTION_IMG" id="AttractionImg">
+		<id property="attraction_img_no" column="attraction_img_no"/>
+		<result property="attraction_photo" column="attraction_photo"/>
+	</resultMap>
+
+	<resultMap type="show.dto.TB_ATTRACTION" id="Attraction">
+		<id property="attraction_no" column="attraction_no"/>
+		<result property="attraction_title" column="attraction_title"/>
+		<result property="attraction_content" column="attraction_content"/>
+		<result property="attraction_tel" column="attraction_tel"/>
+		<result property="attraction_category1" column="attraction_category1"/>
+		<result property="attraction_category2" column="attraction_category2"/>
+		<result property="attraction_category3" column="attraction_category3"/>
+		<result property="attraction_area1" column="attraction_area1"/>
+		<result property="attraction_area2" column="attraction_area2"/>
+		<result property="attraction_area3" column="attraction_area3"/>
+		<result property="attraction_addr" column="attraction_addr"/>
+		<result property="attraction_latitude" column="attraction_latitude"/>
+		<result property="attraction_longitude" column="attraction_longitude"/>
+		<collection property="attraction" javaType="java.util.ArrayList"  resultMap="AttractionImg"/>
+		<collection property="show" javaType="java.util.ArrayList" resultMap="Show"/>
+		<collection property="subway" javaType="java.util.ArrayList" resultMap="Subway"/>
+	</resultMap>
+	
+
+
+	
+	<sql id="selectAttractionJoin">
+	SELECT 
+	A.ATTRACTION_NO,
+	A.ATTRACTION_TITLE,
+	A.ATTRACTION_CONTENT,
+	A.ATTRACTION_TEL, A.ATTRACTION_CATEGORY1,
+	A.ATTRACTION_CATEGORY2,
+	A.ATTRACTION_AREA1,
+	A.ATTRACTION_AREA2,
+	A.ATTRACTION_AREA3,
+	A.ATTRACTION_ADDR,
+	A.ATTRACTION_LATITUDE,
+	A.ATTRACTION_LONGITUDE,
+	C.ATTRACTION_IMG_NO,
+	C.ATTRACTION_PHOTO
+ 	FROM TB_ATTRACTION A, TB_ATTRACTION_IMG C
+	WHERE A.ATTRACTION_NO = C.ATTRACTION_NO
+	</sql>
+
+	<sql id="areaIf">
+	<choose>
+			<when test='area.equals("seoul")'>
+			and (attraction_area1 like '%서울%' or attraction_area1 like  '%경기%' or attraction_area1 like '%인천%')
+			</when>
+			<when test='area.equals("ganwon")'>
+			and (attraction_area1 like '%강원%' or attraction_area1 like  '%충청%')
+			</when>
+			<when test='area.equals("jeonla")'>
+			and (attraction_area1 like '%전라%' or attraction_area1 like  '%경상%')
+			</when>
+			<when test='area.equals("daegu")'>
+			and (attraction_area1 like '%대구%' or attraction_area1 like  '%부산%')
+			</when>
+			<otherwise>
+			</otherwise>
+	</choose>
+	</sql>
+	
+	<sql id="cate1If">
+	<choose>
+			<when test='cate1.equals("structure")'>
+			and (attraction_category1 like '%건축/조형물%')
+			</when>
+			<when test='cate1.equals("culture")'>
+			and (attraction_category1 like '%문화시설%')
+			</when>
+			<when test='cate1.equals("tourSpot1")'>
+			and (attraction_category1 like '%산업관광지%')
+			</when>
+			<when test='cate1.equals("tourSpot2")'>
+			and (attraction_category1 like '%역사관광지%')
+			</when>
+			<otherwise>
+			</otherwise>
+	</choose>
+	</sql>
+	
+	<sql id="cate2If">
+	<choose>
+			<when test='cate2.equals("tower")'>
+			and (attraction_category2 like '%기념탑/전망대%')
+			</when>
+			<when test='cate2.equals("structure")'>
+			and (attraction_category2 like '%유명건축물/건물%')
+			</when>
+			<when test='cate2.equals("etc")'>
+			and (attraction_category2 like '%기타%')
+			</when>
+			<otherwise>
+			</otherwise>
+	</choose>
+	</sql>
+	
+	<sql id="orderIf">
+		ORDER BY 
+		<choose>
+			<when test='order.equals("name")'>
+				attraction_title
+			</when>
+			<when test='order.equals("nameR")'>
+				attraction_title DESC
+			</when>
+			<when test='order.equals("cate1")'>
+				attraction_category1
+			</when>
+			<when test='order.equals("cate1R")'>
+				attraction_category1 DESC
+			</when>
+			<when test='order.equals("cate2")'>
+				attraction_category2
+			</when>
+			<when test='order.equals("cate2R")'>
+				attraction_category2 DESC
+			</when>
+			<otherwise>
+				attraction_no
+			</otherwise>
+		</choose>
+		
+	</sql>
+	<sql id="searchIf">
+			<if test='!search.equals("")'>
+				and attraction_title like '%' || #{search} || '%'
+			</if>
+			
+	</sql>
+	
+	<sql id="selectNearByShow">
+		SELECT * FROM (
+			SELECT ( (6371 * acos(trunc( cos(  ATT.attraction_latitude  ) * cos( SH.show_lat )
+			 * cos( SH.show_len  - ATT.attraction_longitude ) + sin( ATT.attraction_latitude )
+			 * sin( SH.show_lat ), 37) )) * ACOS(-1) / 180 * 1.609344  )
+			AS DIST, 
+			ATT.attraction_no,
+			ATT.attraction_title,
+			ATT.attraction_content,
+			ATT.attraction_tel, 
+			ATT.attraction_category1,
+			ATT.attraction_category2,
+			ATT.attraction_area1,
+			ATT.attraction_area2,
+			ATT.attraction_area3,
+			ATT.attraction_addr,
+			ATT.attraction_latitude,
+			ATT.attraction_longitude,
+			SH.SHOW_ID,
+			SH.SHOW_DIVISION,
+			SH.SHOW_GENRE,
+			SH.SHOW_PLACE,
+			SH.SHOW_NAME,
+			SH.SHOW_START,
+			SH.SHOW_END,
+			SH.SHOW_RPRICE,
+			SH.SHOW_SPRICE,
+			SH.SHOW_TIME,
+			SH.SHOW_LAT,
+			SH.SHOW_LEN,
+			SH.SHOW_CALL,
+			SH.SHOW_IMAGE,
+			SH.SHOW_CAST,
+			SH.SHOW_AGE,
+			SH.SHOW_HOST,
+			SH.SHOW_SUB,
+			SH.SHOW_ADDR
+			FROM TB_Show SH, TB_Attraction ATT
+			) D
+			<![CDATA[	WHERE D.DIST < 10 ]]>
+			 And attraction_no = #{attraction_no }
+			ORDER BY D.DIST	
+	</sql>
+	
+	<sql id="selectNearByAttraction">
+		SELECT * FROM (
+						SELECT ( (6371 * acos(trunc(cos(  #{LSWEW} ) * cos( A.ATTRACTION_LATITUDE )
+					 * cos( A.ATTRACTION_LONGITUDE - #{lon} ) + sin( #{LSWEW} )
+					 * sin( A.ATTRACTION_LATITUDE ), 37)))  * ACOS(-1) / 180 * 1.609344 )
+				 
+				AS DIST, 
+				A.ATTRACTION_NO,
+				A.ATTRACTION_TITLE,
+				A.ATTRACTION_CONTENT,
+				A.ATTRACTION_TEL,
+				A.ATTRACTION_CATEGORY1,
+				A.ATTRACTION_CATEGORY2,
+				A.ATTRACTION_AREA1,
+				A.ATTRACTION_AREA2,
+				A.ATTRACTION_AREA3,
+				A.ATTRACTION_ADDR,
+				A.ATTRACTION_LATITUDE,
+				A.ATTRACTION_LONGITUDE,
+				C.ATTRACTION_IMG_NO,
+				C.ATTRACTION_PHOTO
+			 	FROM TB_ATTRACTION A, TB_ATTRACTION_IMG C
+			 	WHERE A.ATTRACTION_NO = C.ATTRACTION_NO
+			 	AND A.attraction_no NOT IN(#{attraction_no})
+				) D
+				<![CDATA[	WHERE D.DIST < 3 ]]>			
+				ORDER BY D.DIST	
+	</sql>
+	
+	<sql id="selectAttractionPagingList">
+		<choose>
+			<when test="chkNumber lte 2">
+					SELECT
+						rownum rnum, B.*
+					FROM (
+					<choose>
+						<when test="chkNumber == 0">
+							<include refid="selectAttractionJoin" />
+							<include refid="areaIf" />
+							<include refid="cate1If" />
+							<include refid="cate2If" />
+							<include refid="searchIf" />
+							<include refid="orderIf" />
+						</when>
+						<when test="chkNumber == 1">
+									<include refid="selectNearByShow" />
+						
+						</when>
+						<when test="chkNumber == 2">
+									<include refid="selectNearByAttraction" />
+						
+						</when>
+					</choose>
+					) B
+					ORDER BY rnum
+			</when>
+		</choose>
+	</sql>
+	
+
+	<select id="selectAttractionList" parameterType="hashmap" resultMap="Attraction">
+		SELECT * FROM (
+			<include refid="selectAttractionPagingList" />
+		) R
+		<where>
+			<if test='paging != null'>
+		
+			rnum BETWEEN #{paging.startNo } AND #{paging.endNo }
+				</if>		
+		</where>
+	</select>
+
+	<select id="selectAttractionPaging" parameterType="hashmap" resultType="int">
+		SELECT count(*) FROM (
+		<choose>
+		<when test="chkNumber == 0">
+			<include refid="selectAttractionJoin" />
+			<include refid="areaIf" />
+			<include refid="cate1If" />
+			<include refid="cate2If" />
+			<include refid="searchIf" />
+		</when>
+		<when test="chkNumber == 1">
+				<include refid="selectNearByShow" />
+		
+		</when>
+		<when test="chkNumber == 2">
+				<include refid="selectNearByAttraction" />
+		</when>
+		</choose>
+			
+
+		) CNT
+	</select>
+	
+	<select id="selectMarker" parameterType="String" resultMap="Attraction">
+		<include refid="selectAttractionJoin" />
+		and A.ATTRACTION_NO = #{attraction_no }
+	</select>
+	
+	<select id="selectSubwayList" parameterType="String" resultMap="Attraction">
+		
+		SELECT * FROM (
+			SELECT ( (6371 * acos(trunc( cos(  ATT.attraction_latitude  ) * cos( SB.subway_latitude )
+			 * cos( SB.subway_longitude  - ATT.attraction_longitude ) + sin( ATT.attraction_latitude )
+			 * sin( SB.subway_latitude ), 37) )) * ACOS(-1) / 180 * 1.609344  )
+			AS DIST, 
+			ATT.attraction_no,
+			ATT.attraction_title,
+			ATT.attraction_content,
+			ATT.attraction_tel, 
+			ATT.attraction_category1,
+			ATT.attraction_category2,
+			ATT.attraction_area1,
+			ATT.attraction_area2,
+			ATT.attraction_area3,
+			ATT.attraction_addr,
+			ATT.attraction_latitude,
+			ATT.attraction_longitude,
+			SB.subway_no,
+			SB.subway_name,
+			SB.subway_line,
+			SB.subway_addr1,
+			SB.subway_addr2,
+			SB.subway_addrdetail,
+			SB.subway_tel,
+			SB.subway_latitude,
+			SB.subway_longitude
+			FROM TB_SubWay SB, TB_Attraction ATT
+			) D
+			<![CDATA[ 	WHERE D.DIST < 1.5 ]]>
+			AND attraction_no = #{attraction_no }
+			ORDER BY D.DIST
+			
+	</select>
+	
+	<select id="selectSubwayAllList" resultType="show.dto.TB_SUBWAY">
+	select * from
+	TB_SUBWAY
+	</select>
+	
+	
+	
+	<select id="selectShowList" parameterType="hashmap" resultMap="Attraction">
+		
+			SELECT * FROM (
+			SELECT
+				rownum rnum, B.*
+			FROM (
+			<include refid="selectNearByShow" />
+			) B
+			ORDER BY rnum
+			) R
+			<where>
+			<if test='paging != null'>
+				rnum BETWEEN #{paging.startNo } AND #{paging.endNo }
+			</if>
+			</where>
+	
+		</select>
+
+	
+
+	
+	 <delete id="visitListDelete" parameterType="hashmap">
+	 
+	 	DELETE FROM TB_NAVIGATION_BAR  WHERE attno = #{attraction_no }
+	 
+	 </delete>
+	
+	<insert id="visitListInsert" parameterType="hashmap">
+	
+		INSERT INTO TB_NAVIGATION_BAR (attno_pr, attno)
+		 VALUES (nav_visit_attno_seq.nextval, #{attraction_no})
+	
+	</insert>
+	
+</mapper>

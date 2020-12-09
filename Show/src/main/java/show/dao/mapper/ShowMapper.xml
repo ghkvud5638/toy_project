@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="show.dao.face.ShowDao">
+	
+	<select id="selectShowAll" resultType="show.dto.TB_SHOW">
+		SELECT * FROM TB_SHOW
+	</select>
+	
+	<select id="selectShowById" parameterType="String" resultType="show.dto.TB_SHOW">
+		SELECT * FROM TB_SHOW
+		WHERE SHOW_ID = #{show_id}
+	</select>
+	
+	<select id="selectSeatCnt" parameterType="String" resultType="show.dto.TB_SEAT">
+		SELECT SEATR_CNT, SEATS_CNT FROM TB_SEAT
+		WHERE SHOW_ID=${show_id} 
+	</select>
+	
+	<insert id="insertBook" parameterType="show.dto.TB_BOOK">
+		INSERT INTO TB_BOOK (BOOK_ID, MEMBER_ID, SHOW_ID, SEAT_NUM, SEAT_GRADE, BOOK_DATE, SEAT_PRICE)
+		VALUES(TB_BOOK_SEQ.NEXTVAL, #{member_id},#{show_id},#{seat_num}, #{seat_grade}, #{book_date} , #{seat_price})
+	</insert>
+	
+	<select id="selectBookList" parameterType="show.dto.TB_BOOK" resultType="show.dto.TB_BOOK">
+		SELECT * FROM TB_BOOK
+		WHERE MEMBER_ID= #{member_id} 
+		      AND SHOW_ID=#{show_id} 
+		      AND BOOK_DATE = #{book_date}
+	</select>
+	
+	<delete id="deleteBack" parameterType="show.dto.TB_BOOK">
+		DELETE FROM TB_BOOK
+		WHERE BOOK_ID=#{book_id} 
+	</delete>
+	
+	
+	
+</mapper>
