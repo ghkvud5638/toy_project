@@ -34,8 +34,11 @@ $(document).ready(function(){
 		console.log(priceTdId[i]);
 		totalPrice+=Number($("#seatPrice"+(i+1)).val());
 	}
-	console.log(totalPrice);
-	$("#totalPrice").text(totalPrice);
+	
+	
+	console.log(display_comma(totalPrice));
+	
+	$("#totalPrice").text(display_comma(totalPrice));
 	console.log($("#totalPrice").text());
 	
 	
@@ -106,7 +109,6 @@ $(document).ready(function(){
                         msg += '\n상점 거래ID : ' + rsp.merchant_uid;
                         msg += '\결제 금액 : ' + rsp.paid_amount;
                         msg += '카드 승인번호 : ' + rsp.apply_num;
-                        
                     } else {
                         //[3] 아직 제대로 결제가 되지 않았습니다.
                         //[4] 결제된 금액이 요청한 금액과 달라 결제를 자동취소처리하였습니다.
@@ -115,6 +117,8 @@ $(document).ready(function(){
 
                 //성공시 이동할 페이지
 //                 location.href="";
+                
+                location.href="/show/pay?show_id="+$("#show_id").val()+"&book_date="+$("#date").text()+"&payment_date="+$("#today").val()
                 alert("결제 성공");
                 self.close();
             } else {
@@ -128,19 +132,61 @@ $(document).ready(function(){
         
 	})
 	
+	
+	
+	$("#payLater").on("click", function(){
+		alert("마이 페이지에서 결제하시기 바랍니다.");
+		self.close();
+	})
+	
+	
+	
 })
+
+//총 금액에 콤마 찍기
+function display_comma(value) {
+   var src;
+   var i;
+   var factor;
+   var su;
+   var Spacesize = 0;
+   var String_val = value.toString();
+   factor = String_val.length % 3;
+   su = (String_val.length - factor) /3;
+   src = String_val.substring(0,factor);
+   for(i=0; i<su ; i++) {
+      if ((factor==0)&&(i==0)) {
+            src += String_val.substring(factor+(3*i), factor+3+(3*i));
+      }else{
+            if ( String_val.substring(factor+(3*i) - 1, factor+(3*i)) != "-" ) src +=",";
+            src += String_val.substring(factor+(3*i), factor+3+(3*i));
+      }
+   }
+   return src;
+}
+
+
+
 </script>
 </head>
 <body>
 <h1>BOOK3</h1>
 <hr>
 
+
+<jsp:useBean id="now" class="java.util.Date" />
+<fmt:formatDate value="${now}" pattern="yyyy-MM-dd" var="today" />
+<input type="hidden" id="today" value="${today }">
+
+
+
+
 <button id="backDelete">이전 단계</button>
 
 
 
 <br><br>
-${userId }님이 선택하신 예매 정보
+${member_id }님이 선택하신 예매 정보
 
 <table>
 	<tr>
@@ -157,7 +203,8 @@ ${userId }님이 선택하신 예매 정보
 			<td>${l.book_id }</td>
 			<td>${l.seat_num }</td>
 			<td>${l.seat_grade }</td>
-			<td>${l.book_date }</td>
+			<fmt:parseDate value="${l.book_date }" var="dateString" pattern="yyyy-MM-dd"/>
+			<td id="date"><fmt:formatDate value="${dateString }" pattern="yyyy-MM-dd"/></td>
 			<td><input type="hidden" id="seatPrice${i.count }" value="${l.seat_price }"/></td>			
 			<td><fmt:formatNumber value="${l.seat_price }" pattern="#,###"/>원</td>
 		</tr>
@@ -169,11 +216,10 @@ ${userId }님이 선택하신 예매 정보
 
 <br><br>
 총 결제 금액 :
-<div id="totalPrice">
-</div>
+<div id="totalPrice"></div>원
 <br><br>
 
-<button id="pay">결제</button>
+<button id="pay">결제</button> <button id="payLater">나중에 결제</button>
 
 </body>
 </html>

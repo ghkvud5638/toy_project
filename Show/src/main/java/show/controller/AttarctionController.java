@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import show.dto.TB_ATTRACTION;
@@ -36,6 +37,19 @@ public class AttarctionController {
 		System.out.println("2020-12-09 01:44 Merge Test");
 		System.out.println("2020-12-09 09:53 Commit Test");
 		System.out.println("2020-12-09 09:53 Commit Test");
+		System.out.println("Ignore Test");
+		System.out.println("Ignore Test222");
+		System.out.println("Ignore Test333");
+		System.out.println("2020-12-15 PullTest");
+		System.out.println("2020-12-15 MergeTest");
+		System.out.println("2020-12-15 PullrequestTest");
+		System.out.println("2020-12-15 PullrequestTest2");
+		System.out.println("2020-12-15 PullrequestTest3");
+		System.out.println("2020-12-15 PullrequestTest4");
+		System.out.println("2020-12-15 PullrequestTest5");
+		System.out.println("2020-12-15 MergerequestTest");
+		
+
 	}
 	
 	
@@ -104,28 +118,12 @@ public class AttarctionController {
 		model.addAttribute("area", area);
 		model.addAttribute("ajaxChk", false);
 		searchList.put("paging", paging);
-		//게시글 목록
-		List<TB_ATTRACTION> list = attractionService.selectAttractionList(searchList);
-		List<String> subwayName = new ArrayList<String>();
-		List<TB_ATTRACTION> showName = new ArrayList<TB_ATTRACTION>();
-		for(int j = 0; j<list.size(); j++) {
-			TB_ATTRACTION subway = attractionService.selectSubwayList(list.get(j).getAttraction_no());
-			if(subway == null) {
-				subwayName.add("없음");
-			} else {
-				subwayName.add(subway.getSubway().get(0).getSubway_name());
-			}
-			searchList.put("attraction_no", list.get(j).getAttraction_no());
-			TB_ATTRACTION showList = attractionService.selectShowList(searchList);
-			showName.add(showList);
-		}
-
-		model.addAttribute("list", list);
-		model.addAttribute("showName", showName);
-		model.addAttribute("subwayName", subwayName);
+		
+		listArray(model, searchList);
+	
 		model.addAttribute("boardType", boardType);
 
-			return "attraction/attractionlist";
+		return "attraction/attractionlist";
 			
 		
 		
@@ -164,46 +162,79 @@ public class AttarctionController {
 		
 	}
 	
-@RequestMapping(value="/nav")
+	@RequestMapping(value="/nav")
 	public String attractionNav(AttractionPaging curPage, Model model, String area, String cate1, String cate2, String search, String order) {
 		System.out.println("시작");
 		
 		
-		return "sidemenuRight2aa";
+		return "attraction/attractionNavSubMenu";
 		
 	}
+	
+		
+	
+	@RequestMapping(value="/nava")
+	public String attractionNava(AttractionPaging curPage, Model model, int listNo, int chkNumber) {
+		HashMap<String, Object> searchList = new HashMap<String, Object>();
+		
+		System.out.println("아오페이징..." + curPage.getCurPage());
+		System.out.println("아오페이징..." + curPage);
+		searchList.put("chkNumber", chkNumber);
+		searchList.put("listNo", listNo);
+		AttractionPaging paging = attractionService.selectAttractionPaging(curPage, searchList);
+		searchList.put("paging", paging);
+		System.out.println("아오페이징..." + paging);
+	
+		listArray(model, searchList);
+	
+	
+		model.addAttribute("paging", paging);
+	
+		
+		return "attraction/attractionNavList";
+		
+	}
+	
+	@RequestMapping(value="/navList")
+	@ResponseBody
+	public boolean attractionNavList(TB_ATTRACTION attr, boolean delete, boolean insert, int whereList) {
+		String attraction_no = attr.getAttraction_no();
+	
+		HashMap<String, Object> searchList = new HashMap<String, Object>();
+		searchList.put("attraction_no", attraction_no);
+		searchList.put("delete", delete);
+		searchList.put("insert", insert);
+		searchList.put("whereList", whereList);
+		
+		return attractionService.visitList(searchList);
+		
+		
+	}
+	
+	
 
-@RequestMapping(value="/nava")
-public String attractionNava(AttractionPaging curPage, Model model ) {
-	HashMap<String, Object> searchList = new HashMap<String, Object>();
+	@RequestMapping(value="/detail")
+	public void attractionDetail(TB_ATTRACTION attrInfo, AttractionPaging p, Model model, String area) {
+		String attraction_no = attrInfo.getAttraction_no();
+		
+		
+		HashMap<String, Object> searchList = new HashMap<String, Object>();
+		searchList.put("attraction_no", attraction_no);
+		
+
+		attractionNavList(attrInfo, true, true, 4);
+
+		TB_ATTRACTION attraction = attractionService.selectMarker(attraction_no);
+
+		
+		model.addAttribute("attraction", attraction);
+
+	 
+
+		
+		
+	}
 	
-	
-	
-	searchList.put("chkNumber", 4);
-	//게시글 목록
-	List<TB_ATTRACTION> list = attractionService.selectAttractionList(searchList);
-	List<String> subwayName = new ArrayList<String>();
-	List<TB_ATTRACTION> showName = new ArrayList<TB_ATTRACTION>();
-//	for(int j = 0; j<list.size(); j++) {
-//		TB_ATTRACTION subway = attractionService.selectSubwayList(list.get(j).getAttraction_no());
-//		if(subway == null) {
-//			subwayName.add("없음");
-//		} else {
-//			subwayName.add(subway.getSubway().get(0).getSubway_name());
-//		}
-//		searchList.put("attraction_no", list.get(j).getAttraction_no());
-//		TB_ATTRACTION showList = attractionService.selectShowList(searchList);
-//		showName.add(showList);
-//	}
-	
-	model.addAttribute("list", list);
-	model.addAttribute("showName", showName);
-	model.addAttribute("subwayName", subwayName);
-	
-	
-	return "attraction/attractionNavList";
-	
-}
 	
 	@RequestMapping(value="/map")
 	public String attractionMap(TB_ATTRACTION attrInfo, Model model, boolean chk, String area) {
@@ -221,31 +252,6 @@ public String attractionNava(AttractionPaging curPage, Model model ) {
 		
 		
 	}
-
-	@RequestMapping(value="/detail")
-	public void attractionDetail(TB_ATTRACTION attrInfo, AttractionPaging p, Model model, String area, HttpSession session) {
-		String attraction_no = attrInfo.getAttraction_no();
-		
-		
-		HashMap<String, Object> searchList = new HashMap<String, Object>();
-		searchList.put("attraction_no", attraction_no);
-		
-		attractionService.visitList(searchList);
-
-		TB_ATTRACTION attraction = attractionService.selectMarker(attraction_no);
-
-		
-		model.addAttribute("attraction", attraction);
-
-	 
-
-		if( area == null) {
-			
-		} else { }
-		
-		
-	}
-	
 	
 	
 	@RequestMapping(value="/subway")
@@ -263,6 +269,27 @@ public String attractionNava(AttractionPaging curPage, Model model ) {
 
 		return mav;
 		
+	}
+	
+	public void listArray(Model model, HashMap<String, Object> searchList){
+		List<TB_ATTRACTION> list = attractionService.selectAttractionList(searchList);
+		List<String> subwayName = new ArrayList<String>();
+		List<TB_ATTRACTION> showName = new ArrayList<TB_ATTRACTION>();
+		for(int j = 0; j<list.size(); j++) {
+			TB_ATTRACTION subway = attractionService.selectSubwayList(list.get(j).getAttraction_no());
+			if(subway == null) {
+				subwayName.add("없음");
+			} else {
+				subwayName.add(subway.getSubway().get(0).getSubway_name());
+			}
+			searchList.put("attraction_no", list.get(j).getAttraction_no());
+			TB_ATTRACTION showList = attractionService.selectShowList(searchList);
+			showName.add(showList);
+		}
+
+		model.addAttribute("list", list);
+		model.addAttribute("showName", showName);
+		model.addAttribute("subwayName", subwayName);
 	}
 	
 }

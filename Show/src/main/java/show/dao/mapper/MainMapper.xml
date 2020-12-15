@@ -5,11 +5,77 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="show.dao.face.MainDao">
-	<select id="login" resultType="int">
-		SELECT count(*) FROM TB_member WHERE member_id = #{member_id } AND member_pw = #{member_pw } 
+
+<!-- 	<select id="login" resultType="int"> -->
+<!-- 		SELECT count(*) FROM TB_member WHERE member_id = #{member_id } AND member_pw = #{member_pw }  -->
+<!-- 	</select> -->
+
+	<select id="logIn" parameterType="show.dto.Member" resultType="show.dto.Member">
+		SELECT member_id, member_pw, nick FROM  tb_member
+		WHERE 1=1 
+			AND member_id=#{member_id} 
+<!-- 			AND pw=#{pw} -->
 	</select>
+
+
+<!-- 	<select id="logIn" resultType="int" parameterType="show.dto.Member" > -->
+<!-- 		SELECT count(*) FROM tb_member WHERE 1=1AND id=#{id}AND member_pw=#{member_pw} -->
+<!-- 	</select> -->
+
+
+
+	<select id="loginspot"  parameterType="show.dto.Member" resultType="String">
+		SELECT member_spot from TB_MEMBER WHERE member_id=#{member_id}
+	</select>
+	
 	<select parameterType="show.dto.Member" id="getUsernick" resultType="String">
 		SELECT nick FROM TB_member WHERE member_id = #{member_id }
 	</select>
+	
+	<insert id="signup" parameterType="show.dto.Member">
+		INSERT INTO tb_member (member_id,member_pw,nick)
+		VALUES (#{member_id},#{member_pw},#{nick})
+	</insert>
+	
+	
+	
+   <select resultType="int" parameterType="String" id="idcheck">
+      SELECT count(*) FROM TB_MEMBER WHERE MEMBER_ID = #{member_id}
+   </select>
+	
+
+
+	<select resultType="int" parameterType="show.dto.Member" id="isExistsId">
+		SELECT count(*) FROM tb_member WHERE 1=1AND member_id=#{member_id} 
+	</select>
+
+	<select resultType="int" parameterType="show.dto.Member" id="isCorrectPw">
+		SELECT count(*) FROM tb_member WHERE 1=1
+			AND member_id=#{member_id} AND member_pw=#{member_pw} 
+	</select>
+	
+	<select id="listten" resultType="show.dto.TB_SHOW">
+		SELECT * FROM TB_SHOW
+	</select>
+	
+	<select id="getUpdate" parameterType="String" resultType="show.dto.Member">
+		select * from TB_MEMBER where member_id=#{member_id}
+	</select>
+	
+	<update id="updateProcess" parameterType="show.dto.Member">
+		update TB_MEMBER set member_pw=#{member_pw} ,nick=#{nick} where member_id=#{member_id}
+	</update>
+	
+	
+	
+	<insert parameterType="show.dto.Member" id="insertJoin">INSERT INTO
+		TB_MEMBER(MEMBER_ID, MEMBER_PW, MEMBER_NAME, BIRTH, GENDER,
+		MEMBER_ADDR, NICK, POINT,MEMBER_SPOT,EMAIL)VALUES(#{member_id}, #{member_pw},
+		#{member_name}, #{birth}, #{gender}, #{member_addr}, #{nick}, '0',#{member_spot},#{email})
+	</insert>
+	
+	
+	
+	
 
 </mapper>

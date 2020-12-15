@@ -182,42 +182,43 @@
 			 * sin( SH.show_lat ), 37) )) * ACOS(-1) / 180 * 1.609344  )
 			AS DIST, 
 			ATT.attraction_no,
-			ATT.attraction_title,
-			ATT.attraction_content,
-			ATT.attraction_tel, 
-			ATT.attraction_category1,
-			ATT.attraction_category2,
-			ATT.attraction_area1,
-			ATT.attraction_area2,
-			ATT.attraction_area3,
-			ATT.attraction_addr,
+<!-- 			ATT.attraction_title, -->
+<!-- 			ATT.attraction_content, -->
+<!-- 			ATT.attraction_tel,  -->
+<!-- 			ATT.attraction_category1, -->
+<!-- 			ATT.attraction_category2, -->
+<!-- 			ATT.attraction_area1, -->
+<!-- 			ATT.attraction_area2, -->
+<!-- 			ATT.attraction_area3, -->
+<!-- 			ATT.attraction_addr, -->
 			ATT.attraction_latitude,
 			ATT.attraction_longitude,
 			SH.SHOW_ID,
-			SH.SHOW_DIVISION,
-			SH.SHOW_GENRE,
-			SH.SHOW_PLACE,
+<!-- 			SH.SHOW_DIVISION, -->
+<!-- 			SH.SHOW_GENRE, -->
+<!-- 			SH.SHOW_PLACE, -->
 			SH.SHOW_NAME,
-			SH.SHOW_START,
-			SH.SHOW_END,
-			SH.SHOW_RPRICE,
-			SH.SHOW_SPRICE,
-			SH.SHOW_TIME,
+<!-- 			SH.SHOW_START, -->
+<!-- 			SH.SHOW_END, -->
+<!-- 			SH.SHOW_RPRICE, -->
+<!-- 			SH.SHOW_SPRICE, -->
+<!-- 			SH.SHOW_TIME, -->
 			SH.SHOW_LAT,
 			SH.SHOW_LEN,
-			SH.SHOW_CALL,
-			SH.SHOW_IMAGE,
-			SH.SHOW_CAST,
-			SH.SHOW_AGE,
-			SH.SHOW_HOST,
-			SH.SHOW_SUB,
-			SH.SHOW_ADDR
+<!-- 			SH.SHOW_CALL, -->
+			SH.SHOW_IMAGE
+<!-- 			SH.SHOW_CAST, -->
+<!-- 			SH.SHOW_AGE, -->
+<!-- 			SH.SHOW_HOST, -->
+<!-- 			SH.SHOW_SUB, -->
+<!-- 			SH.SHOW_ADDR -->
 			FROM TB_Show SH, TB_Attraction ATT
 			) D
 			<![CDATA[	WHERE D.DIST < 10 ]]>
 			 And attraction_no = #{attraction_no }
 			ORDER BY D.DIST	
 	</sql>
+
 	
 	<sql id="selectNearByAttraction">
 		SELECT * FROM (
@@ -249,11 +250,11 @@
 	</sql>
 	
 	<sql id="selectAttractionPagingList">
-		<choose>
-			<when test="chkNumber lte 2">
 					SELECT
 						rownum rnum, B.*
 					FROM (
+		<choose>
+			<when test="chkNumber lte 2">
 					<choose>
 						<when test="chkNumber == 0">
 							<include refid="selectAttractionJoin" />
@@ -272,10 +273,17 @@
 						
 						</when>
 					</choose>
-					) B
-					ORDER BY rnum
+			</when>
+			<when test="chkNumber == 5">
+			select ATTAll.*, NB.* FROM (
+				<include refid="selectAttractionJoin" />
+				 ) ATTAll, TB_NAVIGATION_BAR NB
+				  where ATTAll.attraction_no = NB.visit_attno
+				order by visit_attno_pr desc
 			</when>
 		</choose>
+					) B
+					ORDER BY rnum
 	</sql>
 	
 
@@ -307,6 +315,12 @@
 		</when>
 		<when test="chkNumber == 2">
 				<include refid="selectNearByAttraction" />
+		</when>
+		<when test="chkNumber == 5">
+			select ATTAll.*, NB.* FROM (
+				<include refid="selectAttractionJoin" />
+				 ) ATTAll, TB_NAVIGATION_BAR NB
+				  where ATTAll.attraction_no = NB.visit_attno
 		</when>
 		</choose>
 			
@@ -385,15 +399,23 @@
 	
 	 <delete id="visitListDelete" parameterType="hashmap">
 	 
-	 	DELETE FROM TB_NAVIGATION_BAR  WHERE attno = #{attraction_no }
+	 	DELETE FROM TB_NAVIGATION_BAR  WHERE 
+ 		<choose>
+		<when test="whereList == 4">
+	 	visit_attno = #{attraction_no }
+	 	</when>
+		</choose>
 	 
 	 </delete>
 	
 	<insert id="visitListInsert" parameterType="hashmap">
-	
-		INSERT INTO TB_NAVIGATION_BAR (attno_pr, attno)
+		INSERT INTO TB_NAVIGATION_BAR 
+		<choose>
+		<when test="whereList == 4">
+		(visit_attNo_pr, visit_attno)
 		 VALUES (nav_visit_attno_seq.nextval, #{attraction_no})
-	
+		</when>
+		</choose>
 	</insert>
 	
 </mapper>

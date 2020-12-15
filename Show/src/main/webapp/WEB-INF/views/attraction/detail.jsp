@@ -5,7 +5,7 @@
 
 
 <c:import url="/WEB-INF/views/header.jsp" />
-<c:import url="/WEB-INF/views/sidemenuRight.jsp" />
+<c:import url="/WEB-INF/views/attraction/attractionNavMainMenu.jsp" />
 
 
 <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=2839883285d5293951571fa58223465e"></script>
@@ -15,6 +15,26 @@
 	
 	$(document).ready(function(){
 	
+// 		console.log($('#attraction-detail-contentId').innerHTML)
+// 		console.log("${attraction.attraction_content }")
+// 		console.log(`${attraction.attraction_content }`.split(". "))
+		var nanum = `${attraction.attraction_content }`.split(". ")
+		
+
+		$(nanum).each (function(index, item){
+// 			alert(item.last)
+			console.log(item)
+			console.log(index)
+			if(nanum.length-1 == index){
+			$('#attraction-detail-contentId').append(item)
+				
+			} else{
+			$('#attraction-detail-contentId').append("<p>" + item + ".</p>")
+				
+			}
+			
+		})
+
 		var mapchk = false
 		, showchk = false
 		, attractionchk = false
@@ -220,17 +240,19 @@
 					setTimeout(function(){
 
 				
-					$("#attraction-detail-detailmap").css("height", "350px")
-				            	},151);
+						$("#attraction-detail-detailmap").css("height", "350px")
+						
+		            	},151);
 
 						$("#attraction-detail-detailmap").css("background-color", "black")
+					
 					setTimeout(function(){
 						$("#attraction-detail-detailmap").css("width", "100%")
-							$("#attraction-detail-detailmap").html(res);
 						$("#attraction-detail-detailmap").css("background-color", "")
 						$("#attraction-detail-detailmap").css("opacity", "1")
+						$("#attraction-detail-detailmap").html(res);
 
-	                	},500);
+	                	},520);
 					
 				}
 					}
@@ -288,6 +310,15 @@
 </script>
 
 <style type="text/css">	
+	.test {
+			postion: absoulute;
+			background-color: gray;
+			width: 1800px;
+			min-width: 1000px;
+			height: 100%;
+			margin: 0 auto
+	}
+
 
 .attraction-detail-vieBtnUl{
 	text-align: center;
@@ -298,6 +329,8 @@
 	width: 33%;
 	border-bottom: 1px solid #ccc;
 	float:left;
+		font-family: 'Nanum Pen Script', cursive;
+	font-size: 22px;
 }
 
 .attraction-detail-viewBtnList:not(:first-child){
@@ -328,30 +361,36 @@ body {
 }
 
 .attraction-detail-wrapAllDiv {
-	width: 1250px;
+	width: 80%;
 	margin: 0 auto;
 	margin-bottom:50px;
+	bakcground-color: white;
+	position: relative;
 
 }
 .attraction-detail-conetentDiv {
- 	white-space:normal; 
+	font-family: 'Noto Sans KR', sans-serif;
+	
+	white-space:normal; 
+ 	font-size: 19px;
 	padding: 10px;
 	vertical-align: top;
-	line-height: 1.2;	
 	overflow: hidden;
 }
 
 #attraction-detail-detailmap {
 	margin: 0 auto;
  	transition: all 0.5s ease-in-out; 
-	 width:0px; height:0px;
+	 width:0px; 
+	 height:0px;
 	border-radius:5px;
+	margin-top:20px;
 }
 
 
 .attraction-detail-imgMainDiv {
-	border-top:1px solid #ccc;"
-	width: 1250%;
+	border-top:1px solid #ccc;
+	width: 1250px;
 	height: 500px;
 	position: relative;
 	margin: 0 auto;
@@ -390,7 +429,9 @@ body {
 
 .attraction-detail-contentCateSpan{
 	color:#3997c1;
-	font-size: 11px;
+	font-size: 16px;
+	font-family: 'Nanum Pen Script', cursive;
+ 	
 }
 
 .attraction-detail-contentCateSpan:hover{
@@ -415,22 +456,42 @@ body {
  	font-weight:bolder;
 }
 
+P { 
+	line-height: 1.5em;
+}
+
+.attraction-detail-scrapSpan {
+	
+	float:right;
+	z-index:999;
+	position:absolute;
+
+}
+.attraction-detail-scrapSpan:hover {
+	
+	text-decoration: underline;
+	font-weight: bolder;
+	cursor: pointer;
+
+}
+
 </style>
 
 </head>
 <body>
 
+<div class="test">
 <div class="attraction-detail-wrapDiv">
 
 <c:import url="/WEB-INF/views/attraction/categoryBtn.jsp" />
 
 
-
 	<div class="attraction-detail-wrapAllDiv" >
 	<div style="width:60%; margin:0 auto">
-				<h1>${attraction.attraction_title }</h1>
-			
+		<h1 style="font-family: 'Nanum Brush Script', cursive; font-size: 53px;">${attraction.attraction_title }</h1>
+	
 	</div>
+		<div class="attraction-detail-scrapSpan">스크랩하기</div>		
 	
 	<div class="attraction-detail-imgMainDiv">
 			<div class="attraction-detail-imgDiv">
@@ -440,11 +501,14 @@ body {
 	<div class="attraction-detail-conetentDiv" style="border-top:1px solid #ccc">
 				
 		<div style="width:60%; margin: 0 auto;">
-				<p style="	text-indent: 0.8em;">${attraction.attraction_content }</p>
+				<div id="attraction-detail-contentId" style="text-indent: 0.6em;">
+<%-- 				${attraction.attraction_content } --%>
+				</div>
 			
 			<br><br>	
-				<p>문의 사항 : ${attraction.attraction_tel }</p>
-				<p>상세주소 : ${attraction.attraction_addr }</p>
+				
+				<p style="font-size: 14px;">문의 사항 : ${attraction.attraction_tel }</p>
+				<p style="font-size: 13px;">상세주소 : ${attraction.attraction_addr }</p>
 				
 		
 		<br>
@@ -485,6 +549,7 @@ body {
 		</div>
 </div>
 
+</div>
 </div>
 
 

@@ -65,6 +65,29 @@ $(document).ready(function(){
 
 	});
 })
+function chkForm(){
+	console.log($("#today").val())
+	console.log($("#bookingDate").val())
+	
+	var t = new Date($("#today").val())
+	var b = new Date($("#bookingDate").val())
+	var expirationCnt = (b-t)/1000/60/60/24;
+	
+	if (t > b) {
+		alert("잘못된 날짜 선택입니다.")
+		return false;	
+	}else{
+		if (expirationCnt<=3) {
+			alert("입금 기한은 공연날짜로 부터 3일전 까지 입니다. 입금 기한이 지났습니다.")
+			return false;
+		}
+		
+		return true;
+	} 
+}
+
+
+
 </script>
 </head>
 <body>
@@ -84,13 +107,13 @@ $(document).ready(function(){
 </c:set>
 
 
-
+<input type="hidden" id="today" value="${today }">
 <input type="hidden" id="start" value="${start }"/>
 <input type="hidden" id="end" value="${end }"/>
 
 ${showDetail.show_time } 
 <div class="choiceDay">
-<form action="/show/book2" method="post">
+<form action="/show/book2" method="post" onsubmit="return chkForm()">
 	<button class="bookNext">다음 단계</button><br><br><br>
 	<label for="bookingDate">관람일 선택</label><br>
 	<input type="text" name="book_date" id="bookingDate" size="12" value="${today}"/><br>
@@ -101,19 +124,19 @@ ${showDetail.show_time }
 <img style="width:100px; height: 110px; position: absolute;
     margin: -101px 0px 0px 418px;" class="showImg" src="${showDetail.show_image }">
 
-<table class="bookTable">
-	<caption>잔여석</caption>
-	<tr>
-	</tr>
-	<tr>
-		<th>r석</th>
-		<td>${seatCnt.seatr_cnt }</td>
-	</tr>
-	<tr>
-		<th>s석</th>
-		<td>${seatCnt.seats_cnt }</td>
-	</tr>
-</table>
+<!-- <table class="bookTable"> -->
+<%-- 	<caption>잔여석</caption> --%>
+<!-- 	<tr> -->
+<!-- 	</tr> -->
+<!-- 	<tr> -->
+<!-- 		<th>r석</th> -->
+<%-- 		<td>${seatCnt.seatr_cnt }</td> --%>
+<!-- 	</tr> -->
+<!-- 	<tr> -->
+<!-- 		<th>s석</th> -->
+<%-- 		<td>${seatCnt.seats_cnt }</td> --%>
+<!-- 	</tr> -->
+<!-- </table> -->
 
 <img style="width:525px; margin: 25px 0 0 0;" alt="#" src="/resources/images/u.jpg">	
 

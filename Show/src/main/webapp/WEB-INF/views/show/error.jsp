@@ -7,7 +7,7 @@
 $(document).ready(function(){
 	setTimeout(function(){
 		alert("메인 페이지로 이동");
-		location.href = "/member/main";
+		location.href = "/main/main";
 	},3000)
 	
 	

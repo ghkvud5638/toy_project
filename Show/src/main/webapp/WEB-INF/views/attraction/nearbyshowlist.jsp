@@ -12,37 +12,42 @@
 <script type="text/javascript" src="http://code.jquery.com/jquery-2.2.4.min.js"></script>
 <script type="text/javascript">
 $(document).ready(function(){
+
+
+	$('.attraction-detail-showTable').not('#listNot').on('click', function() {
+		console.log("클릭이동")
+		console.log($(this).attr('id'))
 		
-$('.attraction-detail-showTable').not('#listNot').on('click', function() {
-	console.log("클릭이동")
-	console.log($(this).attr('id'))
-	
-	var chkurl = document.location.href.indexOf("area")
-		, area = "";
-	
-	if(chkurl !== -1){
-		var areasplit = document.location.href.split("area=")
-		, idx = areasplit[1].indexOf("&")
-		, area = areasplit[1].substring(0, idx);
+		var chkurl = document.location.href.indexOf("area")
+			, area = "";
 		
+		if(chkurl !== -1){
+			var areasplit = document.location.href.split("area=")
+			, idx = areasplit[1].indexOf("&")
+			, area = areasplit[1].substring(0, idx);
+			
 		area = "area=" + area +"&"
+		}
 		
-	}
-	
-	if(${chkNumber} == 1){
-	   location.href= "/show/detail?show_id="+$(this).attr('id');		
-	} else {
-	   location.href= "/attraction/detail?"+area+"attraction_no="+$(this).attr('id');		
+		if(${chkNumber} == 1){
+		   location.href= "/show/detail?show_id="+$(this).attr('id');		
+		} else {
+		   location.href= "/attraction/detail?"+area+"attraction_no="+$(this).attr('id');		
+			
+		}
 		
-	}
-	
-	
-})
+		
+		
+	})
 })
 </script>
 
 <style type="text/css">
+
+
+
 .attraction-detail-showListWrap {
+	
 	width: 1250px;
 	/* 	기준점 */
 	position: relative;
@@ -54,13 +59,16 @@ $('.attraction-detail-showTable').not('#listNot').on('click', function() {
 }
 
 .attraction-detail-showNameDiv {
+	font-family: 'Nanum Pen Script', cursive;
+/* 	font-weight: bolder; */
+	font-size: 18px;
 	width:80%;
 	height: 10%;
 	margin: 0 auto;
  	overflow:hidden;	 
 	white-space:nowrap;
 	text-overflow: ellipsis;
-	padding-top: 5px;
+/* 	padding-top: 5px; */
 	
 }
 .attraction-detail-showListMain {
@@ -75,7 +83,8 @@ $('.attraction-detail-showTable').not('#listNot').on('click', function() {
 	display: inline-block;
 	margin: 0 auto;
 /* 	position: absolute; */
-/* 	transition: all 0.3s ease-in-out; */
+	
+/*  	transition: all 2s ease-in-out;  */
 	
 }
 
@@ -86,7 +95,7 @@ $('.attraction-detail-showTable').not('#listNot').on('click', function() {
 .attraction-detail-showTable {
 	width: 190px;
 	height: 280px;	
-	transition: all 0.6s ease-in-out;
+	transition: all 0.4s ease-in-out;
 	border: 1px solid #ccc;
 	border-radius: 5px;
 	

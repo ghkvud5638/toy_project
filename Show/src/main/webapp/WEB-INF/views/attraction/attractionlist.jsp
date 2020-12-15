@@ -5,6 +5,8 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
 <c:import url="/WEB-INF/views/header.jsp" />
+<c:import url="/WEB-INF/views/attraction/attractionNavMainMenu.jsp" />
+
 <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=2839883285d5293951571fa58223465e&libraries=services"></script>
 
 <script type="text/javascript" src="http://code.jquery.com/jquery-2.2.4.min.js"></script>
@@ -12,6 +14,8 @@
 <script type="text/javascript">
 
 $(document).ready(function() {
+	
+
 	
 
 	function getParam(sname) {
@@ -318,6 +322,7 @@ $(document).ready(function() {
 
 body {
  	background-color: gray; 
+
 /* background-color:rgba (0,0,0,0); */
 /* 	opacity: 0; */
 }
@@ -332,10 +337,20 @@ table, tr, td {
 
 /* Div CSS */
 
+	.test {
+			postion: absoulute;
+			background-color: gray;
+			width: 1800px;
+			min-width: 1000px;
+			height: 100%;
+			margin: 0 auto
+	}
+
 	/* 전모든 요소 Div */
 	.attraction-list-wrapDiv {
 		postion: absoulute;
-		width: 1500px;
+/*  		min-width: 100%;  */
+  		width: 80%;
 		height: 100%;
 		top: 0;
 		left: 0;
@@ -343,6 +358,8 @@ table, tr, td {
 		background-color: white;
 		border: 1px solid #ccc;
 		border-radius: 5px;
+/* 		padding: 0px 100px; */
+/* 		margin: 0px 100px 0px 100px; */
 	
 	}
 	
@@ -479,7 +496,7 @@ table, tr, td {
 		position: relative;
 		width: 100px;
 		height: 30px;
-		background-color: white;
+ 		background-color: white;
 		border-radius: 3px;
 	
 	}
@@ -538,7 +555,7 @@ table, tr, td {
 
 </style>
 
-
+<div class="test">
 <div class="attraction-list-wrapDiv">
 
 	<c:import url="/WEB-INF/views/attraction/categoryBtn.jsp" />
@@ -607,6 +624,7 @@ table, tr, td {
 	
 	<!-- 목록 없으면 나오는 창 제거해두 무방 -->
 	<c:if test="${empty list }">
+		<c:if test='${boardType eq "image" }'>
 		<c:set var="sbsb">
 							https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQe_FK2zUGMRGrp2bH_pasITFMIZSpj2n7vcQ&usqp=CAU
 							,
@@ -616,6 +634,13 @@ table, tr, td {
 			  				, 
 			  				https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTsVLPdd047XeBOwCf1sPCNLjq5n1-J8DrFvA&usqp=CAU
 		  </c:set>
+		</c:if>
+		<c:if test='${boardType eq "board" }'>
+					<c:set var="sbsb">
+			https://i.pinimg.com/originals/67/96/78/6796787f18c94baab28e706830c87d74.gif
+				</c:set>
+		
+		</c:if>
 		<c:forEach items="${sbsb }" var="b" varStatus="sb">
 			<div class="attraction-list-listDiv">
 				<table class="attraction-list-listTable" >
@@ -784,5 +809,6 @@ table, tr, td {
 
 </div>
 
+</div>
 
 <c:import url="/WEB-INF/views/footer.jsp" />

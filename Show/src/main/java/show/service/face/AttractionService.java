@@ -18,7 +18,7 @@ public interface AttractionService {
 
 	public TB_ATTRACTION selectShowList(HashMap<String, Object> searchList);
 
-	public void visitList(HashMap<String, Object> searchList);
+	public boolean visitList(HashMap<String, Object> searchList);
 
 
 	

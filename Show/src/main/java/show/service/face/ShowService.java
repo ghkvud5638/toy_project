@@ -3,17 +3,32 @@
 import java.util.List;
 
 
+
 import show.dto.TB_BOOK;
 import show.dto.TB_SEAT;
 import show.dto.TB_SHOW;
+import show.util.ShowlistPaging;
+import show.util.showPaging;
 
 public interface ShowService {
 
+	
+	
+	
+	
+	public showPaging getPaging(showPaging curPage);
+	
+	
+	public ShowlistPaging getPagingJH(ShowlistPaging curPage);
+
+	
+	public List<TB_SHOW> checklist(ShowlistPaging paging);
+	
 	/**
 	* 공연 전체 리스트 조회
 	 * @return
 	 */
-	public List<TB_SHOW> getShowList();
+	public List<TB_SHOW> getShowList(showPaging paging);
 
 	/**
 	 * 공연 상세 정보 조회 
@@ -46,5 +61,27 @@ public interface ShowService {
 	 * @param deleteInfo
 	 */
 	public void delete(TB_BOOK deleteInfo);
+
+	/**
+	 * book2 페이지 로드하면서 이미 예약된 좌석번호 리스트 조회
+	 * @param tbBook
+	 * @return
+	 */
+	public List<String> getUnavaliableSeatList(TB_BOOK tbBook);
+
+	/**
+	 * 결제 시 status 컬럼 Y
+	 */
+	public void payComplete(TB_BOOK book);
+
+	/**
+	 * 결제 시 payment_date 업데이트 
+	 * @param book
+	 */
+	public void paymentDateComplete(TB_BOOK book);
+
+
+
+
 
 }

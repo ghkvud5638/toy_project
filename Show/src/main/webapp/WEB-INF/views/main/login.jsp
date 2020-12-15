@@ -108,11 +108,53 @@ input[type="checkbox"] {
 </style>
 <meta charset="UTF-8">
 <title>Insert title here</title>
+
+<script type="text/javascript">
+$(document).ready(function() {
+	
+	
+	
+	$("#submit").on("click",function(){
+		
+		$.ajax({
+			url: "/main/passChk",
+			type: "POST",
+			dataType:"json",
+			data: $("#loginForm").serializeArray(),
+			success: function(data){
+				if(data==true){
+// 					alert("로그인 성공")
+				}else{
+					alert("패스워드 불일치")
+					return;
+				}			
+			}
+		})
+		
+	})
+
+	
+	
+	$("#join").on("click",function(){
+		location.href="/join/joinbefore";
+	});
+	$("#searchidpw").on("click",function(){
+		console.log("here")
+		var url = "/main/searchidpw";
+        var name = "popup";
+        var option = "width = 560, height = 500, top = 100, left = 200, location = no"
+        window.open(url, name, option);	
+	});
+	
+
+})
+</script>
+
 </head>
 <body>
 	<div id="container" class="xb">
 		<div id="content">
-			<form action="/main/login" method="post">
+			<form action="/main/login" id="loginForm" method="post">
 				<div id="main-login-wrap">
 					<h1 class="main-login-member">member login</h1>
 					<div class="main-login-form">
@@ -122,14 +164,16 @@ input[type="checkbox"] {
 								<div class="main-login-clear"></div>
 								<label for="user">비밀번호</label><input type="password" id="member_pw" name="member_pw" >
 							</div>
-							<input type="submit" value="로그인하기">
+<!-- 							<input type="submit" value="로그인하기"> -->
+								<button id="submit">로그인</button>
+								
 							<div class="main-login-clear"></div>
 							<div class="main-login-form4">
 								<label><input type="checkbox">아이디저장</label> <label><input
 									type="checkbox">보안접속</label>
 								<div class="main-login-clear"></div>
-								<label><input type="button" value="회원가입"></label> <label><input
-									type="button" value="아이디/비밀번호 찾기"></label>
+								<label><input type="button" id="join" value="회원가입"></label> <label><input
+									type="button"  id="searchidpw" value="아이디/비밀번호 찾기"></label>
 							</div>
 						</div>
 					</div>

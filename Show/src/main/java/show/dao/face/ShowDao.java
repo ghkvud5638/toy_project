@@ -5,14 +5,20 @@ import java.util.List;
 import show.dto.TB_BOOK;
 import show.dto.TB_SEAT;
 import show.dto.TB_SHOW;
+import show.util.Paging;
+import show.util.ShowlistPaging;
+import show.util.showPaging;
 
 
 public interface ShowDao {
+	
+	public int selectCntAll(showPaging curPage);
+	
 	/**
 	 * 공연 전제 조회
 	 * @return
 	 */
-	public List<TB_SHOW> selectShowAll();
+	public List<TB_SHOW> selectShowAll(showPaging paging);
 	
 	/**
 	 * 공연 상세 조회
@@ -46,5 +52,31 @@ public interface ShowDao {
 	 * @param deleteInfo
 	 */
 	public void deleteBack(TB_BOOK deleteInfo);
+
+	/**
+	 * book2 화면 띄우며 이미 예매된 좌석번호 리스트 조회
+	 * @param tbBook
+	 * @return
+	 */
+	public List<String> selectSeatList(TB_BOOK tbBook);
+
+	/**
+	 * 결제 시 status 컬럼 업데이트 
+	 * @param book
+	 */
+	public void updateBookStatus(TB_BOOK book);
+
+	/**
+	 * 결제 시  payment_date 업데이트
+	 * @param book
+	 */
+	public void updateBookPaymentDate(TB_BOOK book);
+	
+	public int selectCntAllJH(ShowlistPaging curPage);
+
+	public List<TB_SHOW> checklistMap(ShowlistPaging paging);
+
+
+	
 
 }

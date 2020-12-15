@@ -32,8 +32,9 @@ public class AttractionServiceImpl implements AttractionService {
 		} else {
 			
 			int totalCount = attractionDao.selectAttractionPaging(searchList);
-			
+			System.out.println("나값없어?" + totalCount);
 			AttractionPaging paging = new AttractionPaging(totalCount, curPage.getCurPage(), (Integer) searchList.get("listNo"));
+			System.out.println("나값없어?" + paging);
 			
 			return paging;
 		}
@@ -82,12 +83,18 @@ public class AttractionServiceImpl implements AttractionService {
 	
 	
 	@Override
-	public void visitList(HashMap<String, Object> searchList) {
+	public boolean visitList(HashMap<String, Object> searchList) {
 
+		if((boolean)searchList.get("delete") == true) {
+			attractionDao.visitListDelete(searchList);
+			System.out.println("작동했슴니다 지우는거");
+		}
+		if((boolean)searchList.get("insert") == true) {
+			attractionDao.visitListInsert(searchList);
+			System.out.println("작동했슴니다 넣는거");
+		}
 		
-		attractionDao.visitListDelete(searchList);
-		attractionDao.visitListInsert(searchList);
-		
+		return true;
 	}
 		
 	

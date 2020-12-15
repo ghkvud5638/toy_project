@@ -4,10 +4,84 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="show.dao.face.ShowDao">
+
+	<sql id="selectBoard">
+		SELECT
+			* 
+		FROM TB_SHOW
+	</sql>
+	<!-- 공연 조회 - year, month 기준  -->
+	<sql id="whereTitle">
+		WHERE EXTRACT(MONTH FROM SHOW_START)=#{month} AND EXTRACT(YEAR FROM SHOW_START)=#{year}
+	</sql> 
+	
+	
+	
+	<!-- 공연조회-  year만 있을 때 -->
+	<sql id="whereTitleOnlyYear">
+		WHERE EXTRACT(YEAR FROM SHOW_START)=#{year}
+	</sql> 
+	
+	
+	
+	
+	<sql id="selectRownum">
+		SELECT
+			rownum rnum, B.*
+		FROM (
+			<include refid="selectBoard" />
+		<if test="month != null and year != null"> <!-- year는 있고 month는 null일 경우 처리해줘야함 -->
+			<include refid="whereTitle" />
+		</if>
+		
+		<if test="month == null and year != null">
+			<include refid="whereTitleOnlyYear" />
+		</if>
+		
+		) B
+		ORDER BY rnum
+	</sql>
+	
+	
+	
+   <sql id="selectRownumJH">
+      SELECT rownum rnum, S.*FROM (
+	  SELECT * FROM TB_SHOW
+      ORDER BY show_id DESC) S 
+   </sql>
+	
+	
+	
+	
+	<select id="selectCntAll" parameterType="show.util.showPaging" resultType="int">
+		SELECT count(*) FROM (
+			<include refid="selectBoard" />
+			
+			<if test="month != null and year != null">
+				<include refid="whereTitle" />
+			</if>
+			
+			
+			<if test="month == null and year != null">
+				<include refid="whereTitleOnlyYear" />
+			</if>
+		
+		) CNT
+	</select> 
+	
+	
 	
 	<select id="selectShowAll" resultType="show.dto.TB_SHOW">
-		SELECT * FROM TB_SHOW
+		SELECT * FROM (
+			<include refid="selectRownum" />
+		) R
+		<where>
+			rnum BETWEEN #{startNo } AND #{endNo }
+		</where>	
 	</select>
+	
+	
+	
 	
 	<select id="selectShowById" parameterType="String" resultType="show.dto.TB_SHOW">
 		SELECT * FROM TB_SHOW
@@ -35,6 +109,97 @@
 		DELETE FROM TB_BOOK
 		WHERE BOOK_ID=#{book_id} 
 	</delete>
+	
+	<select id="selectSeatList" parameterType="show.dto.TB_BOOK" resultType="String">
+		SELECT SEAT_NUM FROM TB_BOOK
+		WHERE SHOW_ID=#{show_id} AND BOOK_DATE=#{book_date}
+	</select>
+	
+	<update id="updateBookStatus" parameterType="show.dto.TB_BOOK">
+		UPDATE TB_BOOK SET STATUS='Y' 
+		WHERE SHOW_ID=#{show_id} AND BOOK_DATE=#{book_date} AND MEMBER_ID=#{member_id}
+	</update>
+	
+	<update id="updateBookPaymentDate" parameterType="show.dto.TB_BOOK">
+		UPDATE TB_BOOK SET payment_date=#{payment_date} 
+		WHERE SHOW_ID=#{show_id} AND BOOK_DATE=#{book_date} AND MEMBER_ID=#{member_id}
+	</update>
+	
+	
+	
+	
+	<!--  -->
+	
+	
+	
+	<select id="checklistMap" resultType="show.dto.TB_SHOW" parameterType="show.util.ShowlistPaging">
+   	SELECT * FROM (
+      <include refid="selectRownumJH" />
+      <where>
+         <trim prefixOverrides="OR">
+            <if test="showkind != null">
+            <foreach open="OR show_division IN (" collection="showkind" item="kind" separator="," close=")">
+               #{kind }
+            </foreach> 
+            </if>
+            
+            <if test="showarea != null">
+            <foreach open="OR show_place IN (" collection="showarea" item="area" separator="," close=")">
+               #{area}
+            </foreach> 
+            </if>
+            
+            <if test="showgenre != null">
+            <foreach open="OR show_genre IN (" collection="showgenre" item="genre" separator="," close=")">
+               #{genre}
+            </foreach>
+            </if>
+            
+            <if test="search != null">   
+               OR show_name=#{search}
+            </if>
+   
+         </trim>
+      </where>
+    ) R
+         <where>
+             rnum BETWEEN #{startNo} AND #{endNo}
+         </where>
+   </select>
+	
+	
+	
+	
+	<select id="selectCntAllJH" resultType="int">
+      SELECT count(*) FROM TB_SHOW
+         <where>
+         <trim prefixOverrides="OR">
+            <if test="showkind != null">
+            <foreach open="OR show_division IN (" collection="showkind" item="kind" separator="," close=")">
+               #{kind }
+            </foreach> 
+            </if>
+            <if test="showarea != null">
+            <foreach open="OR show_place IN (" collection="showarea" item="area" separator="," close=")">
+               #{area}
+            </foreach> 
+            </if>
+            <if test="showgenre != null">
+            <foreach open="OR show_genre IN (" collection="showgenre" item="genre" separator="," close=")">
+               #{genre}
+            </foreach>
+            </if>
+            <if test="search != null">   
+               OR show_name=#{search}
+            </if>
+         </trim>
+      </where>
+   
+   </select>
+	
+	
+	
+	
 	
 	
 	

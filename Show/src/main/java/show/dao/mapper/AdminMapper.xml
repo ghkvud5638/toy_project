@@ -5,8 +5,27 @@
     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
     
+    
 
 <mapper namespace="show.dao.face.AdminDao">
+
+	<resultMap id="attraction_clob" type="hashMap" >
+		<result property="attraction_photo" column="attraction_photo" jdbcType="CLOB" javaType="java.lang.String"/>
+    	<result property="attraction_content" column="attraction_content" jdbcType="CLOB" javaType="java.lang.String"/>
+		<result property="attraction_img_no" column="attraction_img_no"/>
+		<result property="attraction_no" column="attraction_no"/>
+    	<result property="attraction_title" column="attraction_title"/>
+		<result property="attraction_tel" column="attraction_tel"/>
+		<result property="attraction_category1" column="attraction_category1"/>
+		<result property="attraction_category2" column="attraction_category2"/>
+		<result property="attraction_category3" column="attraction_category3"/>
+		<result property="attraction_area1" column="attraction_area1"/>
+		<result property="attraction_area2" column="attraction_area2"/>
+		<result property="attraction_area3" column="attraction_area3"/>
+		<result property="attraction_addr" column="attraction_addr"/>
+		<result property="attraction_latitude" column="attraction_latitude"/>
+		<result property="attraction_longitude" column="attraction_longitude"/>
+	</resultMap>
 
 	<select id="selectAdminCnt" parameterType="show.dto.Admin" resultType="int">
 		SELECT COUNT(*) FROM tb_admin
@@ -21,6 +40,351 @@
 		FROM tb_admin
 		WHERE 1=1
 			AND adminid = #{value }
+	</select>
+	
+	<sql id="selectMember">
+		SELECT
+			member_id,         
+			member_pw,
+			member_name,
+			TO_CHAR(birth,'YYYY-MM-DD') AS birth,
+			gender,
+			member_addr,
+			nick,
+			member_grade,
+			point
+		FROM tb_member
+	</sql>
+	
+	
+	<sql id="memberChoose">
+		<choose>
+	        <when test='search == "member_name"'>
+				WHERE member_name LIKE '%' || #{searchText} || '%'
+			</when>
+	        <when test='search == "member_id"'>
+				WHERE member_id LIKE '%' || #{searchText} || '%'
+			</when>
+	        <when test='search == "nick"'>
+				WHERE nick LIKE '%' || #{searchText} || '%'
+			</when>
+		</choose>
+	</sql>
+	
+	
+	
+	<sql id="selectMemberRownum">
+		SELECT
+			rownum rnum, B.*
+		FROM (
+			<include refid="selectMember" />
+			<include refid="memberChoose" />
+			ORDER BY member_id DESC
+		) B
+		ORDER BY rnum
+	</sql>
+	
+	
+	<select id="selectMemberListPaging" parameterType="show.util.Paging" resultType="show.dto.Member">
+		SELECT * FROM (
+			<include refid="selectMemberRownum" />
+		) R
+		<where>
+			rnum BETWEEN #{startNo } AND #{endNo }
+		</where>
+	</select>
+	
+	<select id="selectCntAll" parameterType="show.util.Paging" resultType="int">
+		SELECT count(*) FROM (
+			<include refid="selectMember" />
+			<include refid="memberChoose" />
+		) CNT
+	</select>
+	
+	<select id="selectmemberIdView" parameterType="show.dto.Member" resultType="show.dto.Member">
+		SELECT * FROM tb_member
+		WHERE member_id = #{member_id }
+	</select>
+	
+	<update id="memberUpdate" parameterType="show.dto.Member">
+		UPDATE tb_member
+		SET member_name = #{member_name }, nick = #{nick }, member_addr = #{member_addr }, member_grade = #{member_grade }, point = #{point }
+		WHERE member_id = #{member_id }
+	</update>
+	
+	<select id="adminShowList" parameterType="show.dto.TB_SHOW" resultType="show.dto.TB_SHOW">
+		SELECT * FROM tb_show
+		ORDER BY show_id
+	</select>
+	
+	<select id="selectShowIdView" parameterType="show.dto.TB_SHOW" resultType="show.dto.TB_SHOW">
+		SELECT 
+			show_id
+			, show_division
+			, show_genre
+			, show_place
+			, show_name
+<!-- 			, TO_CHAR(show_start,'YYYY/MM/DD') -->
+<!-- 			, TO_CHAR(show_end,'YYYY/MM/DD') -->
+			, show_rprice
+			, show_sprice
+			, show_time
+			, show_lat
+			, show_len
+			, show_call
+			, show_image
+			, show_cast
+			, show_age
+			, show_host
+			, show_sub
+			, show_addr
+		FROM tb_show
+		WHERE show_id = #{show_id }
+		ORDER BY show_id ASC
+	</select>
+	
+	<update id="adminShowUpdate" parameterType="show.dto.TB_SHOW">
+		UPDATE tb_show
+		SET show_division = #{show_division}
+			, show_genre = #{show_genre}
+			, show_place = #{show_place}
+			, show_name = #{show_name}
+<!-- 			, TO_CHAR(#{show_start},'YYYY/MM/DD') -->
+<!-- 			, TO_CHAR(#{show_end},'YYYY/MM/DD') -->
+			, show_rprice = #{show_rprice}
+			, show_sprice = #{show_sprice}
+			, show_time = #{show_time}
+			, show_lat = #{show_lat}
+			, show_len = #{show_len}
+			, show_call = #{show_call}
+			, show_image = #{show_image}
+			, show_cast = #{show_cast}
+			, show_age = #{show_age}
+			, show_host = #{show_host}
+			, show_sub = #{show_sub}
+			, show_addr = #{show_addr}
+		WHERE show_id = #{show_id }
+	</update>
+	
+	<insert id="adminShowInsert" parameterType="show.dto.TB_SHOW">
+		INSERT INTO tb_show (
+			show_id
+			, show_division
+			, show_genre
+			, show_place
+			, show_name
+			, show_start
+			, show_end
+			, show_rprice
+			, show_sprice
+			, show_time
+			, show_lat
+			, show_len
+			, show_call
+			, show_image
+			, show_cast
+			, show_age
+			, show_host
+			, show_sub
+			, show_addr
+			)
+		VALUES (
+			#{show_id}
+			, #{show_division}
+			, #{show_genre}
+			, #{show_place}
+			, #{show_name}
+			, TO_CHAR(#{show_start},'RR/MM/DD')
+			, TO_CHAR(#{show_end},'RR/MM/DD')
+			, #{show_rprice}
+			, #{show_sprice}
+			, #{show_time}
+			, #{show_lat}
+			, #{show_len}
+			, #{show_call}
+			, #{show_image}
+			, #{show_cast}
+			, #{show_age}
+			, #{show_host}
+			, #{show_sub}
+			, #{show_addr})
+	</insert>
+	
+	<delete id="adminShowDelete" parameterType="show.dto.TB_SHOW">
+	    DELETE FROM tb_show
+    	WHERE show_id = #{show_id}
+	</delete>
+	
+	<select id="selectsalesdate" parameterType="show.dto.TB_BOOK" resultType="java.util.HashMap">
+	SELECT 
+		to_char(payment_date, 'RR/MM') payment_date
+		,SUM(decode(seat_grade,'S',1,0)) S_SEAT_C
+		,SUM(decode(seat_grade,'R',1,0)) R_SEAT_C
+		,SUM(decode(seat_grade,'S',1,0))+sum(decode(seat_grade,'R',1,0)) TOTAL_C
+		,SUM(decode(seat_grade,'S',seat_price,0)) S_SEAT_P
+		,SUM(decode(seat_grade,'R',seat_price,0)) R_SEAT_P
+		,SUM(decode(seat_grade,'S',seat_price,0))+sum(decode(seat_grade,'R',seat_price,0)) TOTAL_P
+	FROM tb_book
+	WHERE status = 'Y'
+
+	<if test=" !book_year.equals('') and !book_month.equals('')">
+		AND TO_CHAR(payment_date, 'YYYYMM') = ${book_year}${book_month}
+	</if>
+	<if test=" !book_year.equals('') and book_month.equals('')">
+		AND TO_CHAR(payment_date, 'YYYY') = ${book_year}
+	</if>
+
+	GROUP BY to_char(payment_date, 'RR/MM')
+	</select>
+	
+	<select id="booklist" parameterType="show.dto.TB_BOOK" resultType="show.dto.TB_BOOK">
+		SELECT to_char(payment_date, 'YYYY') AS payment_date FROM tb_book
+		GROUP BY to_char(payment_date, 'YYYY')
+		ORDER BY payment_date ASC
+	</select>
+	
+	<select id="selectsalescategory" parameterType="show.dto.TB_BOOK" resultType="java.util.HashMap">
+	SELECT show_genre
+		,SUM(decode(seat_grade,'S',1,0))+sum(decode(seat_grade,'R',1,0)) TOTAL_C
+		,SUM(decode(seat_grade,'S',seat_price,0))+sum(decode(seat_grade,'R',seat_price,0)) TOTAL_P
+	FROM tb_book B, tb_show S
+	WHERE B.show_id = S.show_id
+	GROUP BY show_genre
+	</select>
+	
+	<select id="selectsalesplace" parameterType="show.dto.TB_BOOK" resultType="java.util.HashMap">
+	SELECT show_place
+		,count(*) TOTAL_C
+		,SUM(decode(seat_grade,'S',seat_price,'R',seat_price,0)) TOTAL_P
+	FROM tb_book B, tb_show S
+	WHERE B.show_id = S.show_id
+	GROUP BY show_place
+	</select>
+	
+	<sql id="ticketinginfo">
+		<choose>
+	        <when test='search == "show_name"'>
+				AND show_name LIKE '%'||#{searchText}||'%';
+			</when>
+	        <when test='search == "member_id'>
+				AND member_id LIKE '%'||#{searchText}||'%';
+			</when>
+		</choose>
+	</sql>
+	
+	<select id="seleticketinginfo" parameterType="show.dto.TB_BOOK" resultType="java.util.HashMap">
+	SELECT book_id 
+		,member_id
+		,show_name
+		,book_date
+		,payment_date
+		,seat_grade
+		,seat_num
+		,seat_price
+		,show_place
+		,status
+	FROM tb_book B, tb_show S
+	WHERE B.show_id = S.show_id
+<!-- 	<include refid="ticketinginfo" /> -->
+	</select>
+	
+	<delete id="ticketcancel" parameterType="show.dto.TB_BOOK">
+	    DELETE FROM tb_book
+    	WHERE book_id = #{book_id}
+	</delete>
+	
+	
+	<select id="adminAttraclist" parameterType="HashMap" resultMap="attraction_clob">
+		SELECT 
+			 I.attraction_no
+			 ,attraction_photo
+			 ,attraction_title
+			 ,attraction_content
+			 ,attraction_tel
+			 ,attraction_category1
+			 ,attraction_category2
+			 ,attraction_area1
+			 ,attraction_area2
+			 ,attraction_area3
+			 ,attraction_addr
+			 ,attraction_latitude
+			 ,attraction_longitude 
+		FROM tb_attraction W, tb_attraction_img I
+		WHERE I.attraction_no = W.attraction_no
+		ORDER BY I.attraction_no
+	</select>
+	
+	<select id="selectAttractionIdView" parameterType="HashMap" resultMap="attraction_clob">
+		SELECT 
+			 I.attraction_no
+			 ,attraction_photo
+			 ,attraction_title
+			 ,attraction_content
+			 ,attraction_tel
+			 ,attraction_category1
+			 ,attraction_category2
+			 ,attraction_area1
+			 ,attraction_area2
+			 ,attraction_area3
+			 ,attraction_addr
+			 ,attraction_latitude
+			 ,attraction_longitude 
+		FROM tb_attraction W, tb_attraction_img I
+		WHERE I.attraction_no = W.attraction_no
+		AND I.attraction_no = #{attraction_no }
+	</select>
+	
+
+	
+	<update id="attractionupdate" parameterType="HashMap">
+		UPDATE tb_attraction
+		SET 
+	    attraction_title = #{attraction_title }
+	    ,attraction_content = #{attraction_content }
+	    ,attraction_tel = #{attraction_tel }
+	    ,attraction_category1 = #{attraction_category1 }
+	    ,attraction_category2 = #{attraction_category2 }
+	    ,attraction_area1 = #{attraction_area1 }
+	    ,attraction_area2 = #{attraction_area2 }
+	    ,attraction_area3 = #{attraction_area3 }
+	    ,attraction_addr = #{attraction_addr }
+	    ,attraction_latitude = #{attraction_latitude }
+	    ,attraction_longitude = #{attraction_longitude }
+		WHERE attraction_no = #{attraction_no }
+	</update>
+	
+	<update id="attractionimgupdate" parameterType="HashMap">
+		UPDATE tb_attraction_img
+		SET attraction_photo = #{attraction_photo }
+		WHERE attraction_no = #{attraction_no }
+	</update>
+	
+	<select id="yesterdaytotal" parameterType="HashMap" resultType="Hashmap">
+		SELECT 
+	    	SUM(decode(seat_grade,'S',seat_price,0))+sum(decode(seat_grade,'R',seat_price,0)) total
+		FROM tb_book
+		WHERE status = 'Y'
+		AND TO_CHAR(payment_date, 'YYYY/MM/DD') = TO_CHAR(SYSDATE-1, 'YYYY/MM/DD')
+		GROUP BY to_char(payment_date, 'YYYY/MM/DD')
+	</select>
+	
+	<select id="kotoshiuriage" parameterType="HashMap" resultType="Hashmap">
+		SELECT 
+			SUM(decode(seat_grade,'S',seat_price,0))+sum(decode(seat_grade,'R',seat_price,0)) total
+		FROM tb_book
+		WHERE status = 'Y'
+		AND TO_CHAR(payment_date, 'YYYY') = TO_CHAR(SYSDATE, 'YYYY')
+		GROUP BY to_char(payment_date, 'YYYY')
+	</select>	
+	
+	
+	<select id="hidukeuriage" parameterType="HashMap" resultType="Hashmap">
+		SELECT 
+	    	to_char(payment_date, 'MM/DD') payment_date    
+	    	,SUM(decode(seat_grade,'S',seat_price,0))+sum(decode(seat_grade,'R',seat_price,0)) TOTAL_M
+		FROM tb_book
+		WHERE status = 'Y'
+		GROUP BY to_char(payment_date, 'MM/DD') 
 	</select>
 	
 </mapper>

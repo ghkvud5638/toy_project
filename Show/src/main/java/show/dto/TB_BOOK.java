@@ -10,13 +10,20 @@ public class TB_BOOK {
 //	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd")
 	private String book_date ;
 	private int seat_price;
+	private String status;
+	
+	private String show_image;
+	private String show_name;
+	
+	private String payment_date;
 	
 	
-	@Override
-	public String toString() {
-		return "TB_BOOK [book_id=" + book_id + ", member_id=" + member_id + ", show_id=" + show_id + ", seat_num="
-				+ seat_num + ", seat_grade=" + seat_grade + ", book_date=" + book_date + ", seat_price=" + seat_price
-				+ "]";
+	
+	public String getPayment_date() {
+		return payment_date;
+	}
+	public void setPayment_date(String payment_date) {
+		this.payment_date = payment_date;
 	}
 	public String getBook_id() {
 		return book_id;
@@ -59,5 +66,30 @@ public class TB_BOOK {
 	}
 	public void setSeat_price(int seat_price) {
 		this.seat_price = seat_price;
+	}
+	public String getStatus() {
+		return status;
+	}
+	public void setStatus(String status) {
+		this.status = status;
+	}
+	public String getShow_image() {
+		return show_image;
+	}
+	public void setShow_image(String show_image) {
+		this.show_image = show_image;
+	}
+	public String getShow_name() {
+		return show_name;
+	}
+	public void setShow_name(String show_name) {
+		this.show_name = show_name;
+	}
+	@Override
+	public String toString() {
+		return "TB_BOOK [book_id=" + book_id + ", member_id=" + member_id + ", show_id=" + show_id + ", seat_num="
+				+ seat_num + ", seat_grade=" + seat_grade + ", book_date=" + book_date + ", seat_price=" + seat_price
+				+ ", status=" + status + ", show_image=" + show_image + ", show_name=" + show_name + ", payment_date="
+				+ payment_date + "]";
 	}
 }

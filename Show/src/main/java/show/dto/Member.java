@@ -1,17 +1,26 @@
 package show.dto;
 
-import java.sql.Date;
+import java.util.Date;
 
 public class Member {
 	private String member_id;
 	private String member_pw;
 	private String member_name;
-	private Date date;
+	private String birth;
 	private String gender;
 	private String member_addr;
 	private String nick;
+	private int point;
+	private String email;	
 	private String member_grade;
-	private String point;
+	private String member_spot;
+	@Override
+	public String toString() {
+		return "Member [member_id=" + member_id + ", member_pw=" + member_pw + ", member_name=" + member_name
+				+ ", birth=" + birth + ", gender=" + gender + ", member_addr=" + member_addr + ", nick=" + nick
+				+ ", point=" + point + ", email=" + email + ", member_grade=" + member_grade + ", member_spot="
+				+ member_spot + "]";
+	}
 	public String getMember_id() {
 		return member_id;
 	}
@@ -30,11 +39,11 @@ public class Member {
 	public void setMember_name(String member_name) {
 		this.member_name = member_name;
 	}
-	public Date getDate() {
-		return date;
+	public String getBirth() {
+		return birth;
 	}
-	public void setDate(Date date) {
-		this.date = date;
+	public void setBirth(String birth) {
+		this.birth = birth;
 	}
 	public String getGender() {
 		return gender;
@@ -54,22 +63,28 @@ public class Member {
 	public void setNick(String nick) {
 		this.nick = nick;
 	}
+	public int getPoint() {
+		return point;
+	}
+	public void setPoint(int point) {
+		this.point = point;
+	}
+	public String getEmail() {
+		return email;
+	}
+	public void setEmail(String email) {
+		this.email = email;
+	}
 	public String getMember_grade() {
 		return member_grade;
 	}
 	public void setMember_grade(String member_grade) {
 		this.member_grade = member_grade;
 	}
-	public String getPoint() {
-		return point;
+	public String getMember_spot() {
+		return member_spot;
 	}
-	public void setPoint(String point) {
-		this.point = point;
-	}
-	@Override
-	public String toString() {
-		return "Member [member_id=" + member_id + ", member_pw=" + member_pw + ", member_name=" + member_name
-				+ ", date=" + date + ", gender=" + gender + ", member_addr=" + member_addr + ", nick=" + nick
-				+ ", member_grade=" + member_grade + ", point=" + point + "]";
-	}
+	public void setMember_spot(String member_spot) {
+		this.member_spot = member_spot;
+	}	
 }

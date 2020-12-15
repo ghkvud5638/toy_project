@@ -1,5 +1,8 @@
 package show.controller;
 
+import java.util.HashMap;
+import java.util.List;
+
 import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
@@ -9,28 +12,43 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import show.dto.Admin;
+import show.dto.Member;
+import show.dto.TB_BOOK;
+import show.dto.TB_SHOW;
 import show.service.face.AdminService;
+import show.util.AdminMemberPaging;
 
 @Controller
 public class AdminController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(AdminController.class);
 	
-//	@Autowired
-//	private MemberService memberService;
-	
 	@Autowired
 	private AdminService adminService;
 	
-	@Autowired
-//	private AdminShowListService adminShowListservice;
-	
-	
-	@RequestMapping(value="/admin/main")
-	public void main() {
+	@RequestMapping(value="/admin/main") 
+	public String main(Model model
+			, @RequestParam HashMap<String, String> map) {
+		
 		logger.info("관리자메인페이지");
+		
+		List<?> yday = adminService.yesterdaytotal();
+		model.addAttribute("yday", yday);
+		
+		List<?> total = adminService.kotoshiuriage();
+		model.addAttribute("total", total);
+		
+		List<?> days = adminService.hidukeuriage();
+		model.addAttribute("days", days);
+
+		List<?> genre = adminService.selectsalescategory(map);
+		model.addAttribute("genre", genre);
+		
+		
+		return "/admin/adminmain";
 	}
 	
 	@RequestMapping(value = "/admin/login", method = RequestMethod.GET)
@@ -75,39 +93,220 @@ public class AdminController {
 		model.addAttribute("info", info);
 		
 	}
-	
-//	@RequestMapping(value="/admin/memberlist", method=RequestMethod.GET)
-//	public String memberlist(Model model) {
-//		
-//		logger.info("유저 리스트 페이지 시작");
-//		
-//		//Service 메소드호출
-//		List<Member> list = memberService.serviceMember();
-//		
-//		//View에 모델값 전달
-//		model.addAttribute("list", list);
-//		
-//		//View 지정하고 Forwarding
-//		return "/admin/memberlist";
-//	}
-	
-	@RequestMapping(value = "/admin/loginfail", method = RequestMethod.GET)
-	public void adminloginfile() { }
 
-//	@RequestMapping(value ="/admin/showlist", method = RequestMethod.GET)
-//	public String adminshowlist(Model model) {
-//		
-//		logger.info("쇼 리스트 페이지 시작");
-//		
-//		//Service 메소드 호출
-//		List<Show> list = adminShowListservice.serviceShowList();
-//		
-//		//View에 모델값 전달
-//		model.addAttribute("list", list);
-//		
-//		//View 지정하고Forwarding
-//		return "/admin/showlist";
-//		
+	
+//	@RequestMapping(value = "/admin/loginfail", method = RequestMethod.GET)
+//	public void adminloginfile() { }
+
+	
+
+	
+	@RequestMapping(value = "/admin/memberlist") 
+	public String adminMemberList( AdminMemberPaging curPage, Model model, HttpSession session ) {
+		
+		//페이징 계산
+		AdminMemberPaging paging = adminService.selectCntAll(curPage);
+		paging.setSearch(curPage.getSearch());
+		paging.setSearchText(curPage.getSearchText());
+		
+		model.addAttribute("paging", paging);
+		
+		//게시글 목록
+		List<Member> list = adminService.selectMemberListPaging(paging);
+		model.addAttribute("list", list);
+
+		return "/admin/adminmemberlist";
+	}
+	
+	@RequestMapping(value = "/admin/memberupdate", method=RequestMethod.GET)
+	public String adminMemberUpdateGet(Member member, Model model) {
+		
+		member = adminService.selectmemberIdView(member);
+		model.addAttribute("view", member);
+		
+//		logger.info("업데이트 GET : " + model.addAttribute("view", member));
+		
+		return "/admin/adminmemberupdate";
+	}
+	
+	@RequestMapping(value = "/admin/memberupdate", method=RequestMethod.POST)
+	public String adminMemberUpdatePost(Member member) {
+		
+//		logger.info("업데이트 POST : " + member );
+		
+		adminService.memberUpdate(member);
+		
+		return "redirect:/admin/memberlist?search=member_id&searchText=" + member.getMember_id();
+//		return "redirect:/admin/memberlist";
+
+	}
+	
+	
+//	@RequestMapping(value = "/adminstest/adminnotice")
+//	public void adminNotice() {
+	
 //	}
+
+	
+	@RequestMapping(value = "/admin/salescategory")
+	public String adminSalesCategory(Model model
+			, @RequestParam HashMap<String, String> map) { 
+		
+		List<?> list = adminService.selectsalescategory(map);
+		model.addAttribute("list", list);
+		
+		return "/admin/adminsalescategory";
+	}
+	
+	@RequestMapping(value = "/admin/salesplace")
+	public String adminSalesArea(Model model
+			, @RequestParam HashMap<String, String> map) { 
+		
+		List<?> list = adminService.selectsalesplace(map);
+		model.addAttribute("list", list);
+		
+	
+		return "/admin/adminsalesplace";
+	}
+	
+	
+	
+	@RequestMapping(value = "/admin/salesdate")
+	public String adminSalesDateGet(Model model
+			, @RequestParam HashMap<String, String> map){ 
+		
+		model.addAttribute("booklist", adminService.booklist());
+		
+		//맵 자체를 모델값으로 전달
+		//model.addAttribute( "map", map ); //객체 한개를 통째로 전달
+		
+		String bookYear = map.get("book_year");
+		String bookMonth = map.get("book_month");
+		
+		if(bookYear == null || bookYear.isEmpty()) bookYear = "";
+		if(bookMonth == null || bookMonth.isEmpty()) bookMonth = "";
+	
+		map.put("book_year",bookYear);
+		map.put("book_month",bookMonth);
+
+		List<?> list = adminService.selectsalesdate(map);
+		
+		model.addAttribute("list", list);
+		
+		return "/admin/adminsalesdate";
+	}
+	
+	@RequestMapping(value = "/admin/ticketinginfo")
+	public String adminTicketingInfo (AdminMemberPaging curPage,
+			Model model
+			, @RequestParam HashMap<String, String> map){
+		
+		List<?> list = adminService.seleticketinginfo(map);
+		
+		model.addAttribute("list", list);
+		
+		return "/admin/adminticketinginfo";
+	}
+	
+	@RequestMapping(value = "/admin/ticketingcancel")
+	public String adminTicketingCancel (TB_BOOK tb_book){
+		
+		logger.info("삭제" + tb_book);
+		
+		adminService.ticketcancel(tb_book);
+		
+		return "redirect:/admin/ticketinginfo";
+	}
+	
+	
+	@RequestMapping(value = "/admin/showlist")
+	public String adminShowList(Model model) {
+		
+		List<TB_SHOW> list = adminService.adminShowList();
+		model.addAttribute("showList", list);
+		
+		return "/admin/adminshowlist";
+	}
+	
+	@RequestMapping(value = "/admin/showupdate", method = RequestMethod.GET)
+	public String adminShowUpdateGet(TB_SHOW tb_show, Model model) {
+		
+		tb_show = adminService.selectShowIdView(tb_show);
+		model.addAttribute("view", tb_show);	
+		
+		return "/admin/adminshowupdate";
+	}
+	
+	@RequestMapping(value = "/admin/showupdate", method = RequestMethod.POST)
+	public String adminShowUpdatePost(TB_SHOW tb_show, Model model) {
+			
+		adminService.adminShowUpdate(tb_show);
+		
+		return "redirect:/admin/showlist";
+	}
+	
+	@RequestMapping(value = "/admin/showinsert", method = RequestMethod.GET)
+	public String adminShowInsertGet() {
+		
+		return "/admin/adminshowinsert";
+	}
+	
+	@RequestMapping(value = "/admin/showinsert", method = RequestMethod.POST)
+	public String adminShowInsertPost(TB_SHOW tb_show) {
+		
+		adminService.adminShowInsert(tb_show);
+		
+		return "redirect:/admin/showlist";
+	}
+	
+	@RequestMapping(value = "/admin/showdel")
+	public String adminShowdel(TB_SHOW tb_show) {
+		
+		adminService.adminShowDelete(tb_show);
+		
+		return "redirect:/admin/showlist";
+	}
+	
+	
+	
+	@RequestMapping(value = "/admin/attractionlist")
+	public String adminAttractionList(Model model,
+			@RequestParam HashMap<String, Object> map) {
+		
+		List<?> attraclist = adminService.adminAttraclist(map);
+		
+		model.addAttribute("attraclist", attraclist);
+		
+		return "/admin/adminattractionlist";
+	}
+	
+	
+	@RequestMapping(value = "/admin/attractionupdate", method=RequestMethod.GET)
+	public String adminAttractionUpdateGet(Model model,
+			@RequestParam HashMap<String, Object> map) {
+		
+		List<?> view = adminService.selectAttractionIdView(map);
+		
+		logger.info("뷰어" + model.addAttribute("view", view));
+		
+		model.addAttribute("view", view);
+		
+		return "/admin/adminattractionupdate";
+	}
+	
+	@RequestMapping(value = "/admin/attractionupdate", method=RequestMethod.POST)
+	public String adminAttractionUpdatePost(Model model,
+			@RequestParam HashMap<String, Object> map) {
+		
+		logger.info("업데이트 로그" + map);
+		
+		adminService.attractionupdate(map);
+		adminService.attractionimgupdate(map);
+		
+		return "redirect:/admin/attractionlist";
+	}
+
+	
+	
 	
 }

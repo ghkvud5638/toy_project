@@ -41,26 +41,36 @@
 
 
 	<interceptors>
-	      <interceptor>
-	         <mapping path="/admin/**" /> 
-	         <exclude-mapping path="/admin/login*"/>
-	         <exclude-mapping path="/admin/logout"/>
+<!-- 	      <interceptor> -->
+<!-- 	         <mapping path="/admin/**" />  -->
+<!-- 	         <exclude-mapping path="/admin/login*"/> -->
+<!-- 	         <exclude-mapping path="/admin/logout"/> -->
 	         
-	         <beans:bean class="show.interceptor.AdminInterceptor" /> 
-	      </interceptor>
+<!-- 	         <beans:bean class="show.interceptor.AdminInterceptor" />  -->
+<!-- 	      </interceptor> -->
 	      
 	      
 	      <interceptor>
 	         <mapping path="/show/**"/><!-- 인터셉터가 반응할 URL -->
-	         <exclude-mapping path="/show/error"/>
-	         <exclude-mapping path="/show/list"/>
-	         <exclude-mapping path="/show/detail"/>
+		        <exclude-mapping path="/show/error"/>
+				<exclude-mapping path="/show/list"/>
+				<exclude-mapping path="/show/detail"/>
+				<exclude-mapping path="/show/book2"/>
+				<exclude-mapping path="/show/selectBoxSearch"/>
+				<exclude-mapping path="/show/showlist"/>
 	         <beans:bean class="show.interceptor.ShowInterceptor"/> <!-- 인터셉터 클래스 지정 -->
 	      </interceptor>
 
+		<interceptor>
+			<mapping path="/myPage/**"/>
+			<!-- 인터셉터가 반응할 URL -->	
+			<exclude-mapping path="/myPage/error"/>
+			<beans:bean class="show.interceptor.MyPageInterceptor"/>
+		</interceptor>
+
 	      <interceptor>
 	         <mapping path="/attraction/**"/><!-- 인터셉터가 반응할 URL -->
-	         <exclude-mapping path="/show/error"/>
+	         <exclude-mapping path="/attraction/error"/>
 	              <beans:bean class="show.interceptor.AttractionInterceptor"/> <!-- 인터셉터 클래스 지정 -->
 	      </interceptor>
 	   </interceptors>
