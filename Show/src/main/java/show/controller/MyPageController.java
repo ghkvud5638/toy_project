@@ -1,6 +1,7 @@
 package show.controller;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.mail.internet.MimeMessage;
@@ -56,6 +57,8 @@ public class MyPageController {
 		book.setMember_id(member_id);
 		List<TB_BOOK> bookDetailList = myPageService.getBookDetail(book);
 		model.addAttribute("detailList",bookDetailList);
+		model.addAttribute("member",myPageService.getMember(member_id));
+
 		logger.info("detailList"+bookDetailList);
 		return "myPage/bookDetailRes";
 	}
@@ -65,23 +68,38 @@ public class MyPageController {
 	}
 	
 	@RequestMapping(value="/pay") //status 컬럼 Y, 이메일 전송
-	public String pay(final TB_BOOK book, HttpSession session,final Email email) {
+	public String pay(final TB_BOOK book, HttpSession session,final Email email, int pointM) {
 		logger.info("pay"+book);
 		final String member_id = session.getAttribute("member_id").toString();
 		final String show_id = Integer.toString(book.getShow_id());
 		book.setMember_id(member_id);
 		List<TB_BOOK> bookDetailList = myPageService.getBookDetail(book);
+		
+		Member member = myPageService.getMember(member_id);
+		HashMap<String, Object> pointUpdate = new HashMap<String, Object>();
+		pointUpdate.put("member", member);
+		pointUpdate.put("point", member.getPoint() - pointM);
+
+		System.out.println(pointM);
 		logger.info("bookDetailList : "+bookDetailList);
 		String eTicketNum = "";
 		for (TB_BOOK b:bookDetailList) {
 			eTicketNum = eTicketNum +"-"+b.getBook_id();
+			System.out.println("하나씩?"+b);
+			book.setMember_id(member_id);
+			
+			pointUpdate.put("point",  (int)pointUpdate.get("point") + (b.getSeat_price()/10));
+			
 		}
+		System.out.println(pointUpdate.get("point"));
+
+		showService.memberPointUpdate(pointUpdate);
 		final String eTicketNum2 = eTicketNum;
 		
 		book.setMember_id(member_id);
 		showService.payComplete(book);
 		showService.paymentDateComplete(book);
-		
+
 		final MimeMessagePreparator preparator = new MimeMessagePreparator() { 
 			@Override public void prepare(MimeMessage mimeMessage) throws Exception { 
 				final MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8"); 

@@ -1,6 +1,7 @@
 ﻿package show.controller;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.mail.internet.MimeMessage;
@@ -98,16 +99,24 @@ public class ShowController {
 	
 	
 	@RequestMapping(value="/show/book")
-	public void book(String show_id, Model model) {
+	public void book(String show_id, Model model, HttpSession session) {
+		String id = session.getAttribute("member_id").toString();
+
 		model.addAttribute("showDetail",showService.getShowDetail(show_id));
 		model.addAttribute("seatCnt",showService.getSeatCnt(show_id));
+		model.addAttribute("member",myPageService.getMember(id));
 	}
 	
 	
 	@RequestMapping(value="/show/book2")
-	public void book2() {}
+	public void book2() {
+		
+		
+	}
 	@RequestMapping(value="/show/book2", method = RequestMethod.POST)
-	public void book2Proc(TB_BOOK tbBook,Model model) {
+	public void book2Proc(TB_BOOK tbBook,Model model, HttpSession session) {
+		String id = session.getAttribute("member_id").toString();
+
 		logger.info("date : "+tbBook);
 		TB_SHOW show = showService.getShowDetail(Integer.toString(tbBook.getShow_id()));
 		logger.info("book2 show info"+show);
@@ -120,11 +129,14 @@ public class ShowController {
 		model.addAttribute("seatList",seatList);
 		model.addAttribute("tbBook",tbBook);
 		model.addAttribute("showDetail",showService.getShowDetail(Integer.toString(tbBook.getShow_id())));
-		
+		model.addAttribute("member",myPageService.getMember(id));
+
 
 	}
 	@RequestMapping(value="/show/book3")
 	public void book3() {
+		
+
 	}
 	
 	@RequestMapping(value="/show/book3Proc", method = RequestMethod.POST, produces = "application/json; charset=UTF-8")
@@ -147,6 +159,7 @@ public class ShowController {
 		}
 		logger.info("book3 list "+list);
 		model.addAttribute("list",list);
+		model.addAttribute("member",myPageService.getMember(id));
 		return "show/book3";
 	}
 	
@@ -161,17 +174,32 @@ public class ShowController {
 	}
 	
 	@RequestMapping(value="/show/pay")
-	public void pay(final TB_BOOK book, HttpSession session,final Email email) {
+	public void pay(final TB_BOOK book, HttpSession session,final Email email, int pointM) {
 		logger.info("pay"+book);
 		final String member_id = session.getAttribute("member_id").toString();
 		final String show_id = Integer.toString(book.getShow_id());
 		book.setMember_id(member_id);
 		List<TB_BOOK> bookDetailList = myPageService.getBookDetail(book);
+		
+		Member member = myPageService.getMember(member_id);
+		HashMap<String, Object> pointUpdate = new HashMap<String, Object>();
+		pointUpdate.put("member", member);
+		pointUpdate.put("point", member.getPoint() - pointM);
+		
+		System.out.println(pointM);
+
 		logger.info("bookDetailList : "+bookDetailList);
 		String eTicketNum = "";
 		for (TB_BOOK b:bookDetailList) {
 			eTicketNum = eTicketNum +"-"+b.getBook_id();
+
+			pointUpdate.put("point",  (int)pointUpdate.get("point") + (b.getSeat_price()/10));
+			
 		}
+		
+		System.out.println(pointUpdate.get("point"));
+
+		showService.memberPointUpdate(pointUpdate);
 		final String eTicketNum2 = eTicketNum;
 		
 		book.setMember_id(member_id);

@@ -1,5 +1,6 @@
 package show.service.impl;
 
+import java.util.HashMap;
 import java.util.List;
 
 
@@ -86,9 +87,16 @@ public class ShowServiceImpl implements ShowService{
 	@Override
 	public void payComplete(TB_BOOK book) {
 		showDao.updateBookStatus(book);
+//		showDao.updateMemberPoint(book);
 	}
 	@Override
 	public void paymentDateComplete(TB_BOOK book) {
 		showDao.updateBookPaymentDate(book);
+	}
+	
+	@Override
+	public void memberPointUpdate(HashMap<String, Object> pointUpdate) {
+
+		showDao.memberPointUpdate(pointUpdate);
 	}
 }

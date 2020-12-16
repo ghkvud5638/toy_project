@@ -74,6 +74,10 @@ $(document).ready(function(){
 	var price = 0; 
 	var r=0; 
 	var s=0;
+	var point=0.1;
+	if($("#grade").text() == '실버'){
+		point=0.05;
+	}
 	
 	//예매된 좌석 처리
 	var seatNumArr = new Array();
@@ -108,11 +112,14 @@ $(document).ready(function(){
 			$("#seatInfoTr"+row+col).remove();
 			price -=Number(${showDetail.show_rprice });
 			$("#totalPrice").text(display_comma(price)+"원");
+			$("#point").text(display_comma(price*point)+"원 적립");
+
 		}else{// 클릭이 안된 상태
 			//테이블에 추가
 			$("#SeatClicked").append('<tr class="trtr" id=seatInfoTr'+row+col+'><td class="seatN">'+row+'-'+col+'</td> <td class="seatG">R</td><td class="seatP">'+${showDetail.show_rprice }+'</td></tr>')
 			price +=Number(${showDetail.show_rprice });
 			$("#totalPrice").text(display_comma(price)+"원");
+			$("#point").text(display_comma(price*point)+"원 적립");
 		} 
 	})
 	     
@@ -125,11 +132,16 @@ $(document).ready(function(){
 			$("#seatInfoTr"+row+col).remove();
 			price -=Number(${showDetail.show_sprice });
 			$("#totalPrice").text(display_comma(price)+"원"); 
+			$("#point").text(display_comma(price*point)+"원 적립");
+
+
 		}else{// 클릭이 안된 상태
 			//테이블에 추가
 			$("#SeatClicked").append('<tr class="trtr" id=seatInfoTr'+row+col+'><td class="seatN">'+row+'-'+col+'</td> <td class="seatG">S</td><td class="seatP">'+${showDetail.show_sprice }+'</td></tr>')
 			price +=Number(${showDetail.show_sprice });
-			$("#totalPrice").text(display_comma(price)+"원"); 
+			$("#totalPrice").text(display_comma(price)+"원");
+			$("#point").text(display_comma(price*point)+"원 적립");
+
 			console.log($("#seatNum").text());
 		}
 	})
@@ -246,6 +258,8 @@ function display_comma(value) {
 		<div id="totalPrice">
 		
 		</div>
+		<strong>${member.nick }님은 <span id="grade">${member.member_grade }</span>등급이므로</strong>
+		<div id="point">원 적립</div>
 				
 	</div>
 		

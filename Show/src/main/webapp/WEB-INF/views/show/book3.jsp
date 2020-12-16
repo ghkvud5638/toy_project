@@ -20,11 +20,24 @@
 	display: inline-block;
 	
 }
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+
 </style>
 
 <script type="text/javascript">
 $(document).ready(function(){
-	
+	var point=0.1;
+	var grade = $("#grade").val()
+	if ( grade == "실버"){
+		point = 0.05;
+	}
+
 	var priceTdId = new Array();
 	for (var i = 0; i < $("#selectedInfoWrap").children("tr").length; i++) {
 		priceTdId[i] = $("#selectedInfoWrap").children().eq(i*2).attr("id");
@@ -39,8 +52,26 @@ $(document).ready(function(){
 	console.log(display_comma(totalPrice));
 	
 	$("#totalPrice").text(display_comma(totalPrice));
+	$("#point").text(display_comma(totalPrice*point)+"원 적립");
+	$("#pointMoney").text(display_comma(${member.point}));
+
 	console.log($("#totalPrice").text());
 	
+	$("#pointInput").on("propertychange change keyup paste input", function(){
+
+		if(${member.point} > $("#pointInput").val()){
+		$("#pointMoney").text(display_comma(${member.point}-$('#pointInput').val()));
+// 		$("#pointMoney").text(display_comma($('#pointInput').val()));
+			
+		} else {
+
+			$("#pointMoney").text("0");
+// 			$("#pointMoney").text(${member.point});
+			$('#pointInput').val(${member.point})
+		}
+
+		
+	})
 	
 	
 	$("#backDelete").on("click", function(){
@@ -76,6 +107,13 @@ $(document).ready(function(){
 	
 	
 	$("#pay").on("click",function(){
+		var totalM = parseInt(totalPrice)
+		, pointM = parseInt($('#pointInput').val())
+		if( isNaN(pointM)) {
+			pointM = 0
+			}
+
+		var amountMoney = totalM-pointM
 		
 		var IMP = window.IMP; 
         IMP.init('imp84218542'); 
@@ -87,7 +125,7 @@ $(document).ready(function(){
 		    merchant_uid : 'merchant_' + new Date().getTime(),
 // 		    name : $("#prodname").val(), // 공연이름
 		    name : $("#show_id").val(),
-		    amount : $("#totalPrice").text(), // 금액
+		    amount : amountMoney, // 금액
 		    buyer_name : $("#username").val(), // 유저 이름
 
         }, function(rsp){
@@ -119,6 +157,7 @@ $(document).ready(function(){
 //                 location.href="";
                 
                 location.href="/show/pay?show_id="+$("#show_id").val()+"&book_date="+$("#date").text()+"&payment_date="+$("#today").val()
+                		+"&pointM="+pointM
                 alert("결제 성공");
                 self.close();
             } else {
@@ -216,9 +255,14 @@ ${member_id }님이 선택하신 예매 정보
 
 <br><br>
 총 결제 금액 :
-<div id="totalPrice"></div>원
+<span id="totalPrice"></span>원
+<br>
+<strong>${member.nick }님이 결제시</strong>
+		<div id="point">원 적립</div>
+<strong>현재 포인트 : <span id="pointMoney"></span>점 사용 가능 </strong><br>		
+<input type="number" id="pointInput" placeholder="사용할 포인트를 입력">		
 <br><br>
-
+<input type="hidden" id="grade" value="${member.member_grade }">
 <button id="pay">결제</button> <button id="payLater">나중에 결제</button>
 
 </body>

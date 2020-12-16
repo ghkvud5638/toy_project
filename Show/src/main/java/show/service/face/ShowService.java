@@ -1,5 +1,6 @@
 ﻿package show.service.face;
 
+import java.util.HashMap;
 import java.util.List;
 
 
@@ -79,6 +80,9 @@ public interface ShowService {
 	 * @param book
 	 */
 	public void paymentDateComplete(TB_BOOK book);
+
+
+	public void memberPointUpdate(HashMap<String, Object> pointUpdate);
 
 
 

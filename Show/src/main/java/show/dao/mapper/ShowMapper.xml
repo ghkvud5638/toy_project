@@ -5,6 +5,7 @@
 
 <mapper namespace="show.dao.face.ShowDao">
 
+
 	<sql id="selectBoard">
 		SELECT
 			* 
@@ -123,6 +124,11 @@
 	<update id="updateBookPaymentDate" parameterType="show.dto.TB_BOOK">
 		UPDATE TB_BOOK SET payment_date=#{payment_date} 
 		WHERE SHOW_ID=#{show_id} AND BOOK_DATE=#{book_date} AND MEMBER_ID=#{member_id}
+	</update>
+
+	<update id="memberPointUpdate" parameterType="hashmap">
+		UPDATE TB_Member SET point=#{point} 
+		WHERE MEMBER_ID=#{member.member_id}
 	</update>
 	
 	

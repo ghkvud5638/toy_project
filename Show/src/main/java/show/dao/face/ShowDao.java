@@ -1,5 +1,6 @@
 ﻿package show.dao.face;
 
+import java.util.HashMap;
 import java.util.List;
 
 import show.dto.TB_BOOK;
@@ -75,6 +76,8 @@ public interface ShowDao {
 	public int selectCntAllJH(ShowlistPaging curPage);
 
 	public List<TB_SHOW> checklistMap(ShowlistPaging paging);
+
+	public void memberPointUpdate(HashMap<String, Object> pointUpdate);
 
 
 	

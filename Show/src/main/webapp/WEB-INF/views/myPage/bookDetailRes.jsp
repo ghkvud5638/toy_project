@@ -5,8 +5,41 @@
 <script type="text/javascript" src="https://service.iamport.kr/js/iamport.payment-1.1.2.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0/jquery.min.js"></script>
 
+<style type="text/css">
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+</style>
+
 <script type="text/javascript">
 $(document).ready(function(){
+	var point=0.1;
+	var grade = $("#grade").val()
+	if ( grade == "실버"){
+		point = 0.05;
+	}
+	
+	$("#pointMoney").text(display_comma(${member.point}));
+
+	
+	$("#pointInput").on("propertychange change keyup paste input", function(){
+
+		if(${member.point} > $("#pointInput").val()){
+		$("#pointMoney").text(display_comma(${member.point}-$('#pointInput').val()));
+// 		$("#pointMoney").text(display_comma($('#pointInput').val()));
+			
+		} else {
+
+			$("#pointMoney").text("0");
+// 			$("#pointMoney").text(${member.point});
+			$('#pointInput').val(${member.point})
+		}
+
+		
+	})
+	
 	
 	var priceTdId = new Array();
 	console.log($("#bookDetailTBody").children("tr").length)
@@ -25,6 +58,13 @@ $(document).ready(function(){
 	
 	if($("#status1").text() =='N'){
 		$("#pay").on("click",function(){
+			var totalM = parseInt(totalPrice)
+			, pointM = parseInt($('#pointInput').val())
+			if( isNaN(pointM)) {
+				pointM = 0
+				}
+
+			var amountMoney = totalM-pointM
 			
 			var IMP = window.IMP; 
 	        IMP.init('imp84218542'); 
@@ -36,7 +76,7 @@ $(document).ready(function(){
 			    merchant_uid : 'merchant_' + new Date().getTime(),
 //	 		    name : $("#prodname").val(), // 공연이름
 			    name : $("#showId").val(),
-			    amount : totalPrice, // 금액
+			    amount : amountMoney, // 금액
 			    buyer_name : $("#memberId").val(), // 유저 이름
 
 	        }, function(rsp){
@@ -65,6 +105,8 @@ $(document).ready(function(){
 	                });
 	                
 	                location.href="/myPage/pay?show_id="+$("#showId").val()+"&book_date="+$("#bookDate").val().split(" ")[0]+"&payment_date="+$("#paymentDate").val()
+			            		+"&pointM="+pointM
+
 	                alert("결제 성공, 가입하신 이메일을 확인해 주세요");
 	                self.close();
 	            } else {
@@ -83,6 +125,28 @@ $(document).ready(function(){
 		})
 	}
 })
+
+function display_comma(value) {
+   var src;
+   var i;
+   var factor;
+   var su;
+   var Spacesize = 0;
+   var String_val = value.toString();
+   factor = String_val.length % 3;
+   su = (String_val.length - factor) /3;
+   src = String_val.substring(0,factor);
+   for(i=0; i<su ; i++) {
+      if ((factor==0)&&(i==0)) {
+            src += String_val.substring(factor+(3*i), factor+3+(3*i));
+      }else{
+            if ( String_val.substring(factor+(3*i) - 1, factor+(3*i)) != "-" ) src +=",";
+            src += String_val.substring(factor+(3*i), factor+3+(3*i));
+      }
+   }
+   return src;
+}
+
 </script>
 
 <jsp:useBean id="now" class="java.util.Date" />
@@ -116,7 +180,7 @@ $(document).ready(function(){
 	
 
 </table>
-
+<div>${member.nick }님의 포인트는 <span id="pointMoney"> </span>점 있습니다<br> <input type="number" id="pointInput" placeholder="point사용가능"></div>
 <button id="pay">결제하기</button>
 </div>
 
