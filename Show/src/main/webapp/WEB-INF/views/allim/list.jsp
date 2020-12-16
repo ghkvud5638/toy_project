@@ -11,7 +11,7 @@
 	z-index: 999;
 	overflow: scroll;
 	overflow-x: hidden;
-	margin:  -65px 0 0 1470px;
+	margin:  -25px 0 0 1500px;
 	border-radius: 10px;
 	padding: 10px;
 }
