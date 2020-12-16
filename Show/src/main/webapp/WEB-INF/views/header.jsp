@@ -24,8 +24,51 @@
            window.open(url, name, option);   
        
       })
-
+      
+		$("#allimBtn").on("click",function(){
+			console.log("here")
+			$("#allimSpaceWrap").load("/allim/list");
+			$("#allimSpaceWrap").toggle();
+		})
+		
+		connectWs();
    });
+ 
+ 
+ 
+ function connectWs(){
+		var ws = new WebSocket("ws://192.168.25.33:8088/allimSocket");
+		ws.onopen = function(event){
+	  	$.ajax({
+	  		url : '/allim/cntIsRead',
+			type : 'POST',
+			contentType : "application/json",
+			dataType: 'json',
+			success : function(data) {
+				console.log("cnt : "+data)
+				if (data != '0') {
+					$("#allimCnt").attr("class","allimCntClass")
+					$("#allimCnt").text(data)
+				}
+			}, error : function(err){
+				alert(err);
+			}
+	  	});
+		  if(event.data === undefined){
+	      		return;
+	      }
+		};
+		
+		
+		ws.onmessage = function(event){
+		}	
+		
+		ws.onclose = function(event){
+		    console.log("연결 종료");
+		}
+		
+	} 
+ 
  
     
  </script>
@@ -121,7 +164,19 @@ background-color: #4d4d4d;
 .main-header-menu-bar-li a:hover{
   border-bottom: 2px solid black;
 }
-
+#allimBtn{
+	cursor: pointer;
+}
+.allimCntClass{
+    width: 20px;
+    height: 20px;
+    background-color: red;
+    color: white;
+    border-radius: 50%;
+    margin: 0px 0px -8px 23px;
+    padding: 0 0 0 5px;
+    
+}
 </style>
  </head>
     
@@ -130,11 +185,11 @@ background-color: #4d4d4d;
       <ul class="main-header-menu-top">
          <li class="main-header-menu-top-li"><a href="/main/main">처음으로</a></li>
          <c:choose>
-            <c:when test="${empty isLogin }">
+            <c:when test="${empty login }">
          <li class="main-header-menu-top-li"><a href="/main/login" id="login">로그인</a></li>
             <li class="main-header-menu-top-li"><a href="/join/joinbefore">회원가입</a></li>
          </c:when>
-         <c:when test="${isLogin eq true}">
+         <c:when test="${login eq true}">
          <li class="main-header-menu-top-li"><a href="/main/logout">로그아웃</a></li>
          <li class="main-header-menu-top-li"><a href='javascript:void(0)' id="update">정보수정</a></li>
          </c:when>
@@ -146,12 +201,20 @@ background-color: #4d4d4d;
                <input class="form-control" type="text" placeholder="내용을 입력하세요.">
             </form>
          </li>
+        <c:if test="${login eq true}">
+			<li class="main-header-menu-top-li" style="color:white;">
+				<div id="allimBtn"><div id="allimCnt"></div>알림</div>	
+			</li>
+		</c:if>
       </ul>
 </div>
+		<div id="allimSpaceWrap">
+		</div>
+
 <div class="main-header-menu-bar-background">
       <ul class="main-header-menu-bar">
          <li class="main-header-menu-bar-li"><a href="/main/main">홈</a></li>
-         <li class="main-header-menu-bar-li"><a href="/show/showsearch">공연</a></li>
+         <li class="main-header-menu-bar-li"><a href="/show/list">공연</a></li>
          <li class="main-header-menu-bar-li"><a href="/attraction/list">볼거리</a></li>
          <li class="main-header-menu-bar-li"><a href="/myPage/bookList">MY</a></li>
          <c:if test="${member_spot eq '관리자' }">

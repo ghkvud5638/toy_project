@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+  <mapper namespace="show.dao.face.AllimDao">
+  
+  	<insert id="insertAllim" parameterType="show.dto.TB_ALLIM">
+  		INSERT INTO TB_ALLIM(allim_id, show_id, member_id, status) 
+  		VALUES( TB_ALLIM_SEQ.NEXTVAL ,#{show_id}, #{member_id}, #{status})
+  	</insert>
+  	
+  	
+  	<select id="selectAllimList" parameterType="String" resultType="show.dto.TB_ALLIM">  		
+		SELECT A.is_read,A.allim_id,A.show_id,A.member_id,A.status, S.show_image, S.show_name FROM tb_allim A, tb_show S
+		WHERE A.member_id=#{member_id} AND A.show_id=S.show_id
+		ORDER BY TO_NUMBER(ALLIM_ID) DESC
+  	</select>
+  	
+  	<update id="updateIsRead" parameterType="String">
+  		UPDATE TB_ALLIM SET is_read='Y' WHERE allim_id=#{allim_id}
+  	</update>
+  	
+  	<select id="selectIsRead" parameterType="String" resultType="String">
+  		select count(*) from TB_ALLIM WHERE MEMBER_ID=#{member_id} AND IS_READ='N'
+  	</select>
+  	
+  	
+  </mapper>

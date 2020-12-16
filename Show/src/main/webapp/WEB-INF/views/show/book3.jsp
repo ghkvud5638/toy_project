@@ -171,9 +171,20 @@ $(document).ready(function(){
         
 	})
 	
-	
-	
 	$("#payLater").on("click", function(){
+		$.ajax({
+		       type: "POST",
+		       url: "/allim/insertAllim",
+		       data: {
+		    	   'show_id': $("#show_id").val(),
+		    	   'status': 'book',
+		    	   'member_id': '${sessionScope.member_id}'
+		       }
+		       ,success : function(res) {
+		    	   console.log("insert ok");
+		    	   console.log(res);
+		       }
+		});	
 		alert("마이 페이지에서 결제하시기 바랍니다.");
 		self.close();
 	})

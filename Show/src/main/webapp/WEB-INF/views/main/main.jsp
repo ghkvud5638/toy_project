@@ -499,7 +499,7 @@ $(document).ready(function(){
          <div class="swiper-wrapper">
             <c:forEach items="${list }" var="s">
                <div class="swiper-slide" id="show-list-cover">
-                  <a href="/show/showsearchview?show_id=${s.show_id }">
+                  <a href="/show/detail?show_id=${s.show_id }">
                      <div class="show-list-img" id="show-list-img">
                         <img src="${s.show_image }" width="200" height="200" />
                      </div>
