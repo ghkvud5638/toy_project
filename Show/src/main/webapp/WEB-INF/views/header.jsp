@@ -5,14 +5,30 @@
 <!DOCTYPE html>
 <html>
   <head>
-  <script type="text/javascript" src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
- 
+ <script type="text/javascript" src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
  <!-- 글자 모양 스크립트 --> 
 <link rel="preconnect" href="https://fonts.gstatic.com">
 <link href="https://fonts.googleapis.com/css2?family=Nanum+Brush+Script&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Nanum+Pen+Script&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet">
   
+
+ <script type="text/javascript">
+ $(document).ready(function() {
+      $("#update").on("click",function(){
+         
+         console.log("here")
+         var url = "/main/update?member_id="+"${member_id}";
+           var name = "popup";
+           var option = "width = 560, height = 500, top = 100, left = 200, location = no"
+           window.open(url, name, option);   
+       
+      })
+
+   });
+ 
+    
+ </script>
   <!-- 합쳐지고 최소화된 최신 CSS -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
   
@@ -22,8 +38,8 @@
 }
 
 .main-header-menu-top-img{
-  width: 40px;
-  height: 40px;
+  width: 65px;
+  height: 80px;
 }
 .main-header-menu-top{
   display: flex;
@@ -107,54 +123,41 @@ background-color: #4d4d4d;
 }
 
 </style>
-
-<script type="text/javascript">
- $(document).ready(function() {
-		$("#update").on("click",function(){
-			
-			console.log("here")
-			var url = "/main/update?member_id="+"${member_id}";
-	        var name = "popup";
-	        var option = "width = 560, height = 500, top = 100, left = 200, location = no"
-	        window.open(url, name, option);	
-	    
-		})
-	});
- </script>
  </head>
- 	
+    
  <body>
  <div class="main-header-menu-top-background">
-		<ul class="main-header-menu-top">
-			<li class="main-header-menu-top-li"><a href="/main/main">처음으로</a></li>
-			<c:choose>
-				<c:when test="${empty login }">
-			<li class="main-header-menu-top-li"><a href="/main/login">로그인</a></li>
-				<li class="main-header-menu-top-li"><a href="/join/joinbefore">회원가입</a></li>
-			</c:when>
-			<c:when test="${login eq true}">
-			<li class="main-header-menu-top-li"><a href="/main/logout">로그아웃</a></li>
-			<li class="main-header-menu-top-li"><a href="javascript:void(0)" id="update">정보수정</a></li>
-			</c:when>
-			</c:choose>
-			<li class="main-header-menu-top-li"><a href="/main/main"><img class="main-header-menu-top-img"
-					src="https://blog.kakaocdn.net/dn/c47eE3/btqJnE0o8bX/O0hHuHzpcblUkZ0lgcLMQ0/img.jpg"></a></li>
-			<li class="main-header-menu-top-li">    
-				<form class="form-inline my-2 my-md-0">
-	      		<input class="form-control" type="text" placeholder="내용을 입력하세요.">
-				</form>
-			</li>
-		</ul>
+      <ul class="main-header-menu-top">
+         <li class="main-header-menu-top-li"><a href="/main/main">처음으로</a></li>
+         <c:choose>
+            <c:when test="${empty isLogin }">
+         <li class="main-header-menu-top-li"><a href="/main/login" id="login">로그인</a></li>
+            <li class="main-header-menu-top-li"><a href="/join/joinbefore">회원가입</a></li>
+         </c:when>
+         <c:when test="${isLogin eq true}">
+         <li class="main-header-menu-top-li"><a href="/main/logout">로그아웃</a></li>
+         <li class="main-header-menu-top-li"><a href='javascript:void(0)' id="update">정보수정</a></li>
+         </c:when>
+         </c:choose>
+         <li class="main-header-menu-top-li"><a href="/main/main"><img class="main-header-menu-top-img"
+               src="/resources/images/m-logo.png"></a></li>
+         <li class="main-header-menu-top-li">
+            <form class="form-inline my-2 my-md-0">
+               <input class="form-control" type="text" placeholder="내용을 입력하세요.">
+            </form>
+         </li>
+      </ul>
 </div>
 <div class="main-header-menu-bar-background">
-		<ul class="main-header-menu-bar">
-			<li class="main-header-menu-bar-li"><a href="/main/main">홈</a></li>
-			<li class="main-header-menu-bar-li"><a href="/show/list">공연</a></li>
-			<li class="main-header-menu-bar-li"><a href="/attraction/list">볼거리</a></li>
-			<li class="main-header-menu-bar-li"><a href="/myPage/bookList">MY</a></li>
-			<li class="main-header-menu-bar-li"><a href="/board/list">게시판</a></li>
-			<li class="main-header-menu-bar-li"><a href="/admin/main">관리자</a></li>
-		</ul>
+      <ul class="main-header-menu-bar">
+         <li class="main-header-menu-bar-li"><a href="/main/main">홈</a></li>
+         <li class="main-header-menu-bar-li"><a href="/show/showsearch">공연</a></li>
+         <li class="main-header-menu-bar-li"><a href="/attraction/list">볼거리</a></li>
+         <li class="main-header-menu-bar-li"><a href="/myPage/bookList">MY</a></li>
+         <c:if test="${member_spot eq '관리자' }">
+         <li class="main-header-menu-bar-li"><a href="/admin/login">관리자</a></li>
+         </c:if>
+      </ul>
 </div>
  </body>
 </html>
