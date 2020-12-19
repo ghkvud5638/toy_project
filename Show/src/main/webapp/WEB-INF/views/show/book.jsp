@@ -16,6 +16,13 @@
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
 <style type="text/css">
+/* *{ */
+/* 	margin: 0; */
+/* } */
+
+*{
+	margin: 0;
+}
 
 .choiceDay{
     margin: 30px 0 0 0px;
@@ -28,12 +35,54 @@
 	margin: -70px 0 0 254px;
     table-layout: fixed;
     width: 100px;
-}}
+}
 .bookNext{
 	border:0;
 	outline: 0;
 	cursor: pointer;
+	position: absolute;
+    margin: 0px 0 0px 438px;
+    /* float: right; */
+    bottom: 25px;
+    padding: 8px 65px 8px 65px;
+    background-color: #ff6633;
+    opacity: .9;
+    border-radius: 5px;
 }
+.showDetail > li {
+ 	list-style: none;
+ 	display: inline-block;
+}
+
+#showDetailWrap{
+	
+    float: right;
+    margin: -106px 15px 1px 0px;
+}
+#choiceDate{
+	font-weight: bolder;
+}
+
+#bookingDate{
+	margin: -18px 0 0 0px;
+}
+
+#bookHeaderWrap{
+/* 	position: absolute; */
+	background-color: #2b2b2b;
+	padding: 20px 0 20px 0px;
+	margin:0;
+}
+
+
+#bookHeader{
+	color:white;
+}
+
+#wrap{
+    padding: 12px;
+}
+
 </style>
 
 
@@ -45,6 +94,10 @@ $(document).ready(function(){
 	var end = $("#end").val()
 	console.log(start)
 	console.log(end)
+	
+	
+	
+	
 	
 	$(function(){
 	    $("#bookingDate").datepicker({
@@ -91,10 +144,14 @@ function chkForm(){
 </script>
 </head>
 <body>
-<h1>BOOK</h1>
+
+<div id="bookHeaderWrap">
+	<h2 id="bookHeader">KH아트센터 티켓예매 - 날짜</h2>
+</div>
 <hr>
 
 
+<div id="wrap">
 <jsp:useBean id="now" class="java.util.Date" />
 <fmt:formatDate value="${now}" pattern="yyyy-MM-dd" var="today" />
 
@@ -111,35 +168,49 @@ function chkForm(){
 <input type="hidden" id="start" value="${start }"/>
 <input type="hidden" id="end" value="${end }"/>
 
-${showDetail.show_time } 
+<label id="choiceDate">관람일 선택</label><br>
 <div class="choiceDay">
 <form action="/show/book2" method="post" onsubmit="return chkForm()">
-	<button class="bookNext">다음 단계</button><br><br><br>
-	<label for="bookingDate">관람일 선택</label><br>
-	<input type="text" name="book_date" id="bookingDate" size="12" value="${today}"/><br>
+<%-- 	<input type="text" name="book_date" id="bookingDate" size="12" value="${today}"/><br> --%>
+	<div id="bookingDate"><input type="hidden" name="book_date" id="bookingDate" size="12" value="${today}"/></div>
+	
 	<input type="hidden" name="show_id" value="${showDetail.show_id }">
+	<button class="bookNext">다음 단계</button><br><br><br>
 </form>
 </div>
 
-<img style="width:100px; height: 110px; position: absolute;
-    margin: -101px 0px 0px 418px;" class="showImg" src="${showDetail.show_image }">
+<img style="width: 140px;
+    height: 175px;
+    position: absolute;
+    margin: -303px 0px 0px 453px;" class="showImg" src="${showDetail.show_image }">
 
-<!-- <table class="bookTable"> -->
-<%-- 	<caption>잔여석</caption> --%>
-<!-- 	<tr> -->
-<!-- 	</tr> -->
-<!-- 	<tr> -->
-<!-- 		<th>r석</th> -->
-<%-- 		<td>${seatCnt.seatr_cnt }</td> --%>
-<!-- 	</tr> -->
-<!-- 	<tr> -->
-<!-- 		<th>s석</th> -->
-<%-- 		<td>${seatCnt.seats_cnt }</td> --%>
-<!-- 	</tr> -->
-<!-- </table> -->
+<div id="showDetailWrap">
+	<ul class="showDetail">
+		<li><span>제목  | </span></li>
+		<li>${showDetail.show_name }</li>
+	</ul>
+	<ul class="showDetail">
+		<li><span>날짜  | </span></li>
+		<li>${start } ~ ${end }</li>
+	</ul>
+	<ul class="showDetail">
+		<li><span>시간  | </span></li>
+		<li>${showDetail.show_time }</li>
+	</ul>
+	<ul class="showDetail">
+		<li><span>연령  | </span></li>
+		<li>${showDetail.show_age }</li>
+	</ul>
+	<ul class="showDetail">
+		<li><span>포인트 | </span></li>
+		<li>${member.point }</li>
+	</ul>
+</div>
 
-<img style="width:525px; margin: 25px 0 0 0;" alt="#" src="/resources/images/u.jpg">	
 
 
+<img style="width: 410px; height:190px; margin:-51px 0 0 0;" alt="#" src="/resources/images/u.jpg">	
+
+</div>
 </body>
 </html>

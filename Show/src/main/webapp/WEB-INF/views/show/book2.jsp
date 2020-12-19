@@ -10,6 +10,11 @@
 <script type="text/javascript" src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
 
 <style type="text/css">
+*{
+	margin: 0;
+}
+
+
 .tdtd:hover{
 	background: tomato;
 }
@@ -54,7 +59,7 @@
 }
 #totalPriceWrap{
 	position: absolute;
-	margin: 55px 0 0 485px;
+	margin: 102px 0 0 503px;
 }	
 #nextBook{
 	border: none;
@@ -64,6 +69,28 @@
 .unAvailableSeat {
 	pointer-events: none; 
 	background-color: #ccc;
+}
+#showDetailWrap{
+	
+    float: right;
+    margin: -37px 15px 1px 0px;
+}
+.showDetail > li {
+ 	list-style: none;
+ 	display: inline-block;
+}
+#bookHeaderWrap{
+/* 	position: absolute; */
+	background-color: #2b2b2b;
+	padding: 20px 0 20px 0px;
+	margin:0;
+}
+#bookHeader{
+	color:white;
+}
+
+#wrap{
+    padding: 12px;
 }
 
 
@@ -206,8 +233,12 @@ function display_comma(value) {
 </script>
 </head>
 <body>
-<h1>BOOK2</h1>
+
+<div id="bookHeaderWrap">
+	<h2 id="bookHeader">KH아트센터 티켓예매 - 좌석</h2>
+</div>
 <hr>
+<div id="wrap">
 
 <c:forEach items="${seatList }" var="s" varStatus="i">
 	<input type="hidden" id="seatlist${i.count }" value="${s }"/>
@@ -253,6 +284,35 @@ function display_comma(value) {
 	</table>
 	
 	
+	<img style="width: 140px;
+    height: 175px;
+    position: absolute;
+    margin: -229px 0px 0px 503px;" class="showImg" src="${showDetail.show_image }">
+    
+	<div id="showDetailWrap">
+	<ul class="showDetail">
+		<li><span>제목  | </span></li>
+		<li>${showDetail.show_name }</li>
+	</ul>
+	<ul class="showDetail">
+		<li><span>날짜  | </span></li>
+		<li>${start } ~ ${end }</li>
+	</ul>
+	<ul class="showDetail">
+		<li><span>시간  | </span></li>
+		<li>${showDetail.show_time }</li>
+	</ul>
+	<ul class="showDetail">
+		<li><span>연령  | </span></li>
+		<li>${showDetail.show_age }</li>
+	</ul>
+	<ul class="showDetail">
+		<li><span>포인트 | </span></li>
+		<li>${member.point }</li>
+	</ul>
+</div>
+	
+	
 	<div id="totalPriceWrap">
 		<strong>총 금액</strong>
 		<div id="totalPrice">
@@ -267,7 +327,6 @@ function display_comma(value) {
 	</div>
 	
 </div>
-
  
 
 </body>

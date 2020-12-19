@@ -130,9 +130,8 @@ public class ShowController {
 		model.addAttribute("tbBook",tbBook);
 		model.addAttribute("showDetail",showService.getShowDetail(Integer.toString(tbBook.getShow_id())));
 		model.addAttribute("member",myPageService.getMember(id));
-
-
 	}
+	
 	@RequestMapping(value="/show/book3")
 	public void book3() {
 		
