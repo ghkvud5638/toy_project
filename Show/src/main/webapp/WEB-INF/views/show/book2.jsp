@@ -14,7 +14,6 @@
 	margin: 0;
 }
 
-
 .tdtd:hover{
 	background: tomato;
 }
@@ -23,6 +22,9 @@
 }
 .seatR {
 	background-color: #c38eef;
+}
+.seatS {
+	background-color: #eadfd5;
 }
 #SeatClicked{
 /* 	float: left; */
@@ -36,7 +38,7 @@
 	text-align: center;
 }
 #seatTable{
-	margin: 55px 0 0 0;
+	margin: 60px 0 0 37px;
     table-layout: fixed;
     width: 194px;
 }
@@ -49,7 +51,7 @@
 	width: 300px;    
 	float: left;
     float: right;
-    margin: -145px 0px 0px 220px;
+    margin: 35px 0px 0px 15px;
     position: absolute;
 }
 .tdtd{ 
@@ -59,21 +61,45 @@
 }
 #totalPriceWrap{
 	position: absolute;
-	margin: 102px 0 0 503px;
+	margin: 137px 0 0 310px;
+
 }	
 #nextBook{
 	border: none;
 	outline: none;
 	cursor: pointer;
+	position: absolute;
+    margin: 0px 0 0px 560px;
+    /* float: right; */
+    bottom: 25px;
+    padding: 8px 25px 8px 25px;
+    background-color: #ff6633;
+    opacity: .9;
+    border-radius: 5px;
+	
+}
+#beforeBook{
+	text-decoration: none;
+	color:black;
+	background-color: #ff6633;
+	padding: 8px 25px 8px 25px;
+ 	bottom: 25px;
+	position: absolute;
+	margin: 0px 0px 0px 455px;
+	border-radius: 5px;
+	opacity: .9;
+	font-size: 13px;
+	
 }
 .unAvailableSeat {
 	pointer-events: none; 
 	background-color: #ccc;
+	
 }
 #showDetailWrap{
 	
     float: right;
-    margin: -37px 15px 1px 0px;
+    margin: 13px 47px 0px 0px;
 }
 .showDetail > li {
  	list-style: none;
@@ -90,8 +116,14 @@
 }
 
 #wrap{
-    padding: 12px;
+/*     padding: 12px; */
 }
+
+#showDetailSideImg{
+	margin: -180px 0px 0px 453px !important;
+	
+}
+
 
 
 </style>
@@ -234,6 +266,8 @@ function display_comma(value) {
 </head>
 <body>
 
+<div id="wrap">
+
 <div id="bookHeaderWrap">
 	<h2 id="bookHeader">KH아트센터 티켓예매 - 좌석</h2>
 </div>
@@ -246,14 +280,12 @@ function display_comma(value) {
 
 
 
-<div>공연이름 : ${showDetail.show_name }</div>
 <input type="hidden" id="selectedDate" value="${tbBook.book_date }"/>
  <input type="hidden" id="HiddenShow_id" value="${tbBook.show_id }"/>
 <!-- <form action="/show/book3" name="bookform" method="post"> -->
 	<input type="hidden" id="book_data" name="book_data" value="" /> 
 
 <!-- </form> -->
-	<a href="javascript:window.history.back()">이전 단계</a> | <button id="nextBook">다음 단계</button>
 
 <div id="book2Wrap">
 	<span id="tableName">좌석배치표</span>
@@ -284,33 +316,8 @@ function display_comma(value) {
 	</table>
 	
 	
-	<img style="width: 140px;
-    height: 175px;
-    position: absolute;
-    margin: -229px 0px 0px 503px;" class="showImg" src="${showDetail.show_image }">
-    
-	<div id="showDetailWrap">
-	<ul class="showDetail">
-		<li><span>제목  | </span></li>
-		<li>${showDetail.show_name }</li>
-	</ul>
-	<ul class="showDetail">
-		<li><span>날짜  | </span></li>
-		<li>${start } ~ ${end }</li>
-	</ul>
-	<ul class="showDetail">
-		<li><span>시간  | </span></li>
-		<li>${showDetail.show_time }</li>
-	</ul>
-	<ul class="showDetail">
-		<li><span>연령  | </span></li>
-		<li>${showDetail.show_age }</li>
-	</ul>
-	<ul class="showDetail">
-		<li><span>포인트 | </span></li>
-		<li>${member.point }</li>
-	</ul>
-</div>
+ <c:import url="/WEB-INF/views/show/bookDetailSideInfo.jsp" /> 
+
 	
 	
 	<div id="totalPriceWrap">
@@ -318,17 +325,18 @@ function display_comma(value) {
 		<div id="totalPrice">
 		
 		</div>
-		<strong>${member.nick }님은 <span id="grade">${member.member_grade }</span>등급이므로</strong>
-		<div id="point">원 적립</div>
+		<strong>${member.nick }님은 <span id="grade">${member.member_grade }등급</span></strong>
+		<div id="point"></div>
 				
 	</div>
 		
 		
 	</div>
 	
+	<a id="beforeBook" href="javascript:window.history.back()">이전 단계</a> | <button id="nextBook">다음 단계</button>
 </div>
  
-
+</div>
 </body>
 </html>
 
