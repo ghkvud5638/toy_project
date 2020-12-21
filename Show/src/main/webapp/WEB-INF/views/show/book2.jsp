@@ -38,30 +38,36 @@
 	text-align: center;
 }
 #seatTable{
-	margin: 60px 0 0 37px;
+	margin: 60px 0 0 18px;
     table-layout: fixed;
-    width: 194px;
+    width: 245px;
+    height : 210px;
+  	border:3px soild black; 
+  	padding: 2px;
+  	
 }
 #tableName{
-	margin: -30px 0px 0px 58px;
+	margin: -30px 0px 0px 18px;
     position: absolute;
+    font-weight: bolder;
 }
 #seatInfoTable{
     table-layout: fixed;
-	width: 300px;    
+    width: 245px;
 	float: left;
     float: right;
     margin: 35px 0px 0px 15px;
     position: absolute;
 }
 .tdtd{ 
+	border:1px solid white;
 }
 .teal{
 	background-color:teal; 
 }
 #totalPriceWrap{
 	position: absolute;
-	margin: 137px 0 0 310px;
+	margin: 34px  0 0 262px;
 
 }	
 #nextBook{
@@ -85,7 +91,7 @@
 	padding: 8px 25px 8px 25px;
  	bottom: 25px;
 	position: absolute;
-	margin: 0px 0px 0px 455px;
+	margin: 0px 0px 0px 450px;
 	border-radius: 5px;
 	opacity: .9;
 	font-size: 13px;
@@ -94,10 +100,8 @@
 .unAvailableSeat {
 	pointer-events: none; 
 	background-color: #ccc;
-	
 }
-#showDetailWrap{
-	
+#showDetailWrap{	
     float: right;
     margin: 13px 47px 0px 0px;
 }
@@ -105,6 +109,7 @@
  	list-style: none;
  	display: inline-block;
 }
+
 #bookHeaderWrap{
 /* 	position: absolute; */
 	background-color: #2b2b2b;
@@ -120,10 +125,30 @@
 }
 
 #showDetailSideImg{
-	margin: -180px 0px 0px 453px !important;
-	
+	position:absolute !important;
+	margin: -250px  55px 0px 350px !important;
 }
-
+#showDetailWrap{
+	margin:-55px 30px  0px 0px !important;
+}
+#btnDiv{
+	margin: 0 0 0 -130px;
+}
+#pointWarp{
+	margin: -334px 0 0 104px;
+    position: absolute;
+    width: 132px;
+}
+#sideWrap{
+    background-color: #ccc;
+    position: absolute;
+    height: 490px;
+    width: 275px;
+    opacity: 0.4;
+    margin: -277px -3px 0 61px;
+    right: 0;
+    z-index: -10;
+}	
 
 
 </style>
@@ -171,17 +196,17 @@ $(document).ready(function(){
 			$("#seatInfoTr"+row+col).remove();
 			price -=Number(${showDetail.show_rprice });
 			$("#totalPrice").text(display_comma(price)+"원");
-			$("#point").text(display_comma(price*point)+"원 적립");
+			$("#point").text(" + " + display_comma(price*point)+"원 적립");
 
 		}else{// 클릭이 안된 상태
 			//테이블에 추가
 			$("#SeatClicked").append('<tr class="trtr" id=seatInfoTr'+row+col+'><td class="seatN">'+row+'-'+col+'</td> <td class="seatG">R</td><td class="seatP">'+${showDetail.show_rprice }+'</td></tr>')
 			price +=Number(${showDetail.show_rprice });
 			$("#totalPrice").text(display_comma(price)+"원");
-			$("#point").text(display_comma(price*point)+"원 적립");
+			$("#point").text(" + " +display_comma(price*point)+"원 적립");
 		} 
 	})
-	     
+	
 	$(".seatS").on("click", (e)=>{ 
 		var row = e.target.id.substr(2,1);
 		var col = e.target.id.substr(3,1);
@@ -191,15 +216,14 @@ $(document).ready(function(){
 			$("#seatInfoTr"+row+col).remove();
 			price -=Number(${showDetail.show_sprice });
 			$("#totalPrice").text(display_comma(price)+"원"); 
-			$("#point").text(display_comma(price*point)+"원 적립");
-
+			$("#point").text(" + " +display_comma(price*point)+"원 적립");
 
 		}else{// 클릭이 안된 상태
 			//테이블에 추가
 			$("#SeatClicked").append('<tr class="trtr" id=seatInfoTr'+row+col+'><td class="seatN">'+row+'-'+col+'</td> <td class="seatG">S</td><td class="seatP">'+${showDetail.show_sprice }+'</td></tr>')
 			price +=Number(${showDetail.show_sprice });
 			$("#totalPrice").text(display_comma(price)+"원");
-			$("#point").text(display_comma(price*point)+"원 적립");
+			$("#point").text(" + " +display_comma(price*point)+"원 적립");
 
 			console.log($("#seatNum").text());
 		}
@@ -266,7 +290,6 @@ function display_comma(value) {
 </head>
 <body>
 
-<div id="wrap">
 
 <div id="bookHeaderWrap">
 	<h2 id="bookHeader">KH아트센터 티켓예매 - 좌석</h2>
@@ -289,11 +312,11 @@ function display_comma(value) {
 
 <div id="book2Wrap">
 	<span id="tableName">좌석배치표</span>
-	<table border="1" id="seatTable">
+	<table border="5" id="seatTable">
 		<c:forEach begin="1" end="5" var="i">
 				<tr class="" id="tr${i }">
 			<c:forEach begin="1" end="6" var="j">
-					<td class="tdtd ${ i eq 1 || i eq 2 && (j == 2 || j == 3 || j == 4 || j == 5) ? 'seatR' : 'seatS'}" id="td${i }${j }">${i }-${j }</td>
+					<td class="tdtd ${ i eq 1 || i eq 2 && (j == 2 || j == 3 || j == 4 || j == 5) ? 'seatR' : 'seatS'}" id="td${i }${j }">&nbsp;</td>
 			</c:forEach>
 				</tr>
 		</c:forEach>
@@ -301,7 +324,7 @@ function display_comma(value) {
 	
 	<table id="seatInfoTable">
 		<tr>
-			<th>선택한 좌석</th>
+			<th>좌석 번호</th>
 			<th>좌석 등급</th>
 			<th>금액</th>
 		</tr>
@@ -316,27 +339,35 @@ function display_comma(value) {
 	</table>
 	
 	
- <c:import url="/WEB-INF/views/show/bookDetailSideInfo.jsp" /> 
 
 	
 	
 	<div id="totalPriceWrap">
-		<strong>총 금액</strong>
-		<div id="totalPrice">
 		
+		<div id="tpWrap">
+<!-- 			<strong>총 금액</strong> -->
+<!-- 			<div id="totalPrice"></div> -->
 		</div>
-		<strong>${member.nick }님은 <span id="grade">${member.member_grade }등급</span></strong>
-		<div id="point"></div>
-				
+		<div id="pointWarp">
+<%-- 			<strong>${member.nick }님은 <span id="grade">${member.member_grade }</span>등급</strong> --%>
+<!-- 			<div id="point">0</div> -->
+		</div>	
 	</div>
 		
 		
 	</div>
 	
-	<a id="beforeBook" href="javascript:window.history.back()">이전 단계</a> | <button id="nextBook">다음 단계</button>
+	<div id="sideWrap">
+	</div>
+	
+ 	<c:import url="/WEB-INF/views/show/bookDetailSideInfo.jsp" /> 
+	
+	<div id="btnDiv">
+		<a id="beforeBook" href="javascript:window.history.back()">이전 단계</a> <button id="nextBook">다음 단계</button>
+	</div>
 </div>
+
  
-</div>
 </body>
 </html>
 

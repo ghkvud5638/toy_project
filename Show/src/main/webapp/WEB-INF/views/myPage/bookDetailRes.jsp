@@ -67,7 +67,7 @@ $(document).ready(function(){
 			var amountMoney = totalM-pointM
 			
 			var IMP = window.IMP; 
-	        IMP.init('imp84218542'); 
+	        IMP.init('imp10405748'); 
 	        var msg;
 	        
 	        IMP.request_pay({
@@ -103,7 +103,19 @@ $(document).ready(function(){
 	                        //[4] 결제된 금액이 요청한 금액과 달라 결제를 자동취소처리하였습니다.
 	                    }
 	                });
-	                
+	                $.ajax({
+	     		       type: "POST", 
+	     		       url: "/allim/insertAllim",
+	     		       data: {
+	     		    	   'show_id': $("#showId").val(),
+	     		    	   'status': 'pay',
+	     		    	   'member_id': '${sessionScope.member_id}'
+	     		       }
+	     		       ,success : function(res) {
+	     		    	   console.log("insert ok");
+	     		    	   console.log(res);
+	     		       }
+	     			});
 	                location.href="/myPage/pay?show_id="+$("#showId").val()+"&book_date="+$("#bookDate").val().split(" ")[0]+"&payment_date="+$("#paymentDate").val()
 			            		+"&pointM="+pointM
 

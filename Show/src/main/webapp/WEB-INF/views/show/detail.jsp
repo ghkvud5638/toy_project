@@ -66,7 +66,7 @@ $(document).ready(function() {
 		console.log("here")
 		var url = "/show/book?show_id="+${View.show_id};
         var name = "popup test";
-        var option = "width = 610, height = 480, top = 100, left = 200, location = no"
+        var option = "width = 495, height = 480, top = 100, left = 200, location = no"
         window.open(url, name, option);	
     
 	})

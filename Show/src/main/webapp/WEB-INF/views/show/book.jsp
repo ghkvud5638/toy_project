@@ -41,7 +41,7 @@
 	outline: 0;
 	cursor: pointer;
 	position: absolute;
-    margin: 0px 0 0px 438px;
+    margin: 0px 0 0px 315px;
     /* float: right; */
     bottom: 25px;
     padding: 8px 65px 8px 65px;
@@ -57,7 +57,7 @@
 #showDetailWrap{
 	
     float: right;
-    margin: -106px 15px 1px 0px;
+    margin: -106px 55px 1px 0px;
 }
 #choiceDate{
 	font-weight: bolder;
@@ -74,7 +74,6 @@
 	margin:0;
 }
 
-
 #bookHeader{
 	color:white;
 }
@@ -82,6 +81,22 @@
 #wrap{
     padding: 12px;
 }
+#showDetailSideImg{
+	margin: -320px 55px 0px 495px !important;
+}
+#showDetailWrap{
+	margin: -130px 15px 1px 0px !important;
+}
+#sideWrap{
+    background-color: #ccc;
+    position: absolute;
+    height: 490px;
+    width: 270px;
+    opacity: 0.4;
+    margin: -346px -19px 0 61px;
+    right: 0;
+    z-index: -10;
+}	
 
 </style>
 
@@ -111,17 +126,23 @@ $(document).ready(function(){
           maxDate: new Date(end), 
           dateFormat: "yy/mm/dd",
           dayNamesMin: ['일','월', '화', '수', '목', '금', '토' ],
-          monthNamesShort: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'] 
+          monthNamesShort: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'],
+          altField: "#alernateFiled"
+          
 	    });
 	
 // 	    $("#bookingDate").val($.datepicker.formatDate('yyyy/MM/dd', new Date()));
 
 	});
+	
+	console.log($("#alernateFiled").val())
+	
 })
 function chkForm(){
 	console.log($("#today").val())
-	console.log($("#bookingDate").val())
-	
+	console.log($("#bookingDateHidden").val())
+// 	console.log($("#alernateFiled").val())
+
 	var t = new Date($("#today").val())
 	var b = new Date($("#bookingDate").val())
 	var expirationCnt = (b-t)/1000/60/60/24;
@@ -172,15 +193,19 @@ function chkForm(){
 <div class="choiceDay">
 <form action="/show/book2" method="post" onsubmit="return chkForm()">
 <%-- 	<input type="text" name="book_date" id="bookingDate" size="12" value="${today}"/><br> --%>
-	<div id="bookingDate"><input type="hidden" name="book_date" id="bookingDate" size="12" value="${today}"/></div>
+	<div id="bookingDate">
+<%-- 			<input type="text" name="book_date" id="bookingDate" size="12" value="${today}"/> --%>
+			<input type="text" name="book_date" id="alernateFiled" size="12" value=""/>
+	</div>
 	
 	<input type="hidden" name="show_id" value="${showDetail.show_id }">
 	<button class="bookNext">다음 단계</button><br><br><br>
 </form>
 </div>
 
+<div id="sideWrap">
+</div>
  <c:import url="/WEB-INF/views/show/bookDetailSideInfo.jsp" /> 
-
 <%-- <img style="width: 140px; height: 175px; position: absolute; margin: -303px 0px 0px 453px;" class="showImg" src="${showDetail.show_image }"> --%>
 
 <!-- <div id="showDetailWrap"> -->
@@ -208,7 +233,7 @@ function chkForm(){
 
 
 
-<img style="width: 410px; height:190px; margin:-51px 0 0 0;" alt="#" src="/resources/images/u.jpg">	
+<img style="width: 282px; height:190px; margin: -60px 0 0 0; position: absolute;" alt="#" src="/resources/images/u.jpg">	
 
 </div>
 </body>

@@ -27,6 +27,77 @@ input[type="number"]::-webkit-inner-spin-button {
     margin: 0;
 }
 
+#btnDiv{
+	margin: 15px 0 0 286px;
+}
+ #backDelete{
+ 	border: none;
+	outline: none;
+ 
+	text-decoration: none; 
+ 	color:black; 
+ 	background-color: #ff6633;
+ 	padding: 8px 15px 8px 15px;
+	bottom: 25px; 
+/* 	position: absolute; */
+    margin: 0 0 0 50px;
+	border-radius: 5px;
+	opacity: .9;
+/* 	font-size: 13px; */
+	cursor:pointer;
+	
+} 
+#payLater{
+	cursor:pointer;
+ 	border: none;
+	outline: none;
+	text-decoration: none; 
+ 	color:black; 
+ 	background-color: #ff6633;
+ 	padding: 8px 10px 8px 10px;
+	bottom: 25px; 
+	border-radius: 5px;
+	opacity: .9;
+	margin: 0 0 0 9px;
+}
+#pay{
+	cursor:pointer;
+	border: none;
+	outline: none;
+	text-decoration: none; 
+ 	color:black; 
+ 	background-color: #ff6633;
+ 	padding: 8px 80px 8px 80px;
+	bottom: 25px; 
+	border-radius: 5px;
+	opacity: .9;
+	margin: 10px 0px 0 335px;
+}
+#showDetailSideImg{
+    margin: 22px 55px 0px 360px !important;
+    position: absolute !important;
+}
+#showDetailWrap {
+    margin: 205px  18px 0px 0px !important;
+}
+
+#PayInfoTable{
+	margin: 30px 0 0 0;
+	position: absolute;
+}
+#pointWrap{
+	margin: 160px 0 0 20px;
+}
+#sideWrap{
+    background-color: #ccc;
+    position: absolute;
+    height: 490px;
+    width: 245px;
+    opacity: 0.4;
+    margin: -4px 0 0 61px;
+    right: 0;
+    z-index: -10;
+}	
 
 </style>
 
@@ -51,26 +122,25 @@ $(document).ready(function(){
 	
 	console.log(display_comma(totalPrice));
 	
+	$("#totalPrice2").text(display_comma(totalPrice));
 	$("#totalPrice").text(display_comma(totalPrice));
-	$("#point").text(display_comma(totalPrice*point)+"원 적립");
-	$("#pointMoney").text(display_comma(${member.point}));
+	$("#point").text(" + "+display_comma(totalPrice*point)+"원 적립");
+	$("#pointMoney2").text(display_comma(${member.point}));
 
-	console.log($("#totalPrice").text());
+	console.log($("#totalPrice2").text());
 	
 	$("#pointInput").on("propertychange change keyup paste input", function(){
 
 		if(${member.point} > $("#pointInput").val()){
-		$("#pointMoney").text(display_comma(${member.point}-$('#pointInput').val()));
+		$("#pointMoney2").text(display_comma(${member.point}-$('#pointInput').val()));
 // 		$("#pointMoney").text(display_comma($('#pointInput').val()));
 			
 		} else {
 
-			$("#pointMoney").text("0");
+			$("#pointMoney2").text("0");
 // 			$("#pointMoney").text(${member.point});
 			$('#pointInput').val(${member.point})
 		}
-
-		
 	})
 	
 	
@@ -116,7 +186,7 @@ $(document).ready(function(){
 		var amountMoney = totalM-pointM
 		
 		var IMP = window.IMP; 
-        IMP.init('imp84218542'); 
+        IMP.init('imp10405748'); 
         var msg;
         
         IMP.request_pay({
@@ -155,7 +225,19 @@ $(document).ready(function(){
 
                 //성공시 이동할 페이지
 //                 location.href="";
-                
+               $.ajax({
+		       type: "POST", 
+		       url: "/allim/insertAllim",
+		       data: {
+		    	   'show_id': $("#show_id").val(),
+		    	   'status': 'pay',
+		    	   'member_id': '${sessionScope.member_id}'
+		       }
+		       ,success : function(res) {
+		    	   console.log("insert ok");
+		    	   console.log(res);
+		       }
+			});	
                 location.href="/show/pay?show_id="+$("#show_id").val()+"&book_date="+$("#date").text()+"&payment_date="+$("#today").val()
                 		+"&pointM="+pointM
                 alert("결제 성공");
@@ -173,7 +255,7 @@ $(document).ready(function(){
 	
 	$("#payLater").on("click", function(){
 		$.ajax({
-		       type: "POST",
+		       type: "POST", 
 		       url: "/allim/insertAllim",
 		       data: {
 		    	   'show_id': $("#show_id").val(),
@@ -220,8 +302,7 @@ function display_comma(value) {
 </script>
 </head>
 <body>
-<h1>BOOK3</h1>
-<hr>
+
 
 
 <jsp:useBean id="now" class="java.util.Date" />
@@ -231,20 +312,24 @@ function display_comma(value) {
 
 
 
-<button id="backDelete">이전 단계</button>
+
+<div id="bookHeaderWrap">
+	<h2 id="bookHeader">KH아트센터 티켓예매 - 결제</h2>
+</div>
+<hr>
+<div id="wrap">
 
 
+<!-- <br><br> -->
+<%-- ${member_id }님이 선택하신 예매 정보 --%>
 
-<br><br>
-${member_id }님이 선택하신 예매 정보
-
-<table>
+<table id="PayInfoTable">
 	<tr>
-		<th>예매 번호</th>
-		<th>좌석 번호</th>
-		<th>좌석 등급</th>
+		<th>예매 번호 |</th>
+		<th>좌석 번호 |</th>
+		<th>좌석 등급 |</th>
 		<th>공연 날짜</th>
-		<th>가격</th>
+<!-- 		<th>가격</th> -->
 	</tr>
 	<tbody id="selectedInfoWrap">
 <c:forEach items="${list }" var="l" varStatus="i">
@@ -256,7 +341,7 @@ ${member_id }님이 선택하신 예매 정보
 			<fmt:parseDate value="${l.book_date }" var="dateString" pattern="yyyy-MM-dd"/>
 			<td id="date"><fmt:formatDate value="${dateString }" pattern="yyyy-MM-dd"/></td>
 			<td><input type="hidden" id="seatPrice${i.count }" value="${l.seat_price }"/></td>			
-			<td><fmt:formatNumber value="${l.seat_price }" pattern="#,###"/>원</td>
+<%-- 			<td><fmt:formatNumber value="${l.seat_price }" pattern="#,###"/>원</td> --%>
 		</tr>
 		<input type="hidden" id="show_id" value="${l.show_id }"/>
 </c:forEach>
@@ -264,17 +349,29 @@ ${member_id }님이 선택하신 예매 정보
 
 </table>
 
-<br><br>
-총 결제 금액 :
-<span id="totalPrice"></span>원
-<br>
-<strong>${member.nick }님이 결제시</strong>
-		<div id="point">원 적립</div>
-<strong>현재 포인트 : <span id="pointMoney"></span>점 사용 가능 </strong><br>		
-<input type="number" id="pointInput" placeholder="사용할 포인트를 입력">		
-<br><br>
-<input type="hidden" id="grade" value="${member.member_grade }">
-<button id="pay">결제</button> <button id="payLater">나중에 결제</button>
+<div id="sideWrap">
+</div>
 
+ 	<c:import url="/WEB-INF/views/show/bookDetailSideInfo.jsp" /> 
+
+<br><br>
+<div id="pointWrap">
+	총 결제 금액 :
+	<span id="totalPrice2"></span>원
+	<br>
+	<strong>${member.nick }님이 결제 시</strong>
+			<div id="point">원 적립</div>
+	<strong>현재 포인트 : <span id="pointMoney2"></span>점 사용 가능 </strong><br>		
+	<input type="number" id="pointInput" placeholder="사용할 포인트를 입력">		
+	<br><br>
+	<input type="hidden" id="grade" value="${member.member_grade }">
+</div>
+
+<button id="pay">결제</button> 
+<div id="btnDiv">
+	<button id="backDelete">이전 단계</button><button id="payLater">나중에 결제</button>
+</div>
+
+</div>
 </body>
 </html>
