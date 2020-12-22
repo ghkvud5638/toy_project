@@ -2,6 +2,7 @@
     pageEncoding="UTF-8"%>
 
 <script type="text/javascript" src="http://code.jquery.com/jquery-2.2.4.min.js"></script>
+<script src="https://kit.fontawesome.com/a076d05399.js"></script>
 
 <script type="text/javascript">
 
@@ -27,19 +28,28 @@ $(document).ready(function(){
 
 	}
 	
+	areaId = getParam("area")
+	if(areaId == ""){
+		areaId = "all"
+	}
+	$('.attraction-detail-listBackBtn').attr('id', areaId)
+	$('#'+areaId).css("background-color", "#dedcdc")
+	$('#'+areaId).css("text-decoration", "underline")
+	$('#'+areaId).css("border-bottom", "5px solid black")
 	var boardType = getParam("boardType")
 		,clickChk = false;
-	$('.attraction-category-categoryBtn').on('click',function() {
+	$('.attraction-category-li, .attraction-detail-listBackBtn').on('click',function() {
 		console.log("클릭이동")
-		console.log($(this).val())
+		console.log($(this).attr('id'))
+// 		alert($(this).attr('id'))
 // 		alert(boardType)
 		if(boardType == ""){
 			boardType="image"
 		}
-		if($(this).val() == "all"){
+		if($(this).attr('id') == "all"){
 			boardType = "boardType=" + boardType
 		} else{
-			boardType = "area=" + $(this).val() +"&boardType=" + boardType
+			boardType =  "boardType=" + boardType + "&area=" + $(this).attr('id')
 			
 		}
 		if(clickChk == false){
@@ -59,37 +69,66 @@ $(document).ready(function(){
 
 <style type="text/css">
 
+@font-face {
+	font-family: "HANGANG";
+	src: url("/resources/SEOULHANGANGB.TTF")
+}
+@font-face {
+	font-family: "NAMSAN";
+	src: url("/resources/서울남산 장체B.TTF")
+}
+
 .attraction-category-ul {
 	width: 100%;
-	text-align: center;
- 	margin-bottom: 70px;
+ 	margin-bottom: 200px;
 	
 }
 .attraction-category-li {
 
 	display: inline-block;
-}
-.attraction-category-li:not(:first-child) {
-
-	margin: 50px 0px 0px 60px;
+	width: 20%;
+	padding: 20px;
+	background-color: #eaeaea;
+	border:1px solid #ccc;
+	left:0%;
+	position: absolute;
+	float: left;
+	text-align: center;
+	font-size: 18px;
+	color: #ff6633;
+	font-weight: 600;
+	font-family: 'HANGANG', cursive;
 	
 }
+.attraction-category-li:nth-child(2) {
+left: 20%
+}
+.attraction-category-li:nth-child(3) {
+left: 40%
+}
+.attraction-category-li:nth-child(4) {
+left: 60%
+}
+.attraction-category-li:nth-child(5) {
+left: 80%
+}
+/* .attraction-category-li:not(:first-child) { */
+/* .attraction-category-li:not(:first-child) { */
+/* .attraction-category-li:not(:first-child) { */
 
-
-.attraction-category-categoryBtn, .attraction-category-categoryBtnAll {
-	width: 180px;
-	height: 50px;
-	background-color: white;
-	border-radius: 5px;
+ /* 	margin: 50px 0px 0px 60px; */
 	
+/* } */
+
+
+.attraction-category-li {
 
 }
 
-.attraction-category-categoryBtn:hover, .attraction-category-categoryBtnAll:hover {
+.attraction-category-li:hover {
 	cursor:pointer;
 	background-color: #c3c3c3;
 	text-decoration: underline;
- 	font-weight:bolder;
 
 }
 
@@ -97,9 +136,9 @@ $(document).ready(function(){
 
 <ul class="attraction-category-ul">
 
-<li class="attraction-category-li"><button class="attraction-category-categoryBtn" value="all"><span class="attraction-category-span">전체</span></button></li>
-<li class="attraction-category-li"><button class="attraction-category-categoryBtn" value="seoul"><span class="attraction-category-span">서울/경기/인천</span></button></li>
-<li class="attraction-category-li"><button class="attraction-category-categoryBtn" value="ganwon"><span class="attraction-category-span">강원도/충청도</span></button></li>
-<li class="attraction-category-li"><button class="attraction-category-categoryBtn" value="jeonla"><span class="attraction-category-span">전라도/경상도</span></button></li>
-<li class="attraction-category-li"><button class="attraction-category-categoryBtn" value="daegu"><span class="attraction-category-span">대구/부산</span></button></li>
+<li class="attraction-category-li" id="all">전체</li>
+<li class="attraction-category-li" id="seoul">서울/경기/인천</li>
+<li class="attraction-category-li" id="ganwon">강원도/충청도</li>
+<li class="attraction-category-li" id="jeonla">전라도/경상도</li>
+<li class="attraction-category-li" id="daegu">대구/부산</li>
 </ul>

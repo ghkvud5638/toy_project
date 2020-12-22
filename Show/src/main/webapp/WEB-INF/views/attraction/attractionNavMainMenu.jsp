@@ -14,14 +14,9 @@
 	$(document).ready(function(){
 		self.onerror=function() {return true;}
 
-	var scrollHeight = 40;
-	var scrollWidth = 140;
-	var pageno = 1;
+
 	var chk = false;
-// 	var top =   scrollHeight - $(window).scrollTop()
-// 	, left = scrollWidth -$(window).scrollLeft() ;
-// 	$(".nav").css("bottom", top+'px');
-// 	$(".nav").css("right", left+"px");
+
 
 	$('.nav').click(function(){
 		console.log("클릭")
@@ -31,16 +26,16 @@
 					, url: "/attraction/nav" //요청 URL
 					, data: {
 								"curPage" : 1
-								,"listNo" : 5
 
 							} //전달 파라미터
 					, dataType: "html" //응답받은 데이터의 형식
 					, success: function( res ) {
 						chk = true;
 						console.log("성공")
+						$(".nav").css("opacity", '0');
 						$(document.body).append(res);
-						pageno = 2
 						console.log(pageno);
+
 					}
 					, error: function() {
 						console.log("실패")
@@ -49,34 +44,28 @@
 				})	
 			
 		} else {
-			chk = false;
+			$(".nav").css("opacity", '1');
+
+			$(".Nav-sideMenu-WrapDiv").css("opacity", '0');
+			setTimeout(function() {
 			$('.Nav-sideMenu-WrapDiv').remove();
+			chk = false;
+				
+			}, 300);
 			
 		}
 	});
 		
+	$("#navLoginLogout").click(function(){
+			if(chk == true){
+				$('.Nav-sideMenu-WrapDiv').remove();
+				chk = false;
+				$('.nav').trigger('click')
+				}
+		
+		
 
-// 		function sidebar(){
-			
-// 			top = scrollHeight - $(window).scrollTop();	
-// 			$(".nav").css("bottom", top+'px');
-// 			console.log(top)
-	
-// 			left = scrollWidth -$(window).scrollLeft() ;
-// 			console.log("내값은"+left)
-// 			$(".nav").css("right", left+'px');
-		
-// 			console.log($(window).innerHeight())
-
-		
-// 		}
-		
-	
-// 		$(window).scroll(()=> {
-// 			sidebar();
-// 			console.log($(window).scrollTop())
-// 			console.log($(window).scrollLeft())	
-// 		});	
+	})	
 
 		
 	});
@@ -94,6 +83,8 @@
  		 position:absolute;
 		right:0%;
 		 z-index: 997;
+ 		transition: all 0.3s ease-in-out;
+		 
 	/*  	 left:calc(90%);  */
 		background-color: white;
 		border-radius: 300px;
@@ -106,6 +97,11 @@
 	.nav:hover {
 	cursor:pointer;
 	background-color: black;
+	transform: scale(1.1);
+  -webkit-transform: scale(1.1);
+  -moz-transform: scale(1.1);
+  -ms-transform: scale(1.1);
+  -o-transform: scale(1.1);
 	}
 
 </style>
@@ -113,8 +109,8 @@
 </head>
 <body>
 <div class="nav">
-
 </div>
+<input type="hidden" id="navLoginLogout">
 
 
 </body>

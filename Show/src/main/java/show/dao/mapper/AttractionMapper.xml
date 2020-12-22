@@ -274,11 +274,18 @@
 						</when>
 					</choose>
 			</when>
+			<when test="chkNumber == 4">
+			select ATTAll.*, NB.* FROM (
+				<include refid="selectAttractionJoin" />
+				 ) ATTAll, TB_NAVIGATION_BAR NB
+				  where ATTAll.attraction_no = NB.attno  AND SCRAP_USERID = #{userId}
+				order by attno_pr desc
+			</when>
 			<when test="chkNumber == 5">
 			select ATTAll.*, NB.* FROM (
 				<include refid="selectAttractionJoin" />
 				 ) ATTAll, TB_NAVIGATION_BAR NB
-				  where ATTAll.attraction_no = NB.visit_attno
+				  where ATTAll.attraction_no = NB.visit_attno  AND SCRAP_USERID = #{userId}
 				order by visit_attno_pr desc
 			</when>
 		</choose>
@@ -316,11 +323,17 @@
 		<when test="chkNumber == 2">
 				<include refid="selectNearByAttraction" />
 		</when>
+		<when test="chkNumber == 4">
+			select ATTAll.*, NB.* FROM (
+				<include refid="selectAttractionJoin" />
+				 ) ATTAll, TB_NAVIGATION_BAR NB
+				  where ATTAll.attraction_no = NB.attno  AND SCRAP_USERID = #{userId}
+		</when>
 		<when test="chkNumber == 5">
 			select ATTAll.*, NB.* FROM (
 				<include refid="selectAttractionJoin" />
 				 ) ATTAll, TB_NAVIGATION_BAR NB
-				  where ATTAll.attraction_no = NB.visit_attno
+				  where ATTAll.attraction_no = NB.visit_attno  AND SCRAP_USERID = #{userId}
 		</when>
 		</choose>
 			
@@ -401,8 +414,11 @@
 	 
 	 	DELETE FROM TB_NAVIGATION_BAR  WHERE 
  		<choose>
+		<when test="whereList == 3">
+		attno = #{attraction_no} AND SCRAP_USERID = #{userId} 
+		</when>
 		<when test="whereList == 4">
-	 	visit_attno = #{attraction_no }
+	 	visit_attno = #{attraction_no } AND SCRAP_USERID = #{userId}
 	 	</when>
 		</choose>
 	 
@@ -411,11 +427,23 @@
 	<insert id="visitListInsert" parameterType="hashmap">
 		INSERT INTO TB_NAVIGATION_BAR 
 		<choose>
+		<when test="whereList == 3">
+		(attNo_pr, attno, scrap_userid)
+		 VALUES (nav_attno_seq.nextval, #{attraction_no}, #{userId})
+		</when>
 		<when test="whereList == 4">
-		(visit_attNo_pr, visit_attno)
-		 VALUES (nav_visit_attno_seq.nextval, #{attraction_no})
+		(visit_attNo_pr, visit_attno, scrap_userid)
+		 VALUES (nav_visit_attno_seq.nextval, #{attraction_no}, #{userId})
 		</when>
 		</choose>
 	</insert>
+	
+	<select id="scrapChk" parameterType="hashmap" resultType="boolean">
+	
+		SELECT count(*) attno
+		  FROM    TB_NAVIGATION_BAR
+		  WHERE   ATTNO = #{attraction_no} AND SCRAP_USERID = #{userId}
+		  
+  </select>
 	
 </mapper>

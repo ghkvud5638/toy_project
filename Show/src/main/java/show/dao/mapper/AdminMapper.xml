@@ -5,7 +5,6 @@
     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
     
-    
 
 <mapper namespace="show.dao.face.AdminDao">
 
@@ -26,21 +25,6 @@
 		<result property="attraction_latitude" column="attraction_latitude"/>
 		<result property="attraction_longitude" column="attraction_longitude"/>
 	</resultMap>
-
-	<select id="selectAdminCnt" parameterType="show.dto.Admin" resultType="int">
-		SELECT COUNT(*) FROM tb_admin
-		WHERE 1=1
-			AND adminid = #{adminid }
-			AND adminpw = #{adminpw }
-	</select>
-	
-	<select id="selectAdminById" parameterType="String" resultType="show.dto.Admin">
-		SELECT
-			adminid
-		FROM tb_admin
-		WHERE 1=1
-			AND adminid = #{value }
-	</select>
 	
 	<sql id="selectMember">
 		SELECT
@@ -385,6 +369,129 @@
 		FROM tb_book
 		WHERE status = 'Y'
 		GROUP BY to_char(payment_date, 'MM/DD') 
+	</select>
+	
+	<delete id="attractionDelete" parameterType="show.dto.TB_ATTRACTION">
+	    DELETE FROM tb_attraction
+    	WHERE attraction_no = #{attraction_no}
+	</delete>
+	
+	<delete id="memberDelete" parameterType="show.dto.Member">
+		DELETE FROM tb_member
+		WHERE member_id = #{member_id}
+	</delete>
+	
+	<select id="showSelectCntAll" parameterType="show.util.AdminShowPaging" resultType="int">
+		SELECT count(*) FROM (
+			SELECT
+			* 
+			FROM TB_SHOW
+			<if test="searchText != null">
+            	WHERE show_name LIKE '%' || #{searchText} || '%'
+            </if>
+		) CNT
+	</select> 
+	
+	<select id="selectShowAll" resultType="show.dto.TB_SHOW">
+		SELECT * FROM (
+			SELECT
+			rownum rnum, B.*
+			FROM (
+				SELECT
+				* 
+				FROM TB_SHOW
+			<if test="searchText != null">
+            	WHERE show_name LIKE '%' || #{searchText} || '%'
+            </if>
+			) B
+			ORDER BY rnum
+		) R
+		<where>
+			rnum BETWEEN #{startNo } AND #{endNo }
+		</where>	
+	</select>
+	
+	<select id="AttractionSelectCntAll" parameterType="show.util.AdminAttractionPaging" resultType="int">
+		SELECT count(*) FROM (
+			SELECT
+			* 
+			FROM tb_attraction
+			<if test="searchText != null">
+            	WHERE attraction_title LIKE '%' || #{searchText} || '%'
+            </if>
+            ORDER BY attraction_no ASC
+		) CNT
+	</select> 
+	
+	<select id="selectAttractionAll" resultType="show.dto.TB_ATTRACTION">
+		SELECT * FROM (
+			SELECT
+			rownum rnum, B.*
+			FROM (
+				SELECT
+				* 
+				FROM tb_attraction
+			<if test="searchText != null">
+            	WHERE attraction_title LIKE '%' || #{searchText} || '%'
+            </if>
+            ORDER BY attraction_no ASC
+			) B
+			ORDER BY rnum
+		) R
+		<where>
+			rnum BETWEEN #{startNo } AND #{endNo }
+		</where>	
+	</select>
+	
+	
+		<select id="TicketSelectCntAll" parameterType="show.util.AdminAttractionPaging" resultType="int">
+		SELECT count(*) FROM (
+			SELECT book_id 
+					,member_id
+					,show_name
+					,book_date
+					,payment_date
+					,seat_grade
+					,seat_num
+					,seat_price
+					,show_place
+					,status
+			FROM tb_book B, tb_show S
+			WHERE B.show_id = S.show_id
+			<if test="searchText != null">
+            	AND member_id LIKE '%' || #{searchText} || '%'
+            </if>
+            ORDER BY member_id ASC
+		) CNT
+	</select> 
+	
+	<select id="selectTicketAll" resultType="hashmap">
+		SELECT * FROM (
+			SELECT
+			rownum rnum, B.*
+			FROM (
+				SELECT book_id 
+					,member_id
+					,show_name
+					,book_date
+					,payment_date
+					,seat_grade
+					,seat_num
+					,seat_price
+					,show_place
+					,status
+				FROM tb_book B, tb_show S
+				WHERE B.show_id = S.show_id
+			<if test="searchText != null">
+            	AND member_id LIKE '%' || #{searchText} || '%'
+            </if>
+            ORDER BY member_id ASC
+			) B
+			ORDER BY rnum
+		) R
+		<where>
+			rnum BETWEEN #{startNo } AND #{endNo }
+		</where>	
 	</select>
 	
 </mapper>

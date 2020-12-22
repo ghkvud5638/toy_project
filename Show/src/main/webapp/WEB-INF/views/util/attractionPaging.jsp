@@ -150,13 +150,22 @@ li {
 
 <div class="util-paging-textCenter">
 	<c:choose>
-		<c:when test="${area eq 'all' }">
-			<c:set var="loc" value="/attraction/list?" />
+		<c:when test='${boardType eq ""}'>
+					<c:set var="loc" value="/attraction/list?" />
 		</c:when>
 		<c:otherwise>
-			<c:set var="loc" value="/attraction/list?area=${area }&" />
+			<c:set var="loc" value="/attraction/list?boardType=${boardType }&" />
 		</c:otherwise>
 	</c:choose>
+	
+	<c:choose>
+		<c:when test="${area eq 'all' }">
+		</c:when>
+		<c:otherwise>
+			<c:set var="loc" value="${loc }area=${area }&" />
+		</c:otherwise>
+	</c:choose>
+	
 	<c:choose>
 		<c:when test="${cate1 eq 'all' }">
 		</c:when>
@@ -186,14 +195,7 @@ li {
 		</c:otherwise>
 	</c:choose>
 	
-	<c:choose>
-		<c:when test='${boardType eq ""}'>
-		</c:when>
-		<c:otherwise>
-			<c:set var="loc" value="${loc }boardType=${boardType }&" />
-		</c:otherwise>
-	</c:choose>
-
+	
 	<ul class="util-paging-pagination">
 
 		<%-- 처음 페이지 버튼 --%>

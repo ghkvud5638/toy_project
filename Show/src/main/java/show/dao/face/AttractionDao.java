@@ -35,6 +35,8 @@ public interface AttractionDao {
 
 	public void visitListDelete(HashMap<String, Object> searchList);
 
+	public boolean scrapChk(HashMap<String, Object> searchList);
+
 
 
 

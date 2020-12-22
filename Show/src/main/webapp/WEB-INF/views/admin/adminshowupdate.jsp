@@ -1,22 +1,49 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
-
-<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>    
-<%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>    
-<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%> 
-
+    pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt"  uri="http://java.sun.com/jsp/jstl/fmt"%>
 <c:import url="/WEB-INF/views/header.jsp" />
 
 
-<div id="container">
+<link rel='stylesheet' href='//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css'>
 
+<style>
 
-<h1>Show 수정</h1>
-<hr>
+.form-control {
+	font-size: 14px
+}
+
+</style>
+
+<script type="text/javascript">
+	function fnDelete( numb ) {
+// 		alert(numb+"번 누르셨습니다.");
+		if(confirm("정말로 삭제하시겠습니까?") == true){
+			window.location.href = "/admin/showdel?show_id="+numb;
+		}
+	}
+</script>
+
+<c:import url="/WEB-INF/views/admin/adminheader.jsp" />
+
+<div class="container">
+  <div class="row flex-nowrap">
+
+    <main class="col-sm-6 col-sm-offset-3" role="main">
+    
+    <div id="form-group">
+    
+	<div class="row">
+    	<div class="col-md-10">
+
+<div class="page-header">
+<h1>공연 수정</h1>
+</div>
+
 
 
 <form action="/admin/showupdate" method="post">
-	<input readonly="readonly" name="show_id" value="${view.show_id }" />
+	공연 번호<input readonly="readonly" name="show_id" value="${view.show_id }" />
 
 	<div class="form-group">
 		<label for="show_name">이름</label>
@@ -40,14 +67,16 @@
 	
 <!-- 	<div class="form-group"> -->
 <!-- 		<label for="show_start">시작날짜</label> -->
+<%-- 		<input type="text" id="show_start" name="show_start" value="<fmt:formatDate value="${view.show_start }" pattern="yyyy/MM/dd" />" class="form-control"/> --%>
 <%-- 		<input type="text" id="show_start" name="show_start" value="${view.show_start }" class="form-control"/> --%>
 <!-- 	</div> -->
 	
 <!-- 	<div class="form-group"> -->
 <!-- 		<label for="show_end">종료날짜</label> -->
+<%-- 		<input type="text" id="show_end" name="show_end" value="<fmt:formatDate value="${view.show_end }" pattern="yyyy/MM/dd" />" class="form-control"/> --%>
 <%-- 		<input type="text" id="show_end" name="show_end" value="${view.show_end }" class="form-control"/> --%>
+		
 <!-- 	</div> -->
-
 	
 	<div class="form-group">
 		<label for="show_rprice">R석 가격</label>
@@ -109,16 +138,25 @@
 		<input type="text" id="show_addr" name="show_addr" value="${view.show_addr }" class="form-control"/>
 	</div>
 	
-	
 
 	<div class="text-center">
 		<button class="btn btn-primary" id="btnUpdate">수정</button>
-		<input type="reset" id="cancel" class="btn btn-danger" value="취소"/>
+		<input type="button" class="btn btn-danger" value="삭제" class="form-control" onclick="fnDelete(${view.show_id });" />
+<%-- 		<button onclick="fnCancel(${view.show_id });" class="btn btn-danger">삭제</button> --%>
 	</div>
 	
 </form>
 
 </div>
+</div>
+
+</div>
+
+    </main>
+  </div>
+</div>
+
+
 
 
 <c:import url="/WEB-INF/views/footer.jsp" />

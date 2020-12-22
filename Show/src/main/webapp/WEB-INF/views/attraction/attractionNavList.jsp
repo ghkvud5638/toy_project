@@ -16,86 +16,16 @@ $(document).ready(function(){
 		, removeChk = false
 		, listNo = 0
 		, loadMoreChk = false
-		, j = 0
-		, k = 1
-		if(i < ${paging.totalPage}){
-			$('#Nav-sideMenu-loadMore').css("display", "")
-		} 
-	
-	
-	
-	
-$('#Nav-sideMenu-loadMore').bind("click", function(){
-	if(loadMoreChk == false ){
-		loadMoreChk = true	
-		if(removeChk == true) {
-			listNo = 1
-		    j = i
-			i = j*5 + k++
-		} else {
-			listNo = 5
-			i++;	
-			k = 1;
-		}
-		console.log("클릭")
-		$.ajax({
-					type: "GET" //요청 메소드
-					, url: "/attraction/nava" //요청 URL
-					, data: {
-								"curPage" : i
-								,"listNo" : listNo
-								,"chkNumber" : 5
-							} //전달 파라미터
-					, dataType: "html" //응답받은 데이터의 형식
-					, success: function( res ) {
-						console.log("성공")
-						console.log(res)
-
-						if(removeChk == true) {
-							i = j
-							removeChk = false;
-						}
-// 						alert($('.Nav-navList-WrapListDiv').length)
-
-						$(".Nav-sideMenu-listViewListDiv").append(res);
-						$(".Nav-attraction-list").unbind();
-						$("#Nav-sideMenu-loadMore").unbind();
-// 						alert("나 몇번쨰?" + i)
-// 						res.off();
-// 						res.unbind();
-// 						$(this).unbind();
-						
-// 						alert(i);
-// 						alert(${paging.totalPage})
-							
-						
-						if($('.Nav-navList-WrapListDiv').length >= ${paging.totalCount}){
-							$('#Nav-sideMenu-loadMore').css("display", "none")
-							res.unbind();
-
-// 								alert("작동안해용")
-							return;	
-						}
-						loadMoreChk = false
-						
-					}
-					, error: function() {
-						console.log("실패")
-					}
-					
-				})	
-		} else{
-// 			alert("한번만합시다")
-			return;
-		}
 	
 
-	});
 	
-	$('.Nav-attraction-list').bind("click", function(){
+	
+	
+	
+	$('.Nav-attraction-list${paging.curPage }').on("click", function(){
 
 	var	attraction_no = $(this).attr('id')
-
+	var whereList = ${whereList}
 	removeChk = true;
 	$.ajax({
 				type: "GET" //요청 메소드
@@ -104,7 +34,7 @@ $('#Nav-sideMenu-loadMore').bind("click", function(){
 							"attraction_no" : attraction_no
 							,"delete" : true
 							,"insert" : false
-							, "whereList" : 4
+							, "whereList" : whereList
 						} //전달 파라미터
 				, dataType: "html" //응답받은 데이터의 형식
 				, success: function( res ) {
@@ -113,7 +43,9 @@ $('#Nav-sideMenu-loadMore').bind("click", function(){
 
 					 $("#Nav-navList-WrapListDiv" + attraction_no).css("height", "0");
 					 $("#Nav-navList-WrapListDiv" + attraction_no).css("opacity", "0");
-					$('#Nav-sideMenu-loadMore').trigger("click");
+				
+							$('#removeLoadMore').trigger("click");
+				
 
 					setTimeout(function() {
 					$("#Nav-navList-WrapListDiv" + attraction_no).remove();	
@@ -168,17 +100,22 @@ $('#Nav-sideMenu-loadMore').bind("click", function(){
 
 
 
-.Nav-attraction-list {
+.Nav-attraction-list${paging.curPage } {
 	
 	float:right;	
 
 }
 
-.Nav-attraction-list:hover {
+.Nav-attraction-list${paging.curPage }:hover {
 	
-	text-decoration: underline;
+/* 	text-decoration: underline; */
 	cursor: pointer;
-	font-weight: bolder;	
+/* 	font-weight: bolder;	 */
+		transform: scale(1.2);
+	  -webkit-transform: scale(1.2);
+	  -moz-transform: scale(1.2);
+	  -ms-transform: scale(1.2);
+	  -o-transform: scale(1.2);
 
 }
 
@@ -187,7 +124,7 @@ $('#Nav-sideMenu-loadMore').bind("click", function(){
 	width:90%;
 	height:170px;
 	border-top:1px solid #ccc;
-	margin:0 auto;"
+	margin:0 auto;
 	overflow:hidden;
 }
 
@@ -195,7 +132,7 @@ $('#Nav-sideMenu-loadMore').bind("click", function(){
 
 	width:95%;
 	height:100%;
-	margin:0 auto;"
+	margin:0 auto;
 
 }
 
@@ -213,6 +150,7 @@ $('#Nav-sideMenu-loadMore').bind("click", function(){
 	white-space:nowrap;
 	overflow:hidden;
 	text-overflow: ellipsis;
+	 padding-top:2px; 
 }
 
 .Nav-navList-listSpan {
@@ -231,11 +169,11 @@ $('#Nav-sideMenu-loadMore').bind("click", function(){
 
 
 	<div class="Nav-navList-WrapDiv" style="width:100%; height:85%; ">
-	
+	<input type="hidden" value="${paging.totalCount }" id="total">
 	<c:forEach items="${list }" var="b" varStatus="sb">
 		<div class="Nav-navList-WrapListDiv" id="Nav-navList-WrapListDiv${b.attraction_no }" >
-			<span class="Nav-attraction-list" id=${b.attraction_no }>
-			X
+			<span class="Nav-attraction-list${paging.curPage }" id=${b.attraction_no } style="margin-right:3px;">
+			<i class="fas fa-times"></i>
 			</span>
 			<br>
 				<div class="Nav-navList-ListImg">
@@ -249,23 +187,34 @@ $('#Nav-sideMenu-loadMore').bind("click", function(){
 					</div>
 					<div style="width:65%; height:90%; float:left; white-space:nowrap; overflow:hidden;">
 <!-- 					 overflow-y:hidden; overflow-x:visible;  -->
-						<div style="margin-left: 18px; height:100%;  ">
-							<p class="Nav-navList-listP" style="width:80%; margin-left:5px; font-weight:bolder;">${b.attraction_title }</p>
-							<p class="Nav-navList-listP"> ${b.attraction_content }</p>
-							<br>
-							<p class="Nav-navList-listP" style="font-size:10px; 	color:#3997c1;"> 
+						<div style="margin-left: 18px; height:90%;">
+							<p class="Nav-navList-listP" style="width:80%; margin-left:5px; font-weight:bolder; font-family: 'HANGANG', cursive;">${b.attraction_title }</p>
+							<p class="Nav-navList-listP" style="font-family: 'HANGANG', cursive;"> ${b.attraction_content }</p>
+							<p class="Nav-navList-listP" style="margin-top:24px; font-family: 'Nanum Pen Script', cursive; color:#3997c1;"> 
 							#${b.attraction_category1 } 
 										&nbsp;&nbsp;
 							#${b.attraction_category2 }</p>
 							<span class="Nav-navList-listSpan" style="width:100%; font-size: 12px;"> 가까운 공연, 지하철
 							</span>
 							<br>
+							<c:choose>
+							 <c:when test="${empty showName.get(sb.index).getShow().get(0).getShow_name() }">
+								<span class="Nav-navList-listSpan" style="width:20px;">
+									없음
+								</span>
+							 </c:when>
+							 <c:otherwise>
 							<span class="Nav-navList-listSpan">
-							
-							 ${showName.get(sb.index).getShow().get(0).getShow_name() }
+								 ${showName.get(sb.index).getShow().get(0).getShow_name() }
 							</span>
+							 </c:otherwise>
+							</c:choose>
+							,
 							<span class="Nav-navList-listSpan">
-							, ${subwayName[sb.index] }
+								 ${subwayName[sb.index] }<c:if test="${subwayName[sb.index ] ne '없음'}">역
+								
+							</c:if>
+						
 							</span>
 
 						</div>
