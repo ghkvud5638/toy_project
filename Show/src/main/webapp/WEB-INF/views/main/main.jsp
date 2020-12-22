@@ -272,6 +272,8 @@ a {
 
 .main-aside-left {
    margin-top: 100px;
+   margin: 98px 0 0 380px;
+   
 }
 
 .main-aside-right {
@@ -308,7 +310,7 @@ a {
 .main-article-middle {
    width: 850px;
    height: 600px;
-   margin: 0 auto;
+   margin: 0 0 0 -560px;
    margin-top: 80px;
    /* 내부 정렬*/
    text-align: center;
@@ -406,6 +408,17 @@ a {
 .icon-type--blog{background-image:url("http://www.ggac.or.kr//inc/img/renew2019/ico_bl.png");background-size:65%}
 .icon-type--facebook{background-image:url("http://www.ggac.or.kr//inc/img/renew2019/ico_fa.png");background-size:65%}
 .icon-type--kakao{background-image:url("http://www.ggac.or.kr//inc/img/renew2019/ico_ka.png");background-size:65%}
+
+
+
+#swiper-button-prev{
+    margin: -31px 5px 7px -3px;
+}
+
+
+
+
+
 </style>
 
 <script type="text/javascript">
@@ -489,7 +502,7 @@ $(document).ready(function(){
    <div class="main-aside-left">
       <h1>이 달의 공연</h1>
       <a href="/show/showsearchview?show_id=${list[7].show_id }"> <img
-         src="${list[7].show_image }" width="200" height="500">
+         src="${list[7].show_image }" width="200" height="300">
          <p>${list[7].show_name }</p>
          <p>${list[7].show_cast }</p>
       </a>
@@ -501,7 +514,7 @@ $(document).ready(function(){
                <div class="swiper-slide" id="show-list-cover">
                   <a href="/show/detail?show_id=${s.show_id }">
                      <div class="show-list-img" id="show-list-img">
-                        <img src="${s.show_image }" width="200" height="200" />
+                        <img src="${s.show_image }" width="180" height="210" />
                      </div>
 
                      <div>
