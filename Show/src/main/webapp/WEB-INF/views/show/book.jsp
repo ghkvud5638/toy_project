@@ -49,6 +49,12 @@
     opacity: .9;
     border-radius: 5px;
 }
+
+.bookNext:hover{
+	background-color: #fd470b;
+}
+	
+
 .showDetail > li {
  	list-style: none;
  	display: inline-block;

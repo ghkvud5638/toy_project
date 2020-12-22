@@ -55,9 +55,38 @@ width: 100px;
 	
 }
  */
+ 
+#book{
+	border:0;
+	outline: 0;
+	cursor: pointer;
+	position: absolute;
+    margin: 21px 5px 285px 0px;
+    /* float: right; */
+    bottom: 25px;
+    padding: 10px 130px 10px 135px;
+    background-color: #ff6633;
+    opacity: .9;
+    border-radius: 5px;
+}
 
+#book:hover{
+	background-color: #fd470b;
+}
+
+.pull-left{
+	margin: 23px 0 0 145px;
+	
+}
+.footer{
+    background-color: #2b2b2b;
+    /* height: 292px; */
+    bottom: 0;
+    position: absolute;
+    text-align: center;
+    width: 100%;
+}
 </style>
-
 
 <script type="text/javascript">
 $(document).ready(function() {
