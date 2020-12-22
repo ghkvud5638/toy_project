@@ -6,6 +6,7 @@
 
 <c:import url="/WEB-INF/views/header.jsp" />
 <c:import url="/WEB-INF/views/attraction/attractionNavMainMenu.jsp" />
+<c:import url="/WEB-INF/views/attraction/categoryBtn.jsp" />
 
 
 <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=2839883285d5293951571fa58223465e"></script>
@@ -13,7 +14,9 @@
 
 <script type="text/javascript">
 	
-	$(document).ready(function(){
+$(document).ready(function(){
+		
+		var attno = ${attraction.attraction_no}
 	
 // 		console.log($('#attraction-detail-contentId').innerHTML)
 // 		console.log("${attraction.attraction_content }")
@@ -178,13 +181,11 @@
 				console.log("mapchk=" + mapchk )
 				console.log("loc=" + loc )
 						
-				var no2 = document.location.href.split("attraction_no=")
-				console.log(no2[1])
 				$.ajax({
 					type: "GET" //요청 메소드
 					, url: loc //요청 URL
 					, data: {
-								"attraction_no" : no2[1],
+								"attraction_no" : attno,
 							    "ajaxChk" : true , 
 							    "curPage" : 1,
 							    "chk" : true,
@@ -271,9 +272,11 @@
 			console.log("클릭");
 			
 			var chkurl = document.location.href.indexOf("area")
+			, chkurl2 = document.location.href.indexOf("boardType")
 			, area = ""
 			, cate = $(this).attr('id')
-			, cateName = document.getElementById($(this).attr('id')).innerHTML;
+			, cateName = document.getElementById($(this).attr('id')).innerHTML
+			, boardType = "";
 		
 			cateName = cateName.substr(1)
 
@@ -284,6 +287,14 @@
 				
 				area = "area=" + area +"&"
 				
+			}
+			
+			if(chkurl2 !== -1){
+				var boardTypesplit = document.location.href.split("boardType=")
+				, idx = boardTypesplit[1].indexOf("&")
+				, boardType = boardTypesplit[1].substring(0, idx)
+				
+				boardType = "boardType=" + boardType + "&"
 			}
 			
 			if(cateName == '건축/조형물'){
@@ -301,24 +312,107 @@
 			} else {
 				cateName = "etc"
 			}
-			location.href= "/attraction/list?"+area+cate+"="+cateName+"&curPage=1";
+			location.href= "/attraction/list?"+boardType+area+cate+"="+cateName+"&curPage=1";
 
 		})
 		
-	});
+		
+		var scrapChk = ${scrapChk}
+		var loginChk = "${user_Id}"
+		var timeChk = 1
+		console.log(loginChk)
+		$('.attraction-detail-scrapSpan').click(function(){
+			if(loginChk === "visitor"){
+				alert("로그인해야만 가능합니다")
+				return;
+			}
+				var delChk = false;
+				var insChk = false;
+				var scrapText = "<i class='far fa-bookmark'></i>"
+				var scrapText2 = "스크랩취소했습니다"
+			if(scrapChk){
+				 delChk = true;
+				 scrapChk = false;
+				
+			} else {
+				insChk = true;
+				 scrapChk = true;
+				 scrapText = "<i class='fas fa-bookmark'></i>"
+				var scrapText2 = "스크랩했습니다"
+
+			}
+// 				clearTimeout(scrapTimer)
+				
+				$('#attraction-alim-Wrap').css("transition", "")
+				$('#attraction-alim-Wrap').css("width", "0px")
+				console.log("작동한다")
+
+				console.log(timeChk)		
+
+			$.ajax({
+					type: "GET" //요청 메소드
+					, url: "/attraction/navList" //요청 URL
+					, data: {
+								"attraction_no" : attno
+								,"delete" : delChk
+								,"insert" : insChk
+								, "whereList" : 3			
+								} //전달 파라미터
+					, dataType: "html" //응답받은 데이터의 형식
+					, success: function( res ) {
+						console.log("성공")
+						timeChk++
+					console.log(timeChk)		
+
+						$(".attraction-detail-scrapSpan").html(scrapText);
+						$('#Nav-sideMenu-attractionList').trigger("click");
+						 
+						$('.attraction-alim-scrapSpan').text(scrapText2)
+						$('#attraction-alim-Wrap').css("transition", "all 0.5s ease-in-out")
+						$('#attraction-alim-Wrap').css("width", "500px")
+
+					
+						var scrapTimer = setTimeout(function(){
+						if(timeChk > 1){
+							--timeChk
+							console.log(timeChk)		
+							if(timeChk == 1){
+								$('#attraction-alim-Wrap').css("width", "0px")
+
+							}
+			 				return;
+						}
+
+							$('#attraction-alim-Wrap').css("width", "0px")
+							
+						}, 5000)
+
+					
+					}
+					, error: function() {
+						console.log("실패")
+					}
+					
+				})
+			
+		})
+		
+		
+		$("#attraction-alim-cancleBtn").click(function(){
+			$(".attraction-detail-scrapSpan").trigger("click")
+		})
+		
+		$("#attraction-alim-closeBtn").click(function(){
+				$('#attraction-alim-Wrap').css("width", "0px")
+				clearTimeout(scrapTimer)
+				timeChk = 1
+		})
+		
+});
 
 </script>
 
 <style type="text/css">	
-	.test {
-			postion: absoulute;
-			background-color: gray;
-			width: 1800px;
-			min-width: 1000px;
-			height: 100%;
-			margin: 0 auto
-	}
-
 
 .attraction-detail-vieBtnUl{
 	text-align: center;
@@ -327,9 +421,10 @@
 	display: inline-block;
 	padding: 10px;
 	width: 33%;
+	border-top: 1px solid #ccc;
 	border-bottom: 1px solid #ccc;
 	float:left;
-		font-family: 'Nanum Pen Script', cursive;
+	font-family: 'Nanum Pen Script', cursive;
 	font-size: 22px;
 }
 
@@ -344,17 +439,12 @@
 	 	
 }
 
-body {
-	background-color: gray;
-}
-
 
 /* Div CSS */
 
 .attraction-detail-wrapDiv {
 	width: 1500px;
 	margin: 0 auto;
-	border: 1px solid #ccc;
 	border-radius: 5px;
 	background-color: white;
 	
@@ -369,8 +459,7 @@ body {
 
 }
 .attraction-detail-conetentDiv {
-	font-family: 'Noto Sans KR', sans-serif;
-	
+ 	font-family: 'Noto Sans KR', sans-serif;
 	white-space:normal; 
  	font-size: 19px;
 	padding: 10px;
@@ -384,13 +473,40 @@ body {
 	 width:0px; 
 	 height:0px;
 	border-radius:5px;
-	margin-top:20px;
+	margin-top:40px;
 }
 
+#attraction-alim-Wrap {
+	position:fixed;
+	 width:0px;
+	 height:200px;
+	 right:0%;
+	 bottom:5%;
+	 background-color: rgba(222, 220, 220, 0.8);
+	 border:1px solid #ccc;	 
+	border-top-left-radius: 9px;
+	border-bottom-left-radius: 9px;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
+	z-index: 999;
+}
+
+.attraction-alim-scrapBtn{
+	background-color: white;
+	width: 100px;
+	height: 30px;
+	margin-left: 30px;
+	border-radius:5px;
+}
+.attraction-alim-scrapBtn:hover {
+	background-color: #c3c3c3;
+	
+}
 
 .attraction-detail-imgMainDiv {
 	border-top:1px solid #ccc;
-	width: 1250px;
+	width: 1040px;
 	height: 500px;
 	position: relative;
 	margin: 0 auto;
@@ -400,7 +516,7 @@ body {
 	
 }
 .attraction-detail-imgDiv {
-	width: 40%;
+	width: 60%;
 	height: 90%;
 	/* 	기준점 */
  	position: relative; 
@@ -418,8 +534,7 @@ body {
 .attraction-detail-img {
 	width: 100%;
 	height: 100%;
-	border: 1px solid #ccc;
-	padding: 5px 5px 20px 5px;
+	border: 5px solid black;
 	border-radius: 5px;
 }
 
@@ -446,6 +561,7 @@ body {
 	background:white;
 	border-radius: 5px;
 	height: 40px;
+	width: 100px;
 }
 
 .attraction-detail-listBackBtn:hover{
@@ -461,17 +577,24 @@ P {
 }
 
 .attraction-detail-scrapSpan {
-	
-	float:right;
+	float:right; 
+	font-size:50px;
 	z-index:999;
-	position:absolute;
+	margin-right: 100px;
+	
+/* 	position:absolute;  */
 
 }
 .attraction-detail-scrapSpan:hover {
 	
-	text-decoration: underline;
-	font-weight: bolder;
+/* 	text-decoration: underline; */
+/* 	font-weight: bolder; */
 	cursor: pointer;
+	transform: scale(1.1);
+  -webkit-transform: scale(1.1);
+  -moz-transform: scale(1.1);
+  -ms-transform: scale(1.1);
+  -o-transform: scale(1.1);
 
 }
 
@@ -480,35 +603,40 @@ P {
 </head>
 <body>
 
-<div class="test">
 <div class="attraction-detail-wrapDiv">
 
-<c:import url="/WEB-INF/views/attraction/categoryBtn.jsp" />
 
 
 	<div class="attraction-detail-wrapAllDiv" >
-	<div style="width:60%; margin:0 auto">
-		<h1 style="font-family: 'Nanum Brush Script', cursive; font-size: 53px;">${attraction.attraction_title }</h1>
-	
+		<span class="attraction-detail-scrapSpan">
+			<c:if test="${scrapChk eq false }">
+				<i class="far fa-bookmark"></i>
+			</c:if>
+			<c:if test="${scrapChk eq true }">
+				<i class="fas fa-bookmark"></i>
+			</c:if>
+		</span>	
+	<div style="width:1000px; margin:0 auto">
+		<h1 style="font-family: 'HANGANG', cursive; font-size: 53px;">${attraction.attraction_title }</h1>
 	</div>
-		<div class="attraction-detail-scrapSpan">스크랩하기</div>		
+		
 	
 	<div class="attraction-detail-imgMainDiv">
 			<div class="attraction-detail-imgDiv">
 				<img class="attraction-detail-img" src="${attraction.attraction.get(0).attraction_photo }" alt="">
 			</div>							 
 	</div>
-	<div class="attraction-detail-conetentDiv" style="border-top:1px solid #ccc">
+	<div class="attraction-detail-conetentDiv">
 				
-		<div style="width:60%; margin: 0 auto;">
+		<div style="width:85%; margin: 0 auto;">
 				<div id="attraction-detail-contentId" style="text-indent: 0.6em;">
 <%-- 				${attraction.attraction_content } --%>
 				</div>
 			
 			<br><br>	
 				
-				<p style="font-size: 14px;">문의 사항 : ${attraction.attraction_tel }</p>
-				<p style="font-size: 13px;">상세주소 : ${attraction.attraction_addr }</p>
+				<p style="font-size: 14px;  font-family: 'Noto Sans KR', sans-serif;"><i class="fas fa-phone-alt"></i>)문의사항 : ${attraction.attraction_tel }</p>
+				<p style="font-size: 13px;  font-family: 'Noto Sans KR', sans-serif;"><i class="fas fa-map-marked-alt"></i>)상세주소 : ${attraction.attraction_addr }</p>
 				
 		
 		<br>
@@ -516,16 +644,19 @@ P {
 			<span class="attraction-detail-contentCateSpan" id="cate1">#${attraction.attraction_category1 }</span>
 			&nbsp;&nbsp;
 			<span class="attraction-detail-contentCateSpan" id="cate2">#${attraction.attraction_category2 }</span>
-		</div>		
+<br>
+		<div style="float:right">
 		
+		<button class="attraction-detail-listBackBtn">목록</button>
+		</div>
+		</div>		
 	</div>
 
-
-		<div style="border-top:1px solid #ccc">
+		<div>
 		<ul class="attraction-detail-vieBtnUl">
-		<li class="attraction-detail-viewBtnList" id="attraction-detail-mapViewLi">지도 보여줘	</li>
-		<li class="attraction-detail-viewBtnList" id="attraction-detail-showViewLi">근처 공연 보여줘		</li>
-		<li class="attraction-detail-viewBtnList" id="attraction-detail-attractionViewLi">다른 볼거리 보여줘		</li>
+		<li class="attraction-detail-viewBtnList" id="attraction-detail-mapViewLi">지도 보기	</li>
+		<li class="attraction-detail-viewBtnList" id="attraction-detail-showViewLi">근처 공연 보기		</li>
+		<li class="attraction-detail-viewBtnList" id="attraction-detail-attractionViewLi">근처 다른 볼거리 보기		</li>
 		</ul>
 		
 				<br>
@@ -537,20 +668,26 @@ P {
 		</div>
 	
 
-
 	
-	<div style="border-top:1px solid #ccc;">
-				<div style=" margin:30px 0px 80px 0px;  width:60%; margin:0 auto">
-			 <button class="subwayBtn" style="float:left;">가까운 지하철 찾기</button><br><br>
-			 		<span class="attraction-detail-subwaySpan"> </span>
-			
-					<button onclick="history.go(-1)" class="attraction-detail-listBackBtn">목록으로 되돌아가기</button>
-				</div>
-		</div>
+	
 </div>
 
 </div>
-</div>
+		<div id="attraction-alim-Wrap">
+			<div class="attraction-alim-wrapDiv">
+					<div style="width:20%; height:70%; float:left; margin-top:20px; margin-left:10px; position:relative; background-color:white;">
+							<img src="${attraction.attraction.get(0).attraction_photo  }"
+							 style="width:100px; height:120px; padding:4px 4px 10px 4px; border:1px solid black; border-radius:3px;">
+					</div>
+						<div style="float:left; width:70%; height:80%; margin-top:10px; margin-left:15px;">
+							<p style="font-family: 'HANGANG', cursive;width:100%; font-size:20px; font-weight:bolder; overflow: hidden; white-space: nowrap;">${attraction.attraction_title }</p>
+							<span style="font-size:20px; overflow: hidden; white-space: nowrap;">${user_Id }님</span><br>
+							<span class="attraction-alim-scrapSpan" style="font-size:20px; overflow: hidden; white-space: nowrap;"></span><br><br><br>
+							<button class="attraction-alim-scrapBtn" id="attraction-alim-cancleBtn">취소</button>
+							<button class="attraction-alim-scrapBtn" id="attraction-alim-closeBtn">닫기</button>
+					</div>
+			</div>
+		</div>
 
 
 <c:import url="/WEB-INF/views/footer.jsp" />

@@ -10,7 +10,11 @@ import show.dto.Member;
 import show.dto.TB_ATTRACTION;
 import show.dto.TB_BOOK;
 import show.dto.TB_SHOW;
+import show.util.AdminAttractionPaging;
 import show.util.AdminMemberPaging;
+import show.util.AdminShowPaging;
+import show.util.AdminTicketPaging;
+import show.util.showPaging;
 
 public interface AdminService {
 	
@@ -95,6 +99,22 @@ public interface AdminService {
 	public List<?> kotoshiuriage();
 
 	public List<?> hidukeuriage();
+
+	public void attractionDelete(TB_ATTRACTION tb_attraction);
+
+	public void memberDelete(Member member);
+
+	public AdminShowPaging showGetPaging(AdminShowPaging curPage);
+
+	public List<TB_SHOW> getShowList(AdminShowPaging paging);
+
+	public AdminAttractionPaging attractionGetPaging(AdminAttractionPaging curPage);
+
+	public List<?> adminAttraclist(AdminAttractionPaging paging);
+
+	public AdminTicketPaging tiketGetPaging(AdminTicketPaging curPage);
+
+	public List<?> getTiketList(AdminTicketPaging paging);
 
 
 	

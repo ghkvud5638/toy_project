@@ -11,6 +11,7 @@
 <title>Insert title here</title>
 <script type="text/javascript" src="http://code.jquery.com/jquery-2.2.4.min.js"></script>
 <script type="text/javascript">
+
 $(document).ready(function(){
 
 
@@ -19,7 +20,17 @@ $(document).ready(function(){
 		console.log($(this).attr('id'))
 		
 		var chkurl = document.location.href.indexOf("area")
-			, area = "";
+		  , chkurl2 = document.location.href.indexOf("boardType")
+			, area = ""
+		,boardType = "";
+		
+		if(chkurl2 !== -1){
+			var boardTypesplit = document.location.href.split("boardType=")
+			, idx = boardTypesplit[1].indexOf("&")
+			, boardType = boardTypesplit[1].substring(0, idx);
+			
+			boardType = "boardType=" + boardType +"&"
+		}
 		
 		if(chkurl !== -1){
 			var areasplit = document.location.href.split("area=")
@@ -32,7 +43,7 @@ $(document).ready(function(){
 		if(${chkNumber} == 1){
 		   location.href= "/show/detail?show_id="+$(this).attr('id');		
 		} else {
-		   location.href= "/attraction/detail?"+area+"attraction_no="+$(this).attr('id');		
+		   location.href= "/attraction/detail?"+boardType+area+"attraction_no="+$(this).attr('id');		
 			
 		}
 		
@@ -59,15 +70,16 @@ $(document).ready(function(){
 }
 
 .attraction-detail-showNameDiv {
-	font-family: 'Nanum Pen Script', cursive;
-/* 	font-weight: bolder; */
-	font-size: 18px;
+	font-family: 'HANGANG', cursive;
+ 	font-weight: bolder;
+/* 	font-size: 18px; */
 	width:80%;
 	height: 10%;
 	margin: 0 auto;
  	overflow:hidden;	 
 	white-space:nowrap;
 	text-overflow: ellipsis;
+	margin-top: 5px;
 /* 	padding-top: 5px; */
 	
 }
@@ -176,6 +188,7 @@ $(document).ready(function(){
 										</div>
 									</div>
 								</li>
+						
 							</c:forEach>
 													<jsp:include page="/WEB-INF/views/util/attractionPaging.jsp" />
 						

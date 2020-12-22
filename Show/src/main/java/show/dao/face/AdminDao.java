@@ -8,7 +8,11 @@ import show.dto.Member;
 import show.dto.TB_ATTRACTION;
 import show.dto.TB_BOOK;
 import show.dto.TB_SHOW;
+import show.util.AdminAttractionPaging;
 import show.util.AdminMemberPaging;
+import show.util.AdminShowPaging;
+import show.util.AdminTicketPaging;
+import show.util.showPaging;
 
 public interface AdminDao {
 	
@@ -89,6 +93,22 @@ public interface AdminDao {
 	public List<?> kotoshiuriage();
 
 	public List<?> hidukeuriage();
+
+	public void attractionDelete(TB_ATTRACTION tb_attraction);
+
+	public void memberDelete(Member member);
+
+	public int showSelectCntAll(AdminShowPaging curPage);
+
+	public List<TB_SHOW> selectShowAll(AdminShowPaging paging);
+
+	public int AttractionSelectCntAll(AdminAttractionPaging curPage);
+
+	public List<?> selectAttractionAll(AdminAttractionPaging paging);
+
+	public int TicketSelectCntAll(AdminTicketPaging curPage);
+
+	public List<?> selectTicketAll(AdminTicketPaging paging);
 
 
 }

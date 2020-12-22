@@ -5,11 +5,15 @@
 <c:import url="/WEB-INF/views/header.jsp" />
 
 
+<link rel='stylesheet' href='//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css'>
 
-<style type="text/css">
+<c:import url="/WEB-INF/views/admin/adminheader.jsp" />
+
+<style>
 .goods_list {
-	margin-left: 20px;
+/* 	margin-left: 20px; */
 	overflow: hidden;
+	width: 1050px;
 }
 
 .goods_list li {
@@ -40,7 +44,7 @@
 }
 
 .goods_list li .list_info {
-	padding: 14px 14px 13px 13px;
+	padding: 6px 14px 13px 13px;
 	height: 70px;
 	background: #fff;
 	border: 1px solid white;
@@ -93,26 +97,46 @@
 	text-overflow: ellipsis;
 }
 
+.btn {
+	font-size: 14px;
+	margin-left: 80px;
+	margin-bottom: 10px
+}
+
+
 </style>
 
+<script type="text/javascript">
 
-</head>
-<body>
+</script>
+
+
 <div class="container">
+  <div class="row flex-nowrap">
+
+    <main class="col-11 py-md-3 pl-md-6" role="main">
+    
+    <div class="container">
              
 <div class="row">
-    <div class="col-md-12">
-         
-        <div class="page-header">
-            <h1>Show List</h1>
-            <h2>모든 공연 보기</h2>
-        </div>
-    </div>
+    <div class="col-md-11">
+            <h1>공연 리스트</h1>
+           
+            <hr>
+    </div> 
 </div>
 
+<div>
+    <a href="/admin/showinsert"><input type="button" class="btn btn-primary col-md-1" value="공연등록" class="form-control" onclick="fnbutton();" /></a>
+</div>
+<div style="float:right;">
+	<form action="/admin/showlist" method="get">
+		<input type="text" id="searchText" name="searchText" value="">
+		<button>검색</button>
+	</form>
+</div>
 
 	<ul class="goods_list" id="goodsList">
-
 		<c:forEach var="l" items="${showList }">
 				<li>
 			<a href="/admin/showupdate?show_id=${l.show_id }">
@@ -130,31 +154,16 @@
 				</li>
 		</c:forEach>
 	</ul>
-
-<!-- 	<table border="1"> -->
-<!-- 		<tr> -->
-<!-- 			<th>공연 이름</th> -->
-<!-- 			<th>공연 장소</th> -->
-<!-- 			<th>공연 기간</th> -->
-<!-- 			<th>사진</th> -->
-<!-- 		</tr> -->
-<%-- 	<c:forEach var="l" items="${showList }"> --%>
-<!-- 		<tr> -->
-<%-- 			<td>${l.show_name }</td> --%>
-<%-- 			<td>${l.show_place }</td> --%>
-<%-- 			<td><fmt:formatDate value="${l.show_start }" pattern="yyyy-MM-dd" /> ~ <fmt:formatDate value="${l.show_end }" pattern="yyyy-MM-dd" /></td> --%>
-<!-- 			<td> -->
-<%-- 				<a href="/show/detail?show_id=${l.show_id }"> --%>
-<%-- 					<img style="width: 120px; height: 150px;" class="showListImg" src="${l.show_image }"> --%>
-<!-- 				</a> -->
-<!-- 			</td> -->
-			
-<!-- 		</tr> -->
-<%-- 	</c:forEach> --%>
-<!-- </table> -->
-
+	<jsp:include page="/WEB-INF/views/util/adminshowlistpaging.jsp" />
 </div>
+
+    </main>
+  </div>
+</div>
+
+<br>
 
 
 <c:import url="/WEB-INF/views/footer.jsp" />
+
 

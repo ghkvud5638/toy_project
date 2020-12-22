@@ -1,18 +1,26 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
-
-<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>    
-<%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>    
-<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%> 
-
+    pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt"  uri="http://java.sun.com/jsp/jstl/fmt"%>
 <c:import url="/WEB-INF/views/header.jsp" />
 
 
-<div id="container">
+<link rel='stylesheet' href='//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css'>
 
+<c:import url="/WEB-INF/views/admin/adminheader.jsp" />
 
-<h1>Show 넣기</h1>
-<hr>
+<div class="container-fluid">
+  <div class="row flex-nowrap">
+    <main class="col-9 py-md-3 pl-md-5 bd-content" role="main">
+    
+    <div id="container">
+
+	<div class="row">
+    	<div class="col-md-12">
+
+<div class="page-header">
+<h1>공연 등록</h1>
+</div>
 
 
 <form action="/admin/showinsert" method="post">
@@ -119,7 +127,16 @@
 	
 </form>
 
+	</div>
 </div>
+
+</div>
+
+    </main>
+  </div>
+</div>
+
+
 
 
 <c:import url="/WEB-INF/views/footer.jsp" />

@@ -6,13 +6,14 @@
 
 <c:import url="/WEB-INF/views/header.jsp" />
 <c:import url="/WEB-INF/views/attraction/attractionNavMainMenu.jsp" />
-
+<c:import url="/WEB-INF/views/attraction/categoryBtn.jsp" />
 <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=2839883285d5293951571fa58223465e&libraries=services"></script>
 
 <script type="text/javascript" src="http://code.jquery.com/jquery-2.2.4.min.js"></script>
 
 <script type="text/javascript">
 
+		
 $(document).ready(function() {
 	
 
@@ -44,10 +45,10 @@ $(document).ready(function() {
 	console.log("갯파라미터 테스트 " + getParam("curPage"))
 	console.log("갯파라미터 테스트 " + getParam("order"))
 
-	if(getParam("boardType") == "board"){
-		$('.attraction-list-listTable:not(:first-child)').css("border-top", "1px solid #ccc")
+// 	if(getParam("boardType") == "board"){
+// 		$('.attraction-list-listTable:not(:first-child)').css("border-top", "1px solid #ccc")
 
-	}
+// 	}
 	
 	
 // 		$('.attraction-list-wrapDiv').css("opacity", "0")
@@ -79,7 +80,8 @@ $(document).ready(function() {
 			type: "get" //요청 메소드
 			, url: "/attraction/map" //요청 URL
 			, data: { attraction_no: $(this).val()
-					   , area : "${area}"} //전달 파라미터
+					   , area : "${area}"
+					   , boardType : "${boardType}"} //전달 파라미터
 			, dataType: "html" //응답받은 데이터의 형식
 			, success: function( res ) {
 				console.log("성공")
@@ -105,6 +107,14 @@ $(document).ready(function() {
 		
 	})
 	
+	$('.attraction-list-searchInput').keydown(function(key){
+// 			alert("작동")
+		if(key.keyCode == 13){
+			$('.attraction-list-searchBtn').trigger("click");	
+			return false;			
+		}
+		return true;
+	})
 		
 	$('.attraction-list-searchBtn').on('click',function() {
 		console.log("클릭")
@@ -152,7 +162,7 @@ $(document).ready(function() {
 			
 // 			$('.attraction-list-wrapDiv').css("opacity", "0")
 // 			setTimeout(function() {
-				location.href= "/attraction/list?"+ar+ca1+ca2+se+boardType+"curPage=1";
+				location.href= "/attraction/list?"+boardType+ar+ca1+ca2+se+"curPage=1";
 				
 // 			}, 1000);
 				
@@ -203,13 +213,13 @@ $(document).ready(function() {
 			}
 
 			if(boardType == ""){
-				boardType = "&boardType=image&"
+				boardType = "boardType=image&"
 			} else {
-				boardType = "&boardType=" + boardType + "&"
+				boardType = "boardType=" + boardType + "&"
 				
 			}
 			
-			location.href= "/attraction/list?"+area+cate+"="+cateName+boardType+"curPage=1";
+			location.href= "/attraction/list?"+boardType+area+cate+"="+cateName+"&curPage=1";
 
 		})
 	
@@ -257,7 +267,21 @@ $(document).ready(function() {
 				console.log(areasplit)
 	
 			} 
-	
+			areasplit = areasplit.replace("boardType=image&","")
+			areasplit = areasplit.replace("boardType=board&","")
+			if(boardType == ""){
+				boardType="image"
+			}
+			areasplit = "boardType=" + boardType + "&" + areasplit
+			
+			if (arrayName == '게시판형'){
+				areasplit = areasplit.replace("boardType=image&","boardType=board&")
+				curPage = 1
+				
+			} else if(arrayName == '이미지형') {
+				areasplit = areasplit.replace("boardType=board&","boardType=image&")
+				curPage = 1
+			}
 	
 			if(arrayName == '이름순(A-Z)'){
 				areasplit = areasplit + 'order=name&'
@@ -283,21 +307,7 @@ $(document).ready(function() {
 // 				boardTypeName = boardTypeName.replace(/(\s*)/g,"")
 				
 // 				alert(boardTypeName)
-					areasplit = areasplit.replace("boardType=image&","")
-					areasplit = areasplit.replace("boardType=board&","")
-					if(boardType == ""){
-						boardType="image"
-					}
-				areasplit = areasplit + "boardType=" + boardType + "&"
-				
-				if (arrayName == '게시판형'){
-					areasplit = areasplit.replace("boardType=image&","boardType=board&")
-					curPage = 1
 					
-				} else if(arrayName == '이미지형') {
-					areasplit = areasplit.replace("boardType=board&","boardType=image&")
-					curPage = 1
-				}
 				
 // 				alert(boardTypeName)
 		
@@ -312,7 +322,8 @@ $(document).ready(function() {
 		
 		
 	})	
-		
+	
+	
 		
 });
 
@@ -321,7 +332,7 @@ $(document).ready(function() {
 <style type="text/css">
 
 body {
- 	background-color: gray; 
+/*  	background-color: gray;  */
 
 /* background-color:rgba (0,0,0,0); */
 /* 	opacity: 0; */
@@ -337,26 +348,25 @@ table, tr, td {
 
 /* Div CSS */
 
-	.test {
-			postion: absoulute;
-			background-color: gray;
-			width: 1800px;
-			min-width: 1000px;
-			height: 100%;
-			margin: 0 auto
-	}
+/* 	.test { */
+/* 			postion: absoulute; */
+/* 			width: 1800px; */
+/* 			min-width: 1000px; */
+/* 			height: 100%; */
+/* 			margin: 0 auto */
+/* 	} */
 
 	/* 전모든 요소 Div */
 	.attraction-list-wrapDiv {
 		postion: absoulute;
 /*  		min-width: 100%;  */
-  		width: 80%;
+  		width: 1500px;
 		height: 100%;
 		top: 0;
 		left: 0;
 		margin: 0 auto;
 		background-color: white;
-		border: 1px solid #ccc;
+/* 		border: 1px solid #ccc; */
 		border-radius: 5px;
 /* 		padding: 0px 100px; */
 /* 		margin: 0px 100px 0px 100px; */
@@ -406,11 +416,13 @@ table, tr, td {
 		width:200px;
 		height: 70px;
 		display:-webkit-box;
-		line-height: 1.1em;
-		height: 3.1em;
-		font-size: 13px;
+		line-height: 1.2em;
+		height: 3.4em;
+		font-size: 14px;
 		-webkit-line-clamp:3;
 		-webkit-box-orient:vertical;
+ 		font-family: 'NAMSAN', Sans-serif;
+		
 	
 	}
 	
@@ -529,36 +541,41 @@ table, tr, td {
 		white-space: nowrap;
 		overflow: hidden;
 		text-overflow: ellipsis;
+		font-family: 'HANGANG', cursive;
 	}
 
 	/* 근처 장소 내용 담는 P */
 	.attraction-list-listIntroNearbyP {
-		 font-size:7px;
-		 width:200px;
-		 white-space: nowrap;
-		 overflow: hidden;
-		 text-overflow: ellipsis;
+		font-size:12px;
+		width:200px;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+ 		font-family: 'Noto Sans KR', sans-serif;
+		 
 		 
 	}
 	
 	.attraction-detail-contentCateSpan{
-	color: #3997c1;
+		color: #3997c1;
+		font-size: 16px;
+		font-family: 'Nanum Pen Script', cursive;
 	}
 
 	.attraction-detail-contentCateSpan:hover, .attraction-list-listArraySpan:hover{
-	cursor: pointer;
-	font-weight: bolder;
-	text-decoration: underline;
+		cursor: pointer;
+		font-weight: bolder;
+		text-decoration: underline;
 	}
 	
 	
 
 </style>
 
-<div class="test">
+
+<!-- <div class="test"> -->
 <div class="attraction-list-wrapDiv">
 
-	<c:import url="/WEB-INF/views/attraction/categoryBtn.jsp" />
 
 
 <div class="attraction-list-searchDiv">
@@ -577,7 +594,7 @@ table, tr, td {
 			<option value="etc">기타</option>
 		</select>
 		
-		<input type="text" class="attraction-list-searchInput" id="search" placeholder="검색어를 입력해주세요(없어도 뭐 검색은 돼요)" value="${search }">
+		<input type="text" class="attraction-list-searchInput" id="search" placeholder="검색어를 입력해주세요(없어도 검색은 돼요!!)" value="${search }">
 		<button class="attraction-list-searchBtn">검색</button>
 	
 	</div>
@@ -669,10 +686,10 @@ table, tr, td {
 		<c:forEach items="${list }" var="b" varStatus="sb">
 			<c:choose>
 				<c:when test="${area eq 'all' }">
-					<c:set var="loc" value="/attraction/detail?attraction_no=${b.attraction_no }" />
+					<c:set var="loc" value="/attraction/detail?boardType=${boardType }&attraction_no=${b.attraction_no }" />
 				</c:when>
 				<c:otherwise>
-					<c:set var="loc" value="/attraction/detail?area=${area }&attraction_no=${b.attraction_no }" />
+					<c:set var="loc" value="/attraction/detail?boardType=${boardType }&area=${area }&attraction_no=${b.attraction_no }" />
 				</c:otherwise>
 			</c:choose>
 		
@@ -703,7 +720,7 @@ table, tr, td {
 										근처 공연 : 
 										<a href="/show/detail?show_id=${showName.get(sb.index).getShow().get(0).getShow_id() }">
 										${showName.get(sb.index).getShow().get(0).getShow_name() }
-										</a> 
+										</a>
 									</c:otherwise>
 								</c:choose>
 									<br>
@@ -735,21 +752,16 @@ table, tr, td {
 		<c:forEach items="${list }" var="b" varStatus="sb">
 			<c:choose>
 				<c:when test="${area eq 'all' }">
-					<c:set var="loc" value="/attraction/detail?attraction_no=${b.attraction_no }" />
+					<c:set var="loc" value="/attraction/detail?boardType=${boardType }&attraction_no=${b.attraction_no }" />
 				</c:when>
 				<c:otherwise>
-					<c:set var="loc" value="/attraction/detail?area=${area }&attraction_no=${b.attraction_no }" />
+					<c:set var="loc" value="/attraction/detail?boardType=${boardType }&area=${area }&attraction_no=${b.attraction_no }" />
 				</c:otherwise>
 			</c:choose>
 		
-				<table class="attraction-list-listTable" style="margin:0 auto;" >
-					<tbody>
-						<tr>
-							<td class="attarction-list-listIntroImgTd" style="height:190px"><a href="<c:out value="${loc }"/>">
-								<img class="attraction-list-listIntroImg" src="${b.attraction.get(0).attraction_photo }" alt="" 
-								style="	width: 80%;	height: 100%;"></a></td>
-							<td class="attraction-list-listIntroTd">		
-								<p class="attraction-list-listIntroTitleP">${b.attraction_title }</p>
+				<ul class="attraction-list-listTable" style="margin:0 auto; border:3px solid #ccc; border-radius:10px; margin-top: 20px; margin-bottom:20px;" >
+							<li class="attraction-list-listIntroTd" style="margin-left: 0px; width:75%; display:inline-block; padding:0px;">		
+								<p class="attraction-list-listIntroTitleP" style="margin-top:10px; font-size:20px; width:100%;">${b.attraction_title }</p>
 								<div class="attraction-list-listIntroDiv" style="width:90%">
 									${b.attraction_content }
 								</div>
@@ -760,9 +772,8 @@ table, tr, td {
 								<span class="attraction-detail-contentCateSpan" id="cate2${sb.index}">#${b.attraction_category2 }</span>
 						
 								</p>
-								</td>
-								<td>
-								<p class="attraction-list-listIntroNearbyP" style="width:130px; margin-right:50px;">
+							
+								<p class="attraction-list-listIntroNearbyP" style="width:100%;margin-right:50px;">
 								<c:choose>
 									<c:when test="${empty showName.get(sb.index).getShow().get(0).getShow_name() }">
 										공연이 근처에 업써요ㅠㅜ
@@ -784,18 +795,18 @@ table, tr, td {
 									</c:otherwise>
 								</c:choose>
 								</p>
-								</td>
-								<td>
+								
 								<p>
 									<button class="attraction-list-mapViewBtn" value="${b.attraction_no }" >지도 보기</button>
-								</p>
-								<p>
 									<button class="attraction-list-detailViewBtn" onclick="location.href='<c:out value="${loc }"/>'">상세보기</button>
 								</p>
-							</td>
-						</tr>
-					</tbody>
-				</table>
+							</li>
+								<li class="attarction-list-listIntroImgTd" style="float:right; display:inline-block; width:20%; height:190px; padding:15px 0px 0px 0px;"><a href="<c:out value="${loc }"/>">
+								<img class="attraction-list-listIntroImg" src="${b.attraction.get(0).attraction_photo }" alt="" 
+								style="	width: 80%;	height: 100%;"></a>
+						
+						</li>
+				</ul>
 		
 		</c:forEach>
 	
@@ -809,6 +820,6 @@ table, tr, td {
 
 </div>
 
-</div>
+<!-- </div> -->
 
 <c:import url="/WEB-INF/views/footer.jsp" />

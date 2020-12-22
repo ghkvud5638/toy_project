@@ -20,6 +20,8 @@ public interface AttractionService {
 
 	public boolean visitList(HashMap<String, Object> searchList);
 
+	public boolean scrapChk(HashMap<String, Object> searchList);
+
 
 	
 

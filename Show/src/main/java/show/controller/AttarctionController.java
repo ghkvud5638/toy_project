@@ -3,7 +3,6 @@ package show.controller;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.TreeSet;
 
 import javax.servlet.http.HttpSession;
 
@@ -52,11 +51,16 @@ public class AttarctionController {
 
 	}
 	
+	@RequestMapping(value="/login")
+	public void login() {
+		
+	}
+	
 	
 	
 	@RequestMapping(value="/list")
 	public String attractionList(AttractionPaging curPage, Model model, String area, 
-			String cate1, String cate2, String search, String order, String boardType) {
+			String cate1, String cate2, String search, String order, String boardType, HttpSession session) {
 	
 		System.out.println("시작");
 		
@@ -82,9 +86,9 @@ public class AttarctionController {
 		}
 		
 		if(boardType == null) {
-			System.out.println("테스트" + boardType);
+//			System.out.println("테스트" + boardType);
 			boardType = "image";
-			System.out.println("테스트" + boardType);
+//			System.out.println("테스트" + boardType);
 		}
 
 		
@@ -119,12 +123,11 @@ public class AttarctionController {
 		model.addAttribute("ajaxChk", false);
 		searchList.put("paging", paging);
 		
-		listArray(model, searchList);
+		listArray(model, searchList, session);
 	
 		model.addAttribute("boardType", boardType);
 
 		return "attraction/attractionlist";
-			
 		
 		
 	}
@@ -163,9 +166,15 @@ public class AttarctionController {
 	}
 	
 	@RequestMapping(value="/nav")
-	public String attractionNav(AttractionPaging curPage, Model model, String area, String cate1, String cate2, String search, String order) {
+	public String attractionNav(AttractionPaging curPage, Model model, HttpSession session) {
 		System.out.println("시작");
+		HashMap<String, Object> searchList = new HashMap<String, Object>();
 		
+		searchList.put("chkNumber", 5);
+		searchList.put("listNo", 1);
+		
+		NavList(curPage, model, searchList, session);
+	
 		
 		return "attraction/attractionNavSubMenu";
 		
@@ -174,37 +183,59 @@ public class AttarctionController {
 		
 	
 	@RequestMapping(value="/nava")
-	public String attractionNava(AttractionPaging curPage, Model model, int listNo, int chkNumber) {
+	public String attractionNava(AttractionPaging curPage, Model model, int listNo, int chkNumber, int whereList, HttpSession session, String boardType, String area) {
 		HashMap<String, Object> searchList = new HashMap<String, Object>();
-		
-		System.out.println("아오페이징..." + curPage.getCurPage());
-		System.out.println("아오페이징..." + curPage);
+
+	
 		searchList.put("chkNumber", chkNumber);
 		searchList.put("listNo", listNo);
-		AttractionPaging paging = attractionService.selectAttractionPaging(curPage, searchList);
-		searchList.put("paging", paging);
-		System.out.println("아오페이징..." + paging);
+		
+		loginId(searchList, session);
+
+		NavList(curPage, model, searchList, session);
 	
-		listArray(model, searchList);
 	
-	
-		model.addAttribute("paging", paging);
-	
+		model.addAttribute("whereList", whereList);
+		model.addAttribute("area", area);
+		model.addAttribute("boardType", boardType);
+		
+		System.out.println(whereList);
 		
 		return "attraction/attractionNavList";
 		
 	}
 	
+	public void NavList(AttractionPaging curPage, Model model, HashMap<String, Object> searchList, HttpSession session) {
+//		System.out.println("페이징..." + curPage.getCurPage());
+//		System.out.println("페이징..." + curPage);
+
+		loginId(searchList, session);
+
+	
+		AttractionPaging paging = attractionService.selectAttractionPaging(curPage, searchList);
+		searchList.put("paging", paging);
+//		System.out.println("페이징..." + paging);
+		model.addAttribute("paging", paging);
+		
+		listArray(model, searchList, session);
+
+
+	}
+	
 	@RequestMapping(value="/navList")
 	@ResponseBody
-	public boolean attractionNavList(TB_ATTRACTION attr, boolean delete, boolean insert, int whereList) {
+	public boolean attractionNavList(TB_ATTRACTION attr, boolean delete, boolean insert, int whereList, HttpSession session) {
 		String attraction_no = attr.getAttraction_no();
 	
+
+		
 		HashMap<String, Object> searchList = new HashMap<String, Object>();
 		searchList.put("attraction_no", attraction_no);
 		searchList.put("delete", delete);
 		searchList.put("insert", insert);
 		searchList.put("whereList", whereList);
+		loginId(searchList, session);
+
 		
 		return attractionService.visitList(searchList);
 		
@@ -214,22 +245,26 @@ public class AttarctionController {
 	
 
 	@RequestMapping(value="/detail")
-	public void attractionDetail(TB_ATTRACTION attrInfo, AttractionPaging p, Model model, String area) {
+	public void attractionDetail(TB_ATTRACTION attrInfo, AttractionPaging p, Model model, String area, HttpSession session) {
 		String attraction_no = attrInfo.getAttraction_no();
-		
+	
 		
 		HashMap<String, Object> searchList = new HashMap<String, Object>();
 		searchList.put("attraction_no", attraction_no);
+		loginId(searchList, session);
 		
+		boolean scrapChk = attractionService.scrapChk(searchList);
+//		System.out.println(scrapChk);
 
-		attractionNavList(attrInfo, true, true, 4);
+		attractionNavList(attrInfo, true, true, 4, session);
 
 		TB_ATTRACTION attraction = attractionService.selectMarker(attraction_no);
-
 		
 		model.addAttribute("attraction", attraction);
+		model.addAttribute("scrapChk", scrapChk);
+		model.addAttribute("user_Id", searchList.get("userId"));
+		
 
-	 
 
 		
 		
@@ -237,7 +272,7 @@ public class AttarctionController {
 	
 	
 	@RequestMapping(value="/map")
-	public String attractionMap(TB_ATTRACTION attrInfo, Model model, boolean chk, String area) {
+	public String attractionMap(TB_ATTRACTION attrInfo, Model model, boolean chk, String area, String boardType) {
 				
 		String attraction_no = attrInfo.getAttraction_no();
 		TB_ATTRACTION attraction = attractionService.selectMarker(attraction_no);
@@ -245,6 +280,7 @@ public class AttarctionController {
 		model.addAttribute("chk", chk);
 		model.addAttribute("attraction_no", attraction_no);
 		model.addAttribute("area", area);
+		model.addAttribute("boardType", boardType);
 		
 		
 		
@@ -271,7 +307,11 @@ public class AttarctionController {
 		
 	}
 	
-	public void listArray(Model model, HashMap<String, Object> searchList){
+	public void listArray(Model model, HashMap<String, Object> searchList, HttpSession session){
+		
+		loginId(searchList, session);
+		
+		
 		List<TB_ATTRACTION> list = attractionService.selectAttractionList(searchList);
 		List<String> subwayName = new ArrayList<String>();
 		List<TB_ATTRACTION> showName = new ArrayList<TB_ATTRACTION>();
@@ -290,6 +330,15 @@ public class AttarctionController {
 		model.addAttribute("list", list);
 		model.addAttribute("showName", showName);
 		model.addAttribute("subwayName", subwayName);
+	}
+	
+	public void loginId(HashMap<String, Object> searchList, HttpSession session ) {
+		String userId = "visitor";
+
+		if( null != session.getAttribute("member_id")) {
+			userId = (String) session.getAttribute("member_id");
+		}  
+		searchList.put("userId", userId);
 	}
 	
 }

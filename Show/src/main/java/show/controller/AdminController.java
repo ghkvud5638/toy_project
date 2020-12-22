@@ -14,12 +14,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import show.dto.Admin;
 import show.dto.Member;
+import show.dto.TB_ATTRACTION;
 import show.dto.TB_BOOK;
 import show.dto.TB_SHOW;
 import show.service.face.AdminService;
+import show.util.AdminAttractionPaging;
 import show.util.AdminMemberPaging;
+import show.util.AdminShowPaging;
+import show.util.AdminTicketPaging;
 
 @Controller
 public class AdminController {
@@ -28,6 +31,9 @@ public class AdminController {
 	
 	@Autowired
 	private AdminService adminService;
+	
+	
+	//----------------- 관리자 메인 페이지 ----------------------
 	
 	@RequestMapping(value="/admin/main") 
 	public String main(Model model
@@ -50,56 +56,8 @@ public class AdminController {
 		
 		return "/admin/adminmain";
 	}
-	
-	@RequestMapping(value = "/admin/login", method = RequestMethod.GET)
-	public void adminlogin() {
-		logger.info("관리자로그인페이지");
-	}
-	
-	@RequestMapping(value = "/admin/login", method = RequestMethod.POST)
-	public String adminloginProcess(
-					Admin admin
-					, HttpSession session) {
-		
-		logger.info(admin.toString());
-		
-		//아이디, 패스워드 DB 조회
-		boolean isLogin = adminService.adminLogin(admin); //true-인증 성공
-		
-		//결과에 따른 세션처리
-		if(isLogin) {
-			session.setAttribute("login", isLogin);
-			session.setAttribute("adminid", admin.getAdminid());
-		}
-		
-		return "redirect:/admin/main";
-	}
-	
-	@RequestMapping(value = "/admin/logout")
-	public String adminlogout(HttpSession session) {
-		session.invalidate();
-		return "redirect:/admin/login";
-	}
-	
-	@RequestMapping(value="/admin/mypage") //세션값 테스트
-	public void adminmypageTest(HttpSession session, Model model) {
-		
-		String adminid = (String) session.getAttribute("adminid");
-		
-		logger.info("로그인 정보 : " + session.getAttribute("adminid") );
-		
-		Admin info = adminService.admininfo(adminid);
-		
-		model.addAttribute("info", info);
-		
-	}
 
-	
-//	@RequestMapping(value = "/admin/loginfail", method = RequestMethod.GET)
-//	public void adminloginfile() { }
-
-	
-
+	//----------------- 관리자 회원관리 ----------------------
 	
 	@RequestMapping(value = "/admin/memberlist") 
 	public String adminMemberList( AdminMemberPaging curPage, Model model, HttpSession session ) {
@@ -141,12 +99,16 @@ public class AdminController {
 
 	}
 	
+	@RequestMapping(value = "/admin/memberdel")
+	public String adminMemberDelete(Member member) {
+		
+		adminService.memberDelete(member);
+		
+		return "redirect:/admin/memberlist";
+	}
 	
-//	@RequestMapping(value = "/adminstest/adminnotice")
-//	public void adminNotice() {
 	
-//	}
-
+	//----------------- 관리자 매출관리 ----------------------
 	
 	@RequestMapping(value = "/admin/salescategory")
 	public String adminSalesCategory(Model model
@@ -196,14 +158,36 @@ public class AdminController {
 		return "/admin/adminsalesdate";
 	}
 	
+	
+	
+	
+	
+	//----------------- 관리자 예매관리 ----------------------
+	
 	@RequestMapping(value = "/admin/ticketinginfo")
-	public String adminTicketingInfo (AdminMemberPaging curPage,
-			Model model
-			, @RequestParam HashMap<String, String> map){
+	public String adminTicketingInfo (AdminTicketPaging curPage,
+			Model model ){
 		
-		List<?> list = adminService.seleticketinginfo(map);
+		AdminTicketPaging paging = adminService.tiketGetPaging(curPage);
+		
+		paging.setSearchText(curPage.getSearchText());
+		
+		logger.info("티켓1 : " + paging);
+		
+		model.addAttribute("paging", paging);
+		
+		logger.info("티켓2 : " + paging);
+		
+		List<?> list = adminService.getTiketList(paging);
+		
+		logger.info("티켓3 : " + list);
 		
 		model.addAttribute("list", list);
+
+		
+//		List<?> list = adminService.seleticketinginfo(map);
+		
+//		model.addAttribute("list", list);
 		
 		return "/admin/adminticketinginfo";
 	}
@@ -219,11 +203,21 @@ public class AdminController {
 	}
 	
 	
+	
+	//----------------- 관리자 공연관리 ----------------------
+	
 	@RequestMapping(value = "/admin/showlist")
-	public String adminShowList(Model model) {
+	public String adminShowList(Model model, AdminShowPaging curPage) {
 		
-		List<TB_SHOW> list = adminService.adminShowList();
-		model.addAttribute("showList", list);
+		AdminShowPaging paging = adminService.showGetPaging(curPage);
+		
+		paging.setSearchText(curPage.getSearchText());
+		
+		model.addAttribute("paging", paging);
+		
+		List<TB_SHOW> list = adminService.getShowList(paging);
+		
+		model.addAttribute("showList",list);
 		
 		return "/admin/adminshowlist";
 	}
@@ -268,14 +262,27 @@ public class AdminController {
 	}
 	
 	
+	//----------------- 관리자 볼거리 관리 ----------------------
+	
 	
 	@RequestMapping(value = "/admin/attractionlist")
 	public String adminAttractionList(Model model,
-			@RequestParam HashMap<String, Object> map) {
+			@RequestParam HashMap<String, Object> map,
+			AdminAttractionPaging curPage) {
 		
-		List<?> attraclist = adminService.adminAttraclist(map);
+		AdminAttractionPaging paging = adminService.attractionGetPaging(curPage);
 		
-		model.addAttribute("attraclist", attraclist);
+		paging.setSearchText(curPage.getSearchText());
+		
+		model.addAttribute("paging", paging);
+		
+		List<?> attraclist = adminService.adminAttraclist(paging);
+		
+		model.addAttribute("attraclist",attraclist);
+		
+//		List<?> attraclist = adminService.adminAttraclist(map);
+//		
+//		model.addAttribute("attraclist", attraclist);
 		
 		return "/admin/adminattractionlist";
 	}
@@ -305,8 +312,15 @@ public class AdminController {
 		
 		return "redirect:/admin/attractionlist";
 	}
-
 	
+	@RequestMapping(value = "/admin/attractiondel")
+	public String adminAttractionDelete(TB_ATTRACTION tb_attraction) {
+		
+		adminService.attractionDelete(tb_attraction);
+		
+		return "redirect:/admin/attractionlist";
+	}
+
 	
 	
 }

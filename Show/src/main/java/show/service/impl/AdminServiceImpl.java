@@ -15,8 +15,12 @@ import show.dto.TB_ATTRACTION;
 import show.dto.TB_BOOK;
 import show.dto.TB_SHOW;
 import show.service.face.AdminService;
+import show.util.AdminAttractionPaging;
 import show.util.AdminMemberPaging;
+import show.util.AdminShowPaging;
+import show.util.AdminTicketPaging;
 import show.util.Paging;
+import show.util.showPaging;
 
 @Service
 public class AdminServiceImpl implements AdminService {
@@ -33,7 +37,6 @@ public class AdminServiceImpl implements AdminService {
 		if( adminDao.selectAdminCnt(admin) >= 1 ) {
 			return true;
 		}
-		
 		
 		return false;
 	}
@@ -211,6 +214,58 @@ public class AdminServiceImpl implements AdminService {
 		List<?> list = adminDao.hidukeuriage();
 		
 		return list;
+	}
+
+	@Override
+	public void attractionDelete(TB_ATTRACTION tb_attraction) {
+		
+		adminDao.attractionDelete(tb_attraction);
+		
+	}
+
+	@Override
+	public void memberDelete(Member member) {
+		
+		adminDao.memberDelete(member);
+		
+	}
+
+	@Override
+	public AdminShowPaging showGetPaging(AdminShowPaging curPage) {
+		int totalCount = adminDao.showSelectCntAll(curPage);
+		AdminShowPaging paging = new AdminShowPaging(totalCount, curPage.getCurPage());
+		return paging;
+	}
+
+	@Override
+	public List<TB_SHOW> getShowList(AdminShowPaging paging) {
+		
+		return adminDao.selectShowAll(paging);
+	}
+
+	@Override
+	public AdminAttractionPaging attractionGetPaging(AdminAttractionPaging curPage) {
+		int totalCount = adminDao.AttractionSelectCntAll(curPage);
+		AdminAttractionPaging paging = new AdminAttractionPaging(totalCount, curPage.getCurPage());
+		return paging;
+	}
+
+	@Override
+	public List<?> adminAttraclist(AdminAttractionPaging paging) {
+
+		return adminDao.selectAttractionAll(paging);
+	}
+
+	@Override
+	public AdminTicketPaging tiketGetPaging(AdminTicketPaging curPage) {
+		int totalCount = adminDao.TicketSelectCntAll(curPage);
+		AdminTicketPaging paging = new AdminTicketPaging(totalCount, curPage.getCurPage());
+		return paging;
+	}
+
+	@Override
+	public List<?> getTiketList(AdminTicketPaging paging) {
+		return adminDao.selectTicketAll(paging);
 	}
 
 
