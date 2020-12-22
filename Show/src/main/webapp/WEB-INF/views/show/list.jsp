@@ -177,8 +177,9 @@
 
 
 
-
-
+.main-header-menu-bar-background {
+    height: 30px;
+}
 
 
 
