@@ -138,9 +138,8 @@
 	
 	
 	
-	<select id="checklistMap" resultType="show.dto.TB_SHOW" parameterType="show.util.ShowlistPaging">
-   	SELECT * FROM (
-      <include refid="selectRownumJH" />
+	   <select id="checklistMap" resultType="show.dto.TB_SHOW" parameterType="hashmap">
+      SELECT * FROM TB_SHOW
       <where>
          <trim prefixOverrides="OR">
             <if test="showkind != null">
@@ -148,31 +147,22 @@
                #{kind }
             </foreach> 
             </if>
-            
             <if test="showarea != null">
             <foreach open="OR show_place IN (" collection="showarea" item="area" separator="," close=")">
                #{area}
             </foreach> 
             </if>
-            
             <if test="showgenre != null">
             <foreach open="OR show_genre IN (" collection="showgenre" item="genre" separator="," close=")">
                #{genre}
             </foreach>
             </if>
-            
-            <if test="search != null">   
-               OR show_name=#{search}
+            <if test="search != null and !search.isEmpty" >   
+               OR show_name LIKE '%'||#{search}||'%'
             </if>
-   
          </trim>
       </where>
-    ) R
-         <where>
-             rnum BETWEEN #{startNo} AND #{endNo}
-         </where>
    </select>
-	
 	
 	
 	
