@@ -39,8 +39,6 @@ public class ShowController {
 	@Autowired private ShowService showService = new ShowServiceImpl();
 	@Autowired private MyPageService myPageService = new MyPageServiceImpl();
 	@Autowired private JavaMailSenderImpl mailSender;
-//	static Calendar cal = Calendar.getInstance();
-//	public static final String YEARNO =  Integer.toString(cal.get(Calendar.YEAR));
 	
 	@RequestMapping(value="/show/list")
 	public void showList(showPaging curPage, Model model, HttpServletRequest request ) {
@@ -62,10 +60,8 @@ public class ShowController {
 	}
 	
 	
-	
 	@RequestMapping(value = "/show/showlist", method = RequestMethod.GET)
-	public void showlist(
-			ShowlistPaging curPage, Model model) {
+	public void showlist(ShowlistPaging curPage, Model model) {
 		logger.info("showlist () curPage " + curPage);
 		ShowlistPaging paging = showService.getPagingJH(curPage);
 		paging.setShowarea(curPage.getShowarea());
@@ -73,7 +69,29 @@ public class ShowController {
 		paging.setShowgenre(curPage.getShowgenre());
 		paging.setSearch(curPage.getSearch());
 		logger.info("showlist () paging " + paging);
+		
+		String fullPath = "/show/showlist?";
+		
 
+		if(null != paging.getShowarea()) {
+			for(String showarea : paging.getShowarea()) {
+				fullPath += "&showarea=" + showarea;
+			}
+		}
+		if(null != paging.getShowkind()) {
+			for(String showkind : paging.getShowkind()) {
+				fullPath += "&showkind=" + showkind;
+			}
+		}
+		if(null != paging.getShowgenre()) {
+			for(String showgenre : paging.getShowgenre()) {
+				fullPath += "&showgenre=" + showgenre;
+			}
+		}
+		
+		fullPath +="&curPage=";
+		
+		model.addAttribute("fullPath",fullPath);
 		model.addAttribute("paging", paging);
 		logger.info("get요청완료!");
 		List<TB_SHOW> list = showService.checklist(paging);
@@ -141,24 +159,18 @@ public class ShowController {
 	@RequestMapping(value="/show/book3Proc", method = RequestMethod.POST, produces = "application/json; charset=UTF-8")
 	public String book3Proc(@RequestBody List<TB_BOOK> totalJason, HttpSession session, Model model) {
 		String id = session.getAttribute("member_id").toString();
-		List<TB_BOOK> list= null;
-		for(TB_BOOK book : totalJason) {
-//			logger.info("show_id = " + book.getShow_id());
-//			logger.info("seat_num = " + book.getSeat_num());
-//			logger.info("seat_grade = " + book.getSeat_grade());
-//			logger.info("seat_price = " + book.getSeat_price());
-//			logger.info("book_date = " + book.getBook_date().toString());
-//			logger.info("member_id = " + session.getAttribute("userId"));
-			book.setMember_id(id); //리스트를 통째로 넘겨서 db에 넣어주고 싶음, 근데 어떻게함?(book_id가 같도록)
+		List<TB_BOOK> list= null;		
+		for(TB_BOOK book : totalJason) { //넘겨 받은 리스트를 DB에 저장
+			book.setMember_id(id);
 			logger.info("book3 info "+book);
 			showService.book(book);
-			
-			list = showService.selectBook(book);
-
+			//결제 단계로 넘겨줄 선택된 예매정보 조회 
+			list = showService.selectBook(book); 
 		}
 		logger.info("book3 list "+list);
-		model.addAttribute("list",list);
-		model.addAttribute("member",myPageService.getMember(id));
+		model.addAttribute("showDetail",showService.getShowDetail(Integer.toString(list.get(0).getShow_id()))); //공연 상세 정보 조회
+		model.addAttribute("list",list); //모델객체를 사용하여 조회한 예매 정보 리스트를 넘긴다.
+		model.addAttribute("member",myPageService.getMember(id)); // 회원 정보(등급 필요)을 넘긴다.
 		return "show/book3";
 	}
 	
@@ -211,7 +223,7 @@ public class ShowController {
 				TB_SHOW show = showService.getShowDetail(show_id);
 				
 				Member member = myPageService.getMember(member_id);
-				helper.setFrom("@gmail.com"); // 보낼 이메일주소  
+				helper.setFrom("ghvkud5638@gmail.com"); // 보낼 이메일주소  
 				helper.setTo(member.getEmail()); // 받는 이메일 주소
 				helper.setSubject(member_id+"님! 예매가 완료 되었습니다."); 
 								
@@ -225,7 +237,7 @@ public class ShowController {
 				
 				helper.setText(contents, true); 
 				
-				FileSystemResource file = new FileSystemResource(new File("보낼 파일 주소 경로")); 
+				FileSystemResource file = new FileSystemResource(new File("E:/notice.png")); 
 				helper.addInline("notice.png", file); 
 			}
 		};

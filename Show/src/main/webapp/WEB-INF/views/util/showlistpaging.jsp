@@ -55,15 +55,30 @@ li {
 
 		<%-- 페이징 번호 표시 --%>
 		<%-- 현재 페이지 번호는 active 클래스 부여 -> 파랑 바탕 버튼 --%>
+<%-- 		<c:forEach begin="${paging.startPage }" end="${paging.endPage }" var="page" --%>
+<%-- 			varStatus="stat"> --%>
+			
+<%-- 			<c:if test="${paging.curPage eq page }"> --%>
+<%-- 				<li class="active"><a href="/show/showlist?curPage=${page }">${page }</a></li> --%>
+<%-- 			</c:if> --%>
+			
+<%-- 			<c:if test="${paging.curPage ne page }"> --%>
+<%-- 				<li><a href="/show/showlist?curPage=${page }">${page }</a></li> --%>
+<%-- 			</c:if> --%>
+			
+<%-- 		</c:forEach> --%>
+
+
+
 		<c:forEach begin="${paging.startPage }" end="${paging.endPage }" var="page"
 			varStatus="stat">
 			
 			<c:if test="${paging.curPage eq page }">
-				<li class="active"><a href="/show/showlist?curPage=${page }">${page }</a></li>
+				<li class="active"><a href="${fullPath}${page }">${page }</a></li>
 			</c:if>
 			
 			<c:if test="${paging.curPage ne page }">
-				<li><a href="/show/showlist?curPage=${page }">${page }</a></li>
+				<li><a href="${fullPath}${page }">${page }</a></li>
 			</c:if>
 			
 		</c:forEach>
@@ -76,7 +91,7 @@ li {
 		<%-- 마지막 페이지면 동작 안함 --%>
 		<c:if test="${paging.curPage ne paging.totalPage }">
 			<li><a href="/show/showlist?curPage=${paging.curPage+1 }" aria-label="Next"> <span>&raquo;</span></a></li>
-		</c:if>
+		</c:if>  
 		<c:if test="${paging.curPage eq paging.totalPage }">
 			<li class="disabled"><span>&raquo;</span></li>
 		</c:if>
