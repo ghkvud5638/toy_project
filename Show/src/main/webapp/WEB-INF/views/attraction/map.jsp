@@ -92,7 +92,7 @@ $(document).ready(function(){
 		$( '#attraction-list-mapdetailView').on('click',function(){
 			console.log("click")
 			var ar = "${area}"
-			, no = "${attraction_no}"
+			, no = "${attraction_id}"
 			,board = "${boardType}"
 // 			alert(board)
 			console.log(ar)
@@ -103,7 +103,7 @@ $(document).ready(function(){
 					ar = "area="+ar+"&"
 				}
 					
-			location.href= "/attraction/detail?boardType="+"${boardType }"+"&"+ar+"attraction_no="+no;
+			location.href= "/attraction/detail?boardType="+"${boardType }"+"&"+ar+"attraction_id="+no;
 					
 				
 			
@@ -221,8 +221,8 @@ $(document).ready(function(){
 		<c:when test="${chk eq true }">
 			<div id="attraction-map-detail" style="width:100%; height:100%; border-radius: 5px;">
 			</div>
-			 <button class="subwayBtn" style="float:right;">가까운 지하철 찾기</button><br><br>
-			 		<span class="attraction-detail-subwaySpan"> </span>
+<!-- 			 <button class="subwayBtn" style="float:right;">가까운 지하철 찾기</button><br><br> -->
+<!-- 			 		<span class="attraction-detail-subwaySpan"> </span> -->
 		</c:when>
 		<c:otherwise>
 			<div class="attraction-list-mapMainDiv">

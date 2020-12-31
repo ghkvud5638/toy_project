@@ -46,9 +46,13 @@
 				, dataType: "html" //응답받은 데이터의 형식
 				, success: function( res ) {
 					console.log("성공")
+// 					$('.Nav-sideMenu-WrapDiv').load(document.URL + '.Nav-sideMenu-WrapDiv')
 					$('#navLoginLogout').trigger('click');
-
-
+// 					$('body').remove()
+// 					$('html').load(document.URL)
+// 					setTimeout(function() {
+						
+// 					}, 100);
 	
 				}
 				, error: function() {
@@ -61,8 +65,13 @@
 	   $('#logoutBtn').click(function(){
 // 		   alert("클릭")
 			$(".Nav-sideMenu-listViewListDiv").load("/main/logout");
-			$('#navLoginLogout').trigger('click');
-			
+// 			$('body').remove()
+// 			$('html').load(document.URL)
+// 			setTimeout(function() {
+				$('#navLoginLogout').trigger('click');
+					
+// 				}, 100);
+				
 		
 	   })
 	   

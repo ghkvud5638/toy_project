@@ -43,7 +43,7 @@ $(document).ready(function(){
 		if(${chkNumber} == 1){
 		   location.href= "/show/detail?show_id="+$(this).attr('id');		
 		} else {
-		   location.href= "/attraction/detail?"+boardType+area+"attraction_no="+$(this).attr('id');		
+		   location.href= "/attraction/detail?"+boardType+area+"attraction_id="+$(this).attr('id');		
 			
 		}
 		
@@ -215,7 +215,7 @@ $(document).ready(function(){
 							
 							<c:forEach items="${attraction }" var="b" varStatus="sb">
 								<li class="attraction-detail-showList">
-									<div class="attraction-detail-showTable" id="${b.attraction_no }" >
+									<div class="attraction-detail-showTable" id="${b.attraction_id }" >
 										<img class="attraction-detail-showImg" src="${b.attraction.get(0).attraction_photo}" alt="">
 										<div class="attraction-detail-showNameDiv">
 											<span>${b.attraction_title }</span>

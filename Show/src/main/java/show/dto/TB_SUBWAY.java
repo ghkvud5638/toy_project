@@ -2,7 +2,7 @@ package show.dto;
 
 public class TB_SUBWAY {
                                        
-	private String subway_no;
+	private String subway_id;
 	private String subway_name;
 	private String subway_line;
 	private String subway_addr1;
@@ -14,17 +14,17 @@ public class TB_SUBWAY {
 
 	@Override
 	public String toString() {
-		return "TB_SUBWAY [subway_no=" + subway_no + ", subway_name=" + subway_name + ", subway_line=" + subway_line
+		return "TB_SUBWAY [subway_id=" + subway_id + ", subway_name=" + subway_name + ", subway_line=" + subway_line
 				+ ", subway_addr1=" + subway_addr1 + ", subway_addr2=" + subway_addr2 + ", subway_addrdetail="
 				+ subway_addrdetail + ", subway_tel=" + subway_tel + ", subway_latitude=" + subway_latitude
 				+ ", subway_longitude=" + subway_longitude + "]";
 	}
 
-	public String getSubway_no() {
-		return subway_no;
+	public String getsubway_id() {
+		return subway_id;
 	}
-	public void setSubway_no(String subway_no) {
-		this.subway_no = subway_no;
+	public void setsubway_id(String subway_id) {
+		this.subway_id = subway_id;
 	}
 	public String getSubway_name() {
 		return subway_name;

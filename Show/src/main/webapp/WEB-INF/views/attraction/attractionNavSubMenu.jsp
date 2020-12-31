@@ -48,17 +48,17 @@
 			console.log("클릭")
 			
 		
-			if(idName == "Nav-sideMenu-showList"){
-				if(loginChk === undefined){
-					alert("로그인 해야만 볼 수 있습니다.")
-					navOneclick = false
-					$('#Nav-sideMenu-Home').trigger("click");
+// 			if(idName == "Nav-sideMenu-showList"){
+// 				if(loginChk === undefined){
+// 					alert("로그인 해야만 볼 수 있습니다.")
+// 					navOneclick = false
+// 					$('#Nav-sideMenu-Home').trigger("click");
 
-					return;
-				}
-				listText = "공연목록입니다.<br><br>"
-				loc = "/attraction/nava"
-			}
+// 					return;
+// 				}
+// 				listText = "공연목록입니다.<br><br>"
+// 				loc = "/attraction/nava"
+// 			}
 			if(idName == "Nav-sideMenu-attractionList"){
 				if(loginChk === undefined){
 					alert("로그인 해야만 볼 수 있습니다.")
@@ -67,7 +67,7 @@
 
 					return;
 				}
-				listText = "볼거리목록입니다.<br><br>"
+				listText = "스크랩목록입니다.<br><br>"
 				loc = "/attraction/nava"
 					whereList = 3
 					chkNumber = 4
@@ -82,12 +82,16 @@
 			}
 			$(".Nav-sideMenu-li").css("background-color", "#eaeaea")
 			$(".Nav-sideMenu-li").css("text-decoration", "")
+			$(".Nav-sideMenu-li").css("box-sizing", "")
 			$(".Nav-sideMenu-li").css("border-bottom", "2px solid #ccc")
+			
+			
 
 			$(".Nav-sideMenu-listViewText").html(listText);
 	
 			$('#'+idName).css("background-color", "#aba6a6")
 			$('#'+idName).css("text-decoration", "underline")
+			$('#'+idName).css("box-sizing", "border-box")
 			$('#'+idName).css("border-bottom", "4px solid black")
 			if(idName == "Nav-sideMenu-Home"){
 				if(loginChk === undefined){
@@ -124,12 +128,20 @@
 	
 	var loadMoreChk = false;
 	var removeChk = false;
+	var kNo = 5;
 	$('#Nav-sideMenu-loadMore').on("click", function(){
 				if(loadMoreChk == false ){
 					loadMoreChk = true	
 						listNo = 1
 					console.log("클릭")
-					for(var k=0; k<5; k++){
+					console.log(removeChk)
+					if(removeChk == true){
+						kNo = 1
+					} else {
+						kNo = 5
+					}
+					console.log(kNo)
+					for(var k=0; k<kNo; k++){
 						
 
 						$('#Nav-sideMenu-loadMore').css("display", "none")
@@ -148,7 +160,7 @@
 								, async:false
 								, success: function( res ) {
 									console.log("성공")
-									console.log(res)
+// 									console.log(res)
 									
 									$(".Nav-sideMenu-listViewListDiv").append(res);
 // 									$(".Nav-sideMenu-listViewListDiv").append($(res).find($('#total')));
@@ -158,7 +170,7 @@
 									$(".Nav-sideMenu-listViewListDiv").css("opacity", "1");
 
 									totalCount = $('#total').val()
-									
+									removeChk = false
 								}
 								, error: function() {
 									console.log("실패")
@@ -180,12 +192,6 @@
 
 								
 							}
-					if(removeChk == true){
-						loadMoreChk = true
-
-// 	 					alert("종료")
-						return;
-					}
 						}
 					} else{
 // 			 			alert("한번만합시다")
@@ -197,13 +203,12 @@
 
 							removeChk = false
 			 			}
-
-						return;
 					}
 
 				});
 	
 	$("#removeLoadMore").on('click', function(){
+		console.log("작동?")
 		removeChk = true
 		i--
 		$('#total').val($('#total').val()-1)
@@ -272,7 +277,7 @@
 		position:absolute;
 		float:left;
 		display:inline-block;
-		width: 25%;
+		width: 33.3333%;
 		background-color: #eaeaea;
 		padding: 10px;
 		text-align:center;
@@ -287,15 +292,17 @@
 	}
 	
 	.Nav-sideMenu-li:nth-child(2){
-		left:25%;
+		left:33.3%;
 		border-left:2px solid #ccc;
+/* 		border-right:2px solid #ccc; */
 	}
-	.Nav-sideMenu-li:nth-child(3){
-		left:50%;
-		border-left:2px solid #ccc;
-	}
+/* 	.Nav-sideMenu-li:nth-child(3){ */
+/* 		left:50%; */
+/* 		border-left:2px solid #ccc; */
+/* 	} */
 	.Nav-sideMenu-li:last-child{
-		left:75%;
+			left:66.6%;
+	
 		border-left:2px solid #ccc;
 	}
 
@@ -379,9 +386,9 @@
 	
 		<ul>
 			<li class="Nav-sideMenu-li" id="Nav-sideMenu-Home" >홈</li>
-			<li class="Nav-sideMenu-li" id="Nav-sideMenu-showList" >공연</li>
-			<li class="Nav-sideMenu-li" id="Nav-sideMenu-attractionList" >볼거리</li>
-			<li class="Nav-sideMenu-li" id="Nav-sideMenu-visitList">목록</li>
+<!-- 			<li class="Nav-sideMenu-li" id="Nav-sideMenu-showList" >공연</li> -->
+			<li class="Nav-sideMenu-li" id="Nav-sideMenu-attractionList" >스크랩</li>
+			<li class="Nav-sideMenu-li" id="Nav-sideMenu-visitList">방문목록</li>
 		</ul>
 			<br>
 			<br>

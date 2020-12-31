@@ -4,7 +4,7 @@ import java.util.List;
 
 public class TB_ATTRACTION {
 		                                 
-	private String attraction_no;
+	private String attraction_id;
 	private String attraction_title;
 	private String attraction_content;
 	private String attraction_tel;
@@ -26,7 +26,7 @@ public class TB_ATTRACTION {
 	
 	@Override
 	public String toString() {
-		return "TB_ATTRACTION [attraction_no=" + attraction_no + ", attraction_title=" + attraction_title
+		return "TB_ATTRACTION [attraction_id=" + attraction_id + ", attraction_title=" + attraction_title
 				+ ", attraction_content=" + attraction_content + ", attraction_tel=" + attraction_tel
 				+ ", attraction_category1=" + attraction_category1 + ", attraction_category2=" + attraction_category2
 				+ ", attraction_area1=" + attraction_area1 + ", attraction_area2=" + attraction_area2
@@ -35,11 +35,11 @@ public class TB_ATTRACTION {
 				+ ", nav_bar=" + nav_bar + ", attraction=" + attraction + ", subway=" + subway + ", show=" + show + "]";
 	}
 
-	public String getAttraction_no() {
-		return attraction_no;
+	public String getattraction_id() {
+		return attraction_id;
 	}
-	public void setAttraction_no(String attraction_no) {
-		this.attraction_no = attraction_no;
+	public void setattraction_id(String attraction_id) {
+		this.attraction_id = attraction_id;
 	}
 	public String getAttraction_title() {
 		return attraction_title;

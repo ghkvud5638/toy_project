@@ -79,7 +79,7 @@ $(document).ready(function() {
 		$.ajax({
 			type: "get" //요청 메소드
 			, url: "/attraction/map" //요청 URL
-			, data: { attraction_no: $(this).val()
+			, data: { attraction_id: $(this).val()
 					   , area : "${area}"
 					   , boardType : "${boardType}"} //전달 파라미터
 			, dataType: "html" //응답받은 데이터의 형식
@@ -298,23 +298,6 @@ $(document).ready(function() {
 				areasplit = areasplit + 'order=cate2R&'
 			} else { }
 		
-// 			if ( $(this).attr('id') == 'attraction-list-boardType' ){
-// 				console.log("보드타입바꾸자")
-// 				boardTypeName = document.getElementById($(this).attr('id')).innerHTML
-			
-// 				alert(boardTypeName)
-				
-// 				boardTypeName = boardTypeName.replace(/(\s*)/g,"")
-				
-// 				alert(boardTypeName)
-					
-				
-// 				alert(boardTypeName)
-		
-// 			} 
-			
-// 				alert(arrayName)
-// 				alert(areasplit)
 			
 			location.href= "/attraction/list?"+areasplit+"curPage="+curPage;
 		
@@ -323,6 +306,80 @@ $(document).ready(function() {
 		
 	})	
 	
+	
+	var curPageno = 1
+	var pagingAjax = false
+	if('${boardType}' == 'board'){
+			$(window).scroll(function() {
+				if($(window).scrollTop() > 20){
+					$('.attraction-category-ul').css('position', 'fixed')
+					$('.attraction-category-ul').css('top', '0')
+					$('.attraction-category-ul').css('opacity', '0.8')
+				
+				} else{
+					$('.attraction-category-ul').css('position', '')
+					$('.attraction-category-ul').css('opacity', '1')
+					
+				}
+			
+				if($('body').prop('scrollHeight') -
+					($(window).innerHeight() + $(window).scrollTop()) <= (($('body').prop('scrollHeight') -
+					$(window).innerHeight())/10) ){
+				
+// 					alert("중간")
+					if(pagingAjax == false){
+
+						pagingAjax = true
+						console.log("끝")
+						var area = getParam("area");
+						var cate1 = getParam("cate1");
+						var cate2 = getParam("cate2");
+						var search = getParam("search");
+						var order = getParam("order");
+
+						console.log(area)
+						console.log(cate1)
+						console.log(cate2)
+						console.log(search)
+						console.log(order)
+						curPageno++
+						console.log(curPageno)
+						$.ajax({
+							type: "GET" //요청 메소드
+							, url: "/attraction/boardlist" //요청 URL
+							, data: { "curPage" : curPageno,
+										"area" : area,
+										"cate1" : cate1,
+										"cate2" : cate2,
+										"search" : search,
+										"order" : order
+							} //전달 파라미터
+							, dataType: "html" //응답받은 데이터의 형식
+							, success: function( res ) {
+								console.log("성공")
+					
+								$('#attraction-list-boardMain').append(res)
+								if(${paging.totalPage}  > curPageno){
+									pagingAjax = false
+								}
+		
+							}
+							, error: function() {
+								console.log("실패")
+							}
+							
+						})
+					} else{
+// 						alert("천천히")
+						return;
+					}
+					}
+				console.log($(window).innerHeight())
+				console.log($('body').prop('scrollHeight'))
+				console.log($(window).scrollTop())
+			});	
+		
+		}
 	
 		
 });
@@ -574,7 +631,7 @@ table, tr, td {
 
 
 <!-- <div class="test"> -->
-<div class="attraction-list-wrapDiv">
+<div class="attraction-list-wrapDiv" style="margin-top: 200px;">
 
 
 
@@ -686,10 +743,10 @@ table, tr, td {
 		<c:forEach items="${list }" var="b" varStatus="sb">
 			<c:choose>
 				<c:when test="${area eq 'all' }">
-					<c:set var="loc" value="/attraction/detail?boardType=${boardType }&attraction_no=${b.attraction_no }" />
+					<c:set var="loc" value="/attraction/detail?boardType=${boardType }&attraction_id=${b.attraction_id }" />
 				</c:when>
 				<c:otherwise>
-					<c:set var="loc" value="/attraction/detail?boardType=${boardType }&area=${area }&attraction_no=${b.attraction_no }" />
+					<c:set var="loc" value="/attraction/detail?boardType=${boardType }&area=${area }&attraction_id=${b.attraction_id }" />
 				</c:otherwise>
 			</c:choose>
 		
@@ -734,7 +791,7 @@ table, tr, td {
 								</c:choose>
 								</p>
 								<p>
-									<button class="attraction-list-mapViewBtn" value="${b.attraction_no }" >지도 보기</button>
+									<button class="attraction-list-mapViewBtn" value="${b.attraction_id }" >지도 보기</button>
 									<button class="attraction-list-detailViewBtn" onclick="location.href='<c:out value="${loc }"/>'">상세보기</button>
 							
 								</p>
@@ -748,14 +805,14 @@ table, tr, td {
 	</c:if>
 	
 		<c:if test='${boardType eq "board" }'>
-			<div class="attraction-list-listDiv" style="width:100%">
+			<div class="attraction-list-listDiv" id="attraction-list-boardMain" style="width:100%;">
 		<c:forEach items="${list }" var="b" varStatus="sb">
 			<c:choose>
 				<c:when test="${area eq 'all' }">
-					<c:set var="loc" value="/attraction/detail?boardType=${boardType }&attraction_no=${b.attraction_no }" />
+					<c:set var="loc" value="/attraction/detail?boardType=${boardType }&attraction_id=${b.attraction_id }" />
 				</c:when>
 				<c:otherwise>
-					<c:set var="loc" value="/attraction/detail?boardType=${boardType }&area=${area }&attraction_no=${b.attraction_no }" />
+					<c:set var="loc" value="/attraction/detail?boardType=${boardType }&area=${area }&attraction_id=${b.attraction_id }" />
 				</c:otherwise>
 			</c:choose>
 		
@@ -797,7 +854,7 @@ table, tr, td {
 								</p>
 								
 								<p>
-									<button class="attraction-list-mapViewBtn" value="${b.attraction_no }" >지도 보기</button>
+									<button class="attraction-list-mapViewBtn" value="${b.attraction_id }" >지도 보기</button>
 									<button class="attraction-list-detailViewBtn" onclick="location.href='<c:out value="${loc }"/>'">상세보기</button>
 								</p>
 							</li>
@@ -815,9 +872,10 @@ table, tr, td {
 
 	</div>
 	
+	<c:if test='${boardType eq "image" }'>
 
 	<jsp:include page="/WEB-INF/views/util/attractionPaging.jsp" />
-
+	</c:if>
 </div>
 
 <!-- </div> -->
