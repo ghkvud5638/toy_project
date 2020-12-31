@@ -137,8 +137,12 @@
 	<!--  -->
 	
 	
-	
-	   <select id="checklistMap" resultType="show.dto.TB_SHOW" parameterType="hashmap">
+	<!-- 여기 -->
+	  <select id="checklistMap" resultType="show.dto.TB_SHOW" parameterType="hashmap">
+      
+      SELECT * FROM 
+( SELECT rownum rnum, B.* FROM 
+  ( 
       SELECT * FROM TB_SHOW
       <where>
          <trim prefixOverrides="OR">
@@ -162,6 +166,9 @@
             </if>
          </trim>
       </where>
+        ) B ORDER BY rnum 
+) R WHERE rnum 
+BETWEEN #{startNo} AND #{endNo}
    </select>
 	
 	

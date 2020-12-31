@@ -25,6 +25,14 @@ td:nth-child(2) {
 .result{
 	
 }
+.footer{
+    background-color: #2b2b2b;
+    /* height: 292px; */
+    bottom: 0;
+    position: absolute;
+    text-align: center;
+    width: 100%;
+}
 
 </style>
 

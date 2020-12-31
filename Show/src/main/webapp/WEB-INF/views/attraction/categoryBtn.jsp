@@ -71,7 +71,7 @@ $(document).ready(function(){
 
 @font-face {
 	font-family: "HANGANG";
-	src: url("/resources/SEOULHANGANGB.TTF")
+	src: url("/resources/SeoulHangangB.ttf")
 }
 @font-face {
 	font-family: "NAMSAN";

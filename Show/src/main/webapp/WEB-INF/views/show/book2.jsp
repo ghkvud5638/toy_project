@@ -75,7 +75,7 @@
 	outline: none;
 	cursor: pointer;
 	position: absolute;
-    margin: 0px 0 0px 560px;
+    margin: 0px 0px -15px 540px;
     /* float: right; */
     bottom: 25px;
     padding: 8px 25px 8px 25px;
@@ -91,7 +91,7 @@
 	padding: 8px 25px 8px 25px;
  	bottom: 25px;
 	position: absolute;
-	margin: 0px 0px 0px 450px;
+    margin: 0px 0px -15px 428px;
 	border-radius: 5px;
 	opacity: .9;
 	font-size: 13px;
@@ -150,6 +150,12 @@
     z-index: -10;
 }	
 
+#beforeBook:hover{
+	background-color: #fd470b;
+}
+#nextBook:hover{
+	background-color: #fd470b;
+}
 
 </style>
 

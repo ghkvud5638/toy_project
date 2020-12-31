@@ -327,7 +327,7 @@ function display_comma(value) {
 	<tr>
 		<th>예매 번호 |</th>
 		<th>좌석 번호 |</th>
-		<th>좌석 등급 |</th>
+<!-- 		<th>좌석 등급 |</th> -->
 		<th>공연 날짜</th>
 <!-- 		<th>가격</th> -->
 	</tr>
@@ -337,7 +337,7 @@ function display_comma(value) {
 		<tr id="selectedInfo${i.count }"> 			
 			<td>${l.book_id }</td>
 			<td>${l.seat_num }</td>
-			<td>${l.seat_grade }</td>
+<%-- 			<td>${l.seat_grade }</td> --%>
 			<fmt:parseDate value="${l.book_date }" var="dateString" pattern="yyyy-MM-dd"/>
 			<td id="date"><fmt:formatDate value="${dateString }" pattern="yyyy-MM-dd"/></td>
 			<td><input type="hidden" id="seatPrice${i.count }" value="${l.seat_price }"/></td>			

@@ -310,7 +310,14 @@
 }
 
 
-
+.footer{
+    background-color: #2b2b2b;
+    /* height: 292px; */
+    bottom: -145px;
+/*     position: absolute; */
+    text-align: center;
+    width: 100%;
+}
 
 
 </style>
@@ -494,7 +501,7 @@ $(document).ready(function(){
 
 
 
-<jsp:include page="/WEB-INF/views/util/showPaging.jsp" />
+<jsp:include page="/WEB-INF/views/util/showlistpaging.jsp" />
 </div>
 <c:import url="/WEB-INF/views/footer.jsp" />
 
