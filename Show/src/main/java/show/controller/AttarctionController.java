@@ -131,15 +131,74 @@ public class AttarctionController {
 		
 		
 	}
+
+	@RequestMapping(value="/boardlist")
+	public String attractionBoardList(AttractionPaging curPage, Model model, String area, 
+			String cate1, String cate2, String search, String order, HttpSession session) {
+		
+		System.out.println("시작");
+		
+		if( area == null) {
+			area = "all";
+			
+		} else { }
+		
+		if( cate1 == null ) {	
+			cate1 = "all";
+		} else { }
+		if( cate2 == null ) {
+			cate2 = "all";
+		} else { }
+		
+		if( search == null ) {	
+			search = "";
+			
+		} else { }
+		
+		if(order == null ) {
+			order = "";
+		}
+		
+		
+		model.addAttribute("cate1", cate1);
+		model.addAttribute("cate2", cate2);
+		model.addAttribute("search", search);
+		model.addAttribute("order", order);
+		
+		HashMap<String, Object> searchList = new HashMap<String, Object>();
+		
+		searchList.put("area", area);
+		searchList.put("cate1", cate1);
+		searchList.put("cate2", cate2);
+		searchList.put("search", search);		
+		searchList.put("order", order);		
+		searchList.put("chkNumber", 0);	
+		searchList.put("listNo", 10);
+		
+		//페이징 계산
+		AttractionPaging paging = attractionService.selectAttractionPaging(curPage, searchList);
+		model.addAttribute("paging", paging);
+		model.addAttribute("area", area);
+		model.addAttribute("ajaxChk", false);
+		searchList.put("paging", paging);
+		
+		listArray(model, searchList, session);
+		
+		model.addAttribute("boardType", "board");
+		
+		return "attraction/attractionlistBoard";
+		
+		
+	}
 	
 	@RequestMapping(value="/nearbyshowlist")
-	public String attractionNearbyShowList(AttractionPaging curPage, Model model, String attraction_no, boolean ajaxChk, int chkNumber) {
+	public String attractionNearbyShowList(AttractionPaging curPage, Model model, String attraction_id, boolean ajaxChk, int chkNumber) {
 		
 
 		model.addAttribute("ajaxChk", ajaxChk);
 		HashMap<String, Object> searchList = new HashMap<String, Object>();
 
-		searchList.put("attraction_no", attraction_no);
+		searchList.put("attraction_id", attraction_id);
 		searchList.put("listNo", 5);
 
 			searchList.put("chkNumber", chkNumber);
@@ -225,12 +284,12 @@ public class AttarctionController {
 	@RequestMapping(value="/navList")
 	@ResponseBody
 	public boolean attractionNavList(TB_ATTRACTION attr, boolean delete, boolean insert, int whereList, HttpSession session) {
-		String attraction_no = attr.getAttraction_no();
+		String attraction_id = attr.getattraction_id();
 	
 
 		
 		HashMap<String, Object> searchList = new HashMap<String, Object>();
-		searchList.put("attraction_no", attraction_no);
+		searchList.put("attraction_id", attraction_id);
 		searchList.put("delete", delete);
 		searchList.put("insert", insert);
 		searchList.put("whereList", whereList);
@@ -246,11 +305,11 @@ public class AttarctionController {
 
 	@RequestMapping(value="/detail")
 	public void attractionDetail(TB_ATTRACTION attrInfo, AttractionPaging p, Model model, String area, HttpSession session) {
-		String attraction_no = attrInfo.getAttraction_no();
+		String attraction_id = attrInfo.getattraction_id();
 	
 		
 		HashMap<String, Object> searchList = new HashMap<String, Object>();
-		searchList.put("attraction_no", attraction_no);
+		searchList.put("attraction_id", attraction_id);
 		loginId(searchList, session);
 		
 		boolean scrapChk = attractionService.scrapChk(searchList);
@@ -258,11 +317,11 @@ public class AttarctionController {
 
 		attractionNavList(attrInfo, true, true, 4, session);
 
-		TB_ATTRACTION attraction = attractionService.selectMarker(attraction_no);
+		TB_ATTRACTION attraction = attractionService.selectMarker(attraction_id);
 		
 		model.addAttribute("attraction", attraction);
 		model.addAttribute("scrapChk", scrapChk);
-		model.addAttribute("user_Id", searchList.get("userId"));
+		model.addAttribute("user_Id", searchList.get("memberId"));
 		
 
 
@@ -274,11 +333,11 @@ public class AttarctionController {
 	@RequestMapping(value="/map")
 	public String attractionMap(TB_ATTRACTION attrInfo, Model model, boolean chk, String area, String boardType) {
 				
-		String attraction_no = attrInfo.getAttraction_no();
-		TB_ATTRACTION attraction = attractionService.selectMarker(attraction_no);
+		String attraction_id = attrInfo.getattraction_id();
+		TB_ATTRACTION attraction = attractionService.selectMarker(attraction_id);
 		model.addAttribute("attraction", attraction);
 		model.addAttribute("chk", chk);
-		model.addAttribute("attraction_no", attraction_no);
+		model.addAttribute("attraction_id", attraction_id);
 		model.addAttribute("area", area);
 		model.addAttribute("boardType", boardType);
 		
@@ -293,10 +352,10 @@ public class AttarctionController {
 	@RequestMapping(value="/subway")
 	public ModelAndView subwayDistance(TB_ATTRACTION attrInfo, ModelAndView mav) {
 
-		String attraction_no = attrInfo.getAttraction_no();
+		String attraction_id = attrInfo.getattraction_id();
 
 
-		TB_ATTRACTION subway = attractionService.selectSubwayList(attraction_no);
+		TB_ATTRACTION subway = attractionService.selectSubwayList(attraction_id);
 		
 		
 		mav.addObject("subway", subway); //모델값 작성
@@ -316,13 +375,13 @@ public class AttarctionController {
 		List<String> subwayName = new ArrayList<String>();
 		List<TB_ATTRACTION> showName = new ArrayList<TB_ATTRACTION>();
 		for(int j = 0; j<list.size(); j++) {
-			TB_ATTRACTION subway = attractionService.selectSubwayList(list.get(j).getAttraction_no());
+			TB_ATTRACTION subway = attractionService.selectSubwayList(list.get(j).getattraction_id());
 			if(subway == null) {
 				subwayName.add("없음");
 			} else {
 				subwayName.add(subway.getSubway().get(0).getSubway_name());
 			}
-			searchList.put("attraction_no", list.get(j).getAttraction_no());
+			searchList.put("attraction_id", list.get(j).getattraction_id());
 			TB_ATTRACTION showList = attractionService.selectShowList(searchList);
 			showName.add(showList);
 		}
@@ -333,12 +392,12 @@ public class AttarctionController {
 	}
 	
 	public void loginId(HashMap<String, Object> searchList, HttpSession session ) {
-		String userId = "visitor";
+		String memberId = "visitor";
 
 		if( null != session.getAttribute("member_id")) {
-			userId = (String) session.getAttribute("member_id");
+			memberId = (String) session.getAttribute("member_id");
 		}  
-		searchList.put("userId", userId);
+		searchList.put("memberId", memberId);
 	}
 	
 }

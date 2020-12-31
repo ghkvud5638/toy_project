@@ -2,85 +2,47 @@ package show.dto;
 
 public class TB_NAVIGATION_BAR {
 	
-	private String	attno_pr;
-	private String	attno;
-	private String	showno_pr;
-	private String	showno;
-	private String	vist_attno_pr;
-	private String	visit_attno;
-	private String	visit_showno_pr;
-	private String	visit_showno;
-	private String  user_id;
-	private String  user_id_no;
+	private String scrap_id;
+	private String visit_id;
+	private String attraction_id;
+	private String show_id;
+	private String member_id;
 
 	@Override
 	public String toString() {
-		return "TB_NAVIGATION_BAR [attno_pr=" + attno_pr + ", attno=" + attno + ", showno_pr=" + showno_pr + ", showno="
-				+ showno + ", vist_attno_pr=" + vist_attno_pr + ", visit_attno=" + visit_attno + ", visit_showno_pr="
-				+ visit_showno_pr + ", visit_showno=" + visit_showno + ", user_id=" + user_id + ", user_id_no="
-				+ user_id_no + "]";
+		return "TB_NAVIGATION_BAR [scrap_id=" + scrap_id + ", visit_id=" + visit_id + ", attraction_id=" + attraction_id
+				+ ", show_id=" + show_id + ", member_id=" + member_id + "]";
 	}
-	public String getAttno_pr() {
-		return attno_pr;
+	public String getScrap_id() {
+		return scrap_id;
 	}
-	public void setAttno_pr(String attno_pr) {
-		this.attno_pr = attno_pr;
+	public void setScrap_id(String scrap_id) {
+		this.scrap_id = scrap_id;
 	}
-	public String getAttno() {
-		return attno;
+	public String getVisit_id() {
+		return visit_id;
 	}
-	public void setAttno(String attno) {
-		this.attno = attno;
+	public void setVisit_id(String visit_id) {
+		this.visit_id = visit_id;
 	}
-	public String getShowno_pr() {
-		return showno_pr;
+	public String getAttraction_id() {
+		return attraction_id;
 	}
-	public void setShowno_pr(String showno_pr) {
-		this.showno_pr = showno_pr;
+	public void setAttraction_id(String attraction_id) {
+		this.attraction_id = attraction_id;
 	}
-	public String getShowno() {
-		return showno;
+	public String getShow_id() {
+		return show_id;
 	}
-	public void setShowno(String showno) {
-		this.showno = showno;
+	public void setShow_id(String show_id) {
+		this.show_id = show_id;
 	}
-	public String getVist_attno_pr() {
-		return vist_attno_pr;
+	public String getMember_id() {
+		return member_id;
 	}
-	public void setVist_attno_pr(String vist_attno_pr) {
-		this.vist_attno_pr = vist_attno_pr;
+	public void setMember_id(String member_id) {
+		this.member_id = member_id;
 	}
-	public String getVisit_attno() {
-		return visit_attno;
-	}
-	public void setVisit_attno(String visit_attno) {
-		this.visit_attno = visit_attno;
-	}
-	public String getVisit_showno_pr() {
-		return visit_showno_pr;
-	}
-	public void setVisit_showno_pr(String visit_showno_pr) {
-		this.visit_showno_pr = visit_showno_pr;
-	}
-	public String getVisit_showno() {
-		return visit_showno;
-	}
-	public void setVisit_showno(String visit_showno) {
-		this.visit_showno = visit_showno;
-	}
-	public String getUser_id() {
-		return user_id;
-	}
-	public void setUser_id(String user_id) {
-		this.user_id = user_id;
-	}
-	public String getUser_id_no() {
-		return user_id_no;
-	}
-	public void setUser_id_no(String user_id_no) {
-		this.user_id_no = user_id_no;
-	}
-	
 	
 	
 	

@@ -29,7 +29,7 @@
 	</resultMap>                                              
 
 	<resultMap type="show.dto.TB_SUBWAY" id="Subway">
-		<id property="subway_no" column="subway_no" />       
+		<id property="subway_id" column="subway_id" />       
 		<result property="subway_name" column="subway_name" />
 		<result property="subway_line" column="subway_line" />
 		<result property="subway_addr1" column="subway_addr1" />
@@ -42,12 +42,12 @@
 
 
 	<resultMap type="show.dto.TB_ATTRACTION_IMG" id="AttractionImg">
-		<id property="attraction_img_no" column="attraction_img_no"/>
+		<id property="attraction_img_id" column="attraction_img_id"/>
 		<result property="attraction_photo" column="attraction_photo"/>
 	</resultMap>
 
 	<resultMap type="show.dto.TB_ATTRACTION" id="Attraction">
-		<id property="attraction_no" column="attraction_no"/>
+		<id property="attraction_id" column="attraction_id"/>
 		<result property="attraction_title" column="attraction_title"/>
 		<result property="attraction_content" column="attraction_content"/>
 		<result property="attraction_tel" column="attraction_tel"/>
@@ -70,7 +70,7 @@
 	
 	<sql id="selectAttractionJoin">
 	SELECT 
-	A.ATTRACTION_NO,
+	A.attraction_id,
 	A.ATTRACTION_TITLE,
 	A.ATTRACTION_CONTENT,
 	A.ATTRACTION_TEL, A.ATTRACTION_CATEGORY1,
@@ -81,10 +81,10 @@
 	A.ATTRACTION_ADDR,
 	A.ATTRACTION_LATITUDE,
 	A.ATTRACTION_LONGITUDE,
-	C.ATTRACTION_IMG_NO,
+	C.attraction_img_id,
 	C.ATTRACTION_PHOTO
  	FROM TB_ATTRACTION A, TB_ATTRACTION_IMG C
-	WHERE A.ATTRACTION_NO = C.ATTRACTION_NO
+	WHERE A.attraction_id = C.attraction_id
 	</sql>
 
 	<sql id="areaIf">
@@ -163,7 +163,7 @@
 				attraction_category2 DESC
 			</when>
 			<otherwise>
-				attraction_no
+				attraction_id
 			</otherwise>
 		</choose>
 		
@@ -181,7 +181,7 @@
 			 * cos( SH.show_len  - ATT.attraction_longitude ) + sin( ATT.attraction_latitude )
 			 * sin( SH.show_lat ), 37) )) * ACOS(-1) / 180 * 1.609344  )
 			AS DIST, 
-			ATT.attraction_no,
+			ATT.attraction_id,
 <!-- 			ATT.attraction_title, -->
 <!-- 			ATT.attraction_content, -->
 <!-- 			ATT.attraction_tel,  -->
@@ -215,7 +215,7 @@
 			FROM TB_Show SH, TB_Attraction ATT
 			) D
 			<![CDATA[	WHERE D.DIST < 10 ]]>
-			 And attraction_no = #{attraction_no }
+			 And attraction_id = #{attraction_id }
 			ORDER BY D.DIST	
 	</sql>
 
@@ -227,7 +227,7 @@
 					 * sin( A.ATTRACTION_LATITUDE ), 37)))  * ACOS(-1) / 180 * 1.609344 )
 				 
 				AS DIST, 
-				A.ATTRACTION_NO,
+				A.attraction_id,
 				A.ATTRACTION_TITLE,
 				A.ATTRACTION_CONTENT,
 				A.ATTRACTION_TEL,
@@ -239,11 +239,11 @@
 				A.ATTRACTION_ADDR,
 				A.ATTRACTION_LATITUDE,
 				A.ATTRACTION_LONGITUDE,
-				C.ATTRACTION_IMG_NO,
+				C.attraction_img_id,
 				C.ATTRACTION_PHOTO
 			 	FROM TB_ATTRACTION A, TB_ATTRACTION_IMG C
-			 	WHERE A.ATTRACTION_NO = C.ATTRACTION_NO
-			 	AND A.attraction_no NOT IN(#{attraction_no})
+			 	WHERE A.attraction_id = C.attraction_id
+			 	AND A.attraction_id NOT IN(#{attraction_id})
 				) D
 				<![CDATA[	WHERE D.DIST < 3 ]]>			
 				ORDER BY D.DIST	
@@ -275,18 +275,18 @@
 					</choose>
 			</when>
 			<when test="chkNumber == 4">
-			select ATTAll.*, NB.* FROM (
+			select ATTAll.*, NB.MEMBER_ID FROM (
 				<include refid="selectAttractionJoin" />
 				 ) ATTAll, TB_NAVIGATION_BAR NB
-				  where ATTAll.attraction_no = NB.attno  AND SCRAP_USERID = #{userId}
-				order by attno_pr desc
+				  where ATTAll.attraction_id = NB.attraction_id AND MEMBER_ID = #{memberId} AND VISIT_ID is NULL
+				order by SCRAP_ID desc
 			</when>
 			<when test="chkNumber == 5">
-			select ATTAll.*, NB.* FROM (
+			select ATTAll.*, NB.MEMBER_ID FROM (
 				<include refid="selectAttractionJoin" />
 				 ) ATTAll, TB_NAVIGATION_BAR NB
-				  where ATTAll.attraction_no = NB.visit_attno  AND SCRAP_USERID = #{userId}
-				order by visit_attno_pr desc
+				  where ATTAll.attraction_id = NB.attraction_id AND MEMBER_ID = #{memberId} AND SCRAP_ID is NULL
+				order by VISIT_ID desc
 			</when>
 		</choose>
 					) B
@@ -327,13 +327,13 @@
 			select ATTAll.*, NB.* FROM (
 				<include refid="selectAttractionJoin" />
 				 ) ATTAll, TB_NAVIGATION_BAR NB
-				  where ATTAll.attraction_no = NB.attno  AND SCRAP_USERID = #{userId}
+				  where ATTAll.attraction_id = NB.attraction_id AND MEMBER_ID = #{memberId} AND VISIT_ID is NULL
 		</when>
 		<when test="chkNumber == 5">
 			select ATTAll.*, NB.* FROM (
 				<include refid="selectAttractionJoin" />
 				 ) ATTAll, TB_NAVIGATION_BAR NB
-				  where ATTAll.attraction_no = NB.visit_attno  AND SCRAP_USERID = #{userId}
+				  where ATTAll.attraction_id = NB.attraction_id AND MEMBER_ID = #{memberId} AND SCRAP_ID is NULL
 		</when>
 		</choose>
 			
@@ -343,7 +343,7 @@
 	
 	<select id="selectMarker" parameterType="String" resultMap="Attraction">
 		<include refid="selectAttractionJoin" />
-		and A.ATTRACTION_NO = #{attraction_no }
+		and A.attraction_id = #{attraction_id }
 	</select>
 	
 	<select id="selectSubwayList" parameterType="String" resultMap="Attraction">
@@ -353,31 +353,31 @@
 			 * cos( SB.subway_longitude  - ATT.attraction_longitude ) + sin( ATT.attraction_latitude )
 			 * sin( SB.subway_latitude ), 37) )) * ACOS(-1) / 180 * 1.609344  )
 			AS DIST, 
-			ATT.attraction_no,
-			ATT.attraction_title,
-			ATT.attraction_content,
-			ATT.attraction_tel, 
-			ATT.attraction_category1,
-			ATT.attraction_category2,
-			ATT.attraction_area1,
-			ATT.attraction_area2,
-			ATT.attraction_area3,
-			ATT.attraction_addr,
-			ATT.attraction_latitude,
-			ATT.attraction_longitude,
-			SB.subway_no,
+			ATT.attraction_id,
+<!-- 			ATT.attraction_title, -->
+<!-- 			ATT.attraction_content, -->
+<!-- 			ATT.attraction_tel,  -->
+<!-- 			ATT.attraction_category1, -->
+<!-- 			ATT.attraction_category2, -->
+<!-- 			ATT.attraction_area1, -->
+<!-- 			ATT.attraction_area2, -->
+<!-- 			ATT.attraction_area3, -->
+<!-- 			ATT.attraction_addr, -->
+<!-- 			ATT.attraction_latitude, -->
+<!-- 			ATT.attraction_longitude, -->
+<!-- 			SB.subway_id, -->
 			SB.subway_name,
-			SB.subway_line,
-			SB.subway_addr1,
-			SB.subway_addr2,
-			SB.subway_addrdetail,
-			SB.subway_tel,
-			SB.subway_latitude,
-			SB.subway_longitude
+			SB.subway_line
+<!-- 			SB.subway_addr1, -->
+<!-- 			SB.subway_addr2, -->
+<!-- 			SB.subway_addrdetail, -->
+<!-- 			SB.subway_tel, -->
+<!-- 			SB.subway_latitude, -->
+<!-- 			SB.subway_longitude -->
 			FROM TB_SubWay SB, TB_Attraction ATT
 			) D
 			<![CDATA[ 	WHERE D.DIST < 1.5 ]]>
-			AND attraction_no = #{attraction_no }
+			AND attraction_id = #{attraction_id }
 			ORDER BY D.DIST
 			
 	</select>
@@ -415,10 +415,10 @@
 	 	DELETE FROM TB_NAVIGATION_BAR  WHERE 
  		<choose>
 		<when test="whereList == 3">
-		attno = #{attraction_no} AND SCRAP_USERID = #{userId} 
+		attraction_id = #{attraction_id} AND MEMBER_ID = #{memberId} and visit_id is null
 		</when>
 		<when test="whereList == 4">
-	 	visit_attno = #{attraction_no } AND SCRAP_USERID = #{userId}
+	 	attraction_id = #{attraction_id } AND MEMBER_ID = #{memberId} and scrap_id is null
 	 	</when>
 		</choose>
 	 
@@ -428,21 +428,21 @@
 		INSERT INTO TB_NAVIGATION_BAR 
 		<choose>
 		<when test="whereList == 3">
-		(attNo_pr, attno, scrap_userid)
-		 VALUES (nav_attno_seq.nextval, #{attraction_no}, #{userId})
+		(SCRAP_ID, attraction_id, MEMBER_ID)
+		 VALUES (SCRAP_seq.nextval, #{attraction_id}, #{memberId})
 		</when>
 		<when test="whereList == 4">
-		(visit_attNo_pr, visit_attno, scrap_userid)
-		 VALUES (nav_visit_attno_seq.nextval, #{attraction_no}, #{userId})
+		(VISIT_ID, attraction_id, MEMBER_ID)
+		 VALUES (VISIT_seq.nextval, #{attraction_id}, #{memberId})
 		</when>
 		</choose>
 	</insert>
 	
 	<select id="scrapChk" parameterType="hashmap" resultType="boolean">
 	
-		SELECT count(*) attno
+		SELECT count(*) ATTRACTION_ID
 		  FROM    TB_NAVIGATION_BAR
-		  WHERE   ATTNO = #{attraction_no} AND SCRAP_USERID = #{userId}
+		  WHERE   ATTRACTION_ID = #{attraction_id} AND MEMBER_ID = #{memberId} AND visit_id is null
 		  
   </select>
 	

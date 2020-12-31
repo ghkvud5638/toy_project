@@ -48,9 +48,9 @@
 
 			$(".Nav-sideMenu-WrapDiv").css("opacity", '0');
 			setTimeout(function() {
-			$('.Nav-sideMenu-WrapDiv').remove();
-			chk = false;
-				
+				$('.Nav-sideMenu-WrapDiv').remove();
+				chk = false;
+					
 			}, 300);
 			
 		}
@@ -79,13 +79,11 @@
 	.nav {
 		border:5px solid black; 
 		width:50px;
-		 height:50px;
- 		 position:absolute;
+		height:50px;
+ 		position:absolute;
 		right:0%;
-		 z-index: 997;
+		z-index: 997;
  		transition: all 0.3s ease-in-out;
-		 
-	/*  	 left:calc(90%);  */
 		background-color: white;
 		border-radius: 300px;
 		position: fixed;
@@ -95,13 +93,13 @@
 	}
 	
 	.nav:hover {
-	cursor:pointer;
-	background-color: black;
-	transform: scale(1.1);
-  -webkit-transform: scale(1.1);
-  -moz-transform: scale(1.1);
-  -ms-transform: scale(1.1);
-  -o-transform: scale(1.1);
+		cursor:pointer;
+		background-color: black;
+		transform: scale(1.1);
+		-webkit-transform: scale(1.1);
+		-moz-transform: scale(1.1);
+		-ms-transform: scale(1.1);
+		-o-transform: scale(1.1);
 	}
 
 </style>

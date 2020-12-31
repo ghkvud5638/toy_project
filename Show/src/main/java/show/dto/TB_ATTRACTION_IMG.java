@@ -2,27 +2,27 @@ package show.dto;
 
 public class TB_ATTRACTION_IMG {
 
-	private String attraction_img_no;
-	private String attraction_no;
+	private String attraction_img_id;
+	private String attraction_id;
 	private String attraction_photo;
 
 	@Override
 	public String toString() {
-		return "TB_ATTRACTION_IMG [attraction_img_no=" + attraction_img_no + ", attraction_no=" + attraction_no
+		return "TB_ATTRACTION_IMG [attraction_img_id=" + attraction_img_id + ", attraction_id=" + attraction_id
 				+ ", attraction_photo=" + attraction_photo + "]";
 	}
 
-	public String getAttraction_img_no() {
-		return attraction_img_no;
+	public String getattraction_img_id() {
+		return attraction_img_id;
 	}
-	public void setAttraction_img_no(String attraction_img_no) {
-		this.attraction_img_no = attraction_img_no;
+	public void setattraction_img_id(String attraction_img_id) {
+		this.attraction_img_id = attraction_img_id;
 	}
-	public String getAttraction_no() {
-		return attraction_no;
+	public String getattraction_id() {
+		return attraction_id;
 	}
-	public void setAttraction_no(String attraction_no) {
-		this.attraction_no = attraction_no;
+	public void setattraction_id(String attraction_id) {
+		this.attraction_id = attraction_id;
 	}
 	public String getAttraction_photo() {
 		return attraction_photo;

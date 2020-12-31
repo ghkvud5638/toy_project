@@ -16,7 +16,7 @@
 	
 $(document).ready(function(){
 		
-		var attno = ${attraction.attraction_no}
+		var attno = ${attraction.attraction_id}
 	
 // 		console.log($('#attraction-detail-contentId').innerHTML)
 // 		console.log("${attraction.attraction_content }")
@@ -45,14 +45,14 @@ $(document).ready(function(){
 
 		$('.subwayBtn').click(function(){
 			var no = document.location.href.split("?")
-			var no2 = document.location.href.split("attraction_no=")
+			var no2 = document.location.href.split("attraction_id=")
 			console.log(no)
 			console.log(no2[1])
 
 			$.ajax({
 				type: "GET" //요청 메소드
 				, url: "/attraction/subway" //요청 URL
-				, data: { "attraction_no" : no2[1] } //전달 파라미터
+				, data: { "attraction_id" : no2[1] } //전달 파라미터
 				, dataType: "json" //응답받은 데이터의 형식
 				, success: function( res ) {
 					console.log("성공")
@@ -185,7 +185,7 @@ $(document).ready(function(){
 					type: "GET" //요청 메소드
 					, url: loc //요청 URL
 					, data: {
-								"attraction_no" : attno,
+								"attraction_id" : attno,
 							    "ajaxChk" : true , 
 							    "curPage" : 1,
 							    "chk" : true,
@@ -353,7 +353,7 @@ $(document).ready(function(){
 					type: "GET" //요청 메소드
 					, url: "/attraction/navList" //요청 URL
 					, data: {
-								"attraction_no" : attno
+								"attraction_id" : attno
 								,"delete" : delChk
 								,"insert" : insChk
 								, "whereList" : 3			
@@ -447,6 +447,7 @@ $(document).ready(function(){
 	margin: 0 auto;
 	border-radius: 5px;
 	background-color: white;
+	margin-top: 200px;
 	
 }
 

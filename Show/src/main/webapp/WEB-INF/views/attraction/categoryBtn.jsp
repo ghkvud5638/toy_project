@@ -80,7 +80,6 @@ $(document).ready(function(){
 
 .attraction-category-ul {
 	width: 100%;
- 	margin-bottom: 200px;
 	
 }
 .attraction-category-li {
@@ -100,26 +99,22 @@ $(document).ready(function(){
 	font-family: 'HANGANG', cursive;
 	
 }
+
 .attraction-category-li:nth-child(2) {
-left: 20%
+	left: 20%
 }
+
 .attraction-category-li:nth-child(3) {
-left: 40%
+	left: 40%
 }
+
 .attraction-category-li:nth-child(4) {
-left: 60%
+	left: 60%
 }
+
 .attraction-category-li:nth-child(5) {
-left: 80%
+	left: 80%
 }
-/* .attraction-category-li:not(:first-child) { */
-/* .attraction-category-li:not(:first-child) { */
-/* .attraction-category-li:not(:first-child) { */
-
- /* 	margin: 50px 0px 0px 60px; */
-	
-/* } */
-
 
 .attraction-category-li {
 
@@ -135,10 +130,9 @@ left: 80%
 </style>
 
 <ul class="attraction-category-ul">
-
-<li class="attraction-category-li" id="all">전체</li>
-<li class="attraction-category-li" id="seoul">서울/경기/인천</li>
-<li class="attraction-category-li" id="ganwon">강원도/충청도</li>
-<li class="attraction-category-li" id="jeonla">전라도/경상도</li>
-<li class="attraction-category-li" id="daegu">대구/부산</li>
+	<li class="attraction-category-li" id="all">전체</li>
+	<li class="attraction-category-li" id="seoul">서울/경기/인천</li>
+	<li class="attraction-category-li" id="ganwon">강원도/충청도</li>
+	<li class="attraction-category-li" id="jeonla">전라도/경상도</li>
+	<li class="attraction-category-li" id="daegu">대구/부산</li>
 </ul>
